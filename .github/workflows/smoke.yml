@@ -1,0 +1,27 @@
+name: smoke
+
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - action.yml
+      - skills/**
+      - .github/workflows/smoke.yml
+
+jobs:
+  install:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install skills
+        uses: ./
+        with:
+          dest: ${{ runner.temp }}/.codex/skills
+
+      - name: Verify best-minds present
+        shell: bash
+        run: |
+          set -euo pipefail
+          test -f "${{ runner.temp }}/.codex/skills/best-minds/SKILL.md"
+

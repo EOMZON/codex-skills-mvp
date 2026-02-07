@@ -1,0 +1,30 @@
+name: Install Codex skills (MVP)
+description: Copy versioned Codex skills from this repo into a target skills directory (default: ~/.codex/skills).
+inputs:
+  dest:
+    description: Destination skills directory (e.g. ~/.codex/skills or ${{ github.workspace }}/.codex/skills)
+    required: false
+    default: "~/.codex/skills"
+runs:
+  using: composite
+  steps:
+    - shell: bash
+      run: |
+        set -euo pipefail
+
+        dest="${{ inputs.dest }}"
+        if [[ "$dest" == "~"* ]]; then
+          dest="${dest/#\~/$HOME}"
+        fi
+
+        src="$GITHUB_ACTION_PATH/skills"
+        if [[ ! -d "$src" ]]; then
+          echo "ERROR: skills directory not found: $src" >&2
+          exit 1
+        fi
+
+        mkdir -p "$dest"
+        cp -R "$src/." "$dest/"
+
+        echo "Installed Codex skills to: $dest"
+
