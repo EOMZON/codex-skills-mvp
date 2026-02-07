@@ -2,6 +2,10 @@
 
 把你本机的 `~/.codex/skills` 里的 **skills（指令包）** 版本化到一个 GitHub 仓库里，并在 **其他仓库的 GitHub Actions** 里一键安装到 runner（默认 `~/.codex/skills`），从而让“系统 skills”能在 CI 中复用。
 
+## Status
+
+- Published: `EOMZON/codex-skills-mvp@v0`
+
 ## 你会得到什么
 
 - 一个可被其他仓库 `uses:` 的 GitHub Action（本仓库根目录 `action.yml`）
@@ -67,4 +71,3 @@ git branch -M main
 ```bash
 git push -u origin main
 ```
-
