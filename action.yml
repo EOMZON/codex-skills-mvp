@@ -2,7 +2,7 @@ name: Install Codex skills (MVP)
 description: "Copy versioned Codex skills from this repo into a target skills directory (default: ~/.codex/skills)."
 inputs:
   dest:
-    description: "Destination skills directory (e.g. ~/.codex/skills or ${{ github.workspace }}/.codex/skills)"
+    description: "Destination skills directory (e.g. ~/.codex/skills or $GITHUB_WORKSPACE/.codex/skills)"
     required: false
     default: "~/.codex/skills"
 runs:
