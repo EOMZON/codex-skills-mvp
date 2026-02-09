@@ -1,0 +1,34 @@
+name: ChatOps
+description: Chat to run AI in CI (research / operate / report).
+title: "AI: "
+labels: ["ai"]
+body:
+  - type: dropdown
+    id: intent
+    attributes:
+      label: Intent
+      description: What do you want the bot to do?
+      options:
+        - research (report only)
+        - operate (propose code changes)
+        - note (log only)
+    validations:
+      required: true
+  - type: checkboxes
+    id: options
+    attributes:
+      label: Options
+      options:
+        - label: PR only (do not push to main)
+          required: false
+        - label: Skip AI (run handler with raw text only)
+          required: false
+  - type: textarea
+    id: text
+    attributes:
+      label: Text
+      description: Describe your request. You can paste logs, links, or context.
+      placeholder: "What should the bot do?"
+    validations:
+      required: true
+

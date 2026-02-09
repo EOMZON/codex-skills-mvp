@@ -1,0 +1,494 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>{{PAGE_TITLE}}</title>
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      :root {
+        --black: #0a0a0a;
+        --white: #fafafa;
+        --gray-100: #f5f5f5;
+        --gray-200: #e8e8e8;
+        --gray-400: #999;
+        --gray-600: #666;
+        --gray-800: #333;
+      }
+
+      html {
+        scroll-behavior: smooth;
+      }
+
+      body {
+        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC",
+          "Hiragino Sans GB", "Microsoft YaHei", "Noto Sans CJK SC", sans-serif;
+        background: var(--white);
+        color: var(--black);
+        line-height: 1.8;
+        font-size: 16px;
+        -webkit-font-smoothing: antialiased;
+        text-rendering: optimizeLegibility;
+      }
+
+      ::selection {
+        background: var(--black);
+        color: var(--white);
+      }
+
+      .container {
+        max-width: 940px;
+        margin: 0 auto;
+        padding: 0 24px;
+      }
+
+      /* Header */
+      .header {
+        position: sticky;
+        top: 0;
+        z-index: 100;
+        background: rgba(250, 250, 250, 0.92);
+        backdrop-filter: blur(12px);
+        border-bottom: 1px solid var(--gray-200);
+      }
+
+      .header-inner {
+        max-width: 940px;
+        margin: 0 auto;
+        padding: 18px 24px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+      }
+
+      .logo {
+        font-size: 11px;
+        letter-spacing: 4px;
+        text-transform: uppercase;
+        font-weight: 600;
+        color: var(--gray-600);
+      }
+
+      .tag {
+        font-size: 10px;
+        letter-spacing: 2px;
+        text-transform: uppercase;
+        padding: 6px 12px;
+        border: 1px solid var(--gray-200);
+        color: var(--gray-600);
+      }
+
+      /* Hero */
+      .hero {
+        max-width: 940px;
+        margin: 0 auto;
+        padding: 80px 24px 56px;
+        text-align: center;
+      }
+
+      .hero-label {
+        font-size: 11px;
+        letter-spacing: 6px;
+        text-transform: uppercase;
+        color: var(--gray-400);
+        margin-bottom: 18px;
+      }
+
+      .hero h1 {
+        font-size: clamp(28px, 5vw, 44px);
+        font-weight: 300;
+        letter-spacing: 1px;
+        line-height: 1.2;
+        margin-bottom: 12px;
+      }
+
+      .hero h1 strong {
+        font-weight: 700;
+      }
+
+      .hero-sub {
+        font-size: 13px;
+        color: var(--gray-600);
+        letter-spacing: 0.5px;
+      }
+
+      .hero-sub span {
+        margin: 0 8px;
+        color: var(--gray-400);
+      }
+
+      /* Card */
+      .card {
+        border: 1px solid var(--gray-200);
+        padding: 28px;
+        display: grid;
+        grid-template-columns: 1.1fr 0.9fr;
+        gap: 24px;
+      }
+
+      .card h3 {
+        font-size: 10px;
+        letter-spacing: 3px;
+        text-transform: uppercase;
+        color: var(--gray-400);
+        margin-bottom: 10px;
+        font-weight: 700;
+      }
+
+      .card p,
+      .card li {
+        font-size: 14px;
+        color: var(--gray-800);
+        line-height: 1.8;
+      }
+
+      .card ul {
+        padding-left: 18px;
+      }
+
+      .controls {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 10px;
+        margin-top: 10px;
+      }
+
+      .btn {
+        appearance: none;
+        border: 1px solid var(--black);
+        background: var(--black);
+        color: var(--white);
+        padding: 10px 14px;
+        font-size: 12px;
+        letter-spacing: 1px;
+        text-transform: uppercase;
+        cursor: pointer;
+      }
+
+      .btn.secondary {
+        background: transparent;
+        color: var(--black);
+      }
+
+      .status {
+        margin-top: 10px;
+        font-size: 12px;
+        color: var(--gray-600);
+        min-height: 1.5em;
+      }
+
+      .status.ok {
+        color: var(--black);
+      }
+
+      /* Preview */
+      .preview {
+        padding: 0 24px 100px;
+      }
+
+      .frame {
+        border: 1px solid var(--gray-200);
+        border-radius: 18px;
+        overflow: hidden;
+        background: #fff;
+      }
+
+      .frame-inner {
+        padding: 18px;
+        border-bottom: 1px solid var(--gray-200);
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 12px;
+        flex-wrap: wrap;
+      }
+
+      .meta {
+        font-size: 11px;
+        letter-spacing: 2px;
+        text-transform: uppercase;
+        color: var(--gray-400);
+      }
+
+      .mount {
+        padding: 18px;
+      }
+
+      .mount svg {
+        width: 100%;
+        height: auto;
+        display: block;
+      }
+
+      details {
+        border-top: 1px solid var(--gray-200);
+      }
+
+      summary {
+        cursor: pointer;
+        padding: 14px 18px;
+        font-size: 12px;
+        letter-spacing: 1px;
+        text-transform: uppercase;
+        color: var(--gray-600);
+        list-style: none;
+      }
+
+      summary::-webkit-details-marker {
+        display: none;
+      }
+
+      .code {
+        padding: 0 18px 18px;
+        font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas,
+          "Liberation Mono", "Courier New", monospace;
+        font-size: 12px;
+        line-height: 1.6;
+        color: var(--gray-800);
+        white-space: pre;
+        overflow: auto;
+        max-height: 340px;
+        background: var(--gray-100);
+        border-top: 1px solid var(--gray-200);
+      }
+
+      /* Footer */
+      footer {
+        border-top: 1px solid var(--gray-200);
+        padding: 36px 24px;
+        text-align: center;
+      }
+
+      .footer-inner {
+        max-width: 940px;
+        margin: 0 auto;
+      }
+
+      .footer-note {
+        font-size: 12px;
+        color: var(--gray-600);
+        line-height: 1.8;
+        max-width: 720px;
+        margin: 0 auto 12px;
+      }
+
+      .footer-meta {
+        font-size: 11px;
+        letter-spacing: 2px;
+        text-transform: uppercase;
+        color: var(--gray-400);
+      }
+
+      /* Responsive */
+      @media (max-width: 640px) {
+        .hero {
+          padding: 60px 24px 44px;
+        }
+
+        .card {
+          grid-template-columns: 1fr;
+          padding: 22px;
+        }
+
+        .frame-inner {
+          padding: 14px;
+        }
+
+        .mount {
+          padding: 14px;
+        }
+      }
+
+      /* Print */
+      @media print {
+        .header {
+          position: static;
+          background: transparent;
+          backdrop-filter: none;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <header class="header">
+      <div class="header-inner">
+        <div class="logo">WeChat / SVG</div>
+        <div class="tag">Preview · Copy</div>
+      </div>
+    </header>
+
+    <section class="hero">
+      <p class="hero-label">Interactive SVG For</p>
+      <h1><strong>WeChat</strong> SVG Preview</h1>
+      <p class="hero-sub">{{SVG_FILENAME}} <span>/</span> 本地预览与复制</p>
+    </section>
+
+    <section class="container" style="padding-bottom: 40px">
+      <div class="card">
+        <div>
+          <h3>How To Use</h3>
+          <ul>
+            <li>点击下方「复制 SVG」后，直接粘贴到微信公众号编辑器。</li>
+            <li>若无法复制（浏览器权限限制），建议用 Chrome 打开。</li>
+            <li>
+              仍不行：用本地服务器打开（例如在该目录执行
+              <code>python -m http.server</code>，再访问 <code>http://localhost:8000</code>）。
+            </li>
+          </ul>
+        </div>
+        <div>
+          <h3>Actions</h3>
+          <div class="controls">
+            <button class="btn" id="copyRichBtn" type="button">复制 SVG</button>
+            <button class="btn secondary" id="copyTextBtn" type="button">
+              复制纯文本
+            </button>
+          </div>
+          <div class="status" id="status"></div>
+        </div>
+      </div>
+    </section>
+
+    <main class="container preview">
+      <div class="frame">
+        <div class="frame-inner">
+          <div class="meta">SVG Preview Area</div>
+          <div class="meta">ViewBox recommended: 750×1000</div>
+        </div>
+        <div class="mount" id="svgMount"><!-- SVG_PLACEHOLDER --></div>
+        <details>
+          <summary>Show SVG Source</summary>
+          <pre class="code" id="svgSource"></pre>
+        </details>
+      </div>
+    </main>
+
+    <footer>
+      <div class="footer-inner">
+        <p class="footer-note">
+          说明：复制的是 <code>&lt;svg&gt;...&lt;/svg&gt;</code> 源码（富文本 HTML）。
+          微信公众号内不支持 SVG 中的 JS/CSS 动画，请遵守平台限制。
+        </p>
+        <p class="footer-meta">wechat-svg · Preview Template</p>
+      </div>
+    </footer>
+
+    <script>
+      const statusEl = document.getElementById("status");
+      const svgMount = document.getElementById("svgMount");
+      const svgSourceEl = document.getElementById("svgSource");
+
+      function setStatus(text, kind = "") {
+        statusEl.textContent = text;
+        statusEl.className = `status ${kind}`.trim();
+      }
+
+      function getSvgOuterHTML() {
+        const svg = svgMount.querySelector("svg");
+        if (!svg) return null;
+        return svg.outerHTML;
+      }
+
+      function copyWithExecCommand(html) {
+        const temp = document.createElement("div");
+        temp.style.position = "fixed";
+        temp.style.left = "-9999px";
+        temp.style.top = "0";
+        temp.innerHTML = html;
+        document.body.appendChild(temp);
+
+        const selection = window.getSelection();
+        const range = document.createRange();
+        range.selectNodeContents(temp);
+        selection.removeAllRanges();
+        selection.addRange(range);
+
+        const onCopy = (e) => {
+          e.clipboardData.setData("text/html", html);
+          e.clipboardData.setData("text/plain", html);
+          e.preventDefault();
+        };
+        document.addEventListener("copy", onCopy);
+        const ok = document.execCommand("copy");
+        document.removeEventListener("copy", onCopy);
+
+        selection.removeAllRanges();
+        temp.remove();
+        return ok;
+      }
+
+      async function copyRich() {
+        const svgHtml = getSvgOuterHTML();
+        if (!svgHtml) return false;
+
+        if (navigator.clipboard && window.ClipboardItem) {
+          try {
+            const item = new ClipboardItem({
+              "text/html": new Blob([svgHtml], { type: "text/html" }),
+              "text/plain": new Blob([svgHtml], { type: "text/plain" }),
+            });
+            await navigator.clipboard.write([item]);
+            return true;
+          } catch (err) {
+            // fall through
+          }
+        }
+
+        try {
+          return copyWithExecCommand(svgHtml);
+        } catch (err) {
+          return false;
+        }
+      }
+
+      async function copyText() {
+        const svgHtml = getSvgOuterHTML();
+        if (!svgHtml) return false;
+        if (navigator.clipboard && navigator.clipboard.writeText) {
+          try {
+            await navigator.clipboard.writeText(svgHtml);
+            return true;
+          } catch (err) {
+            // fall through
+          }
+        }
+        try {
+          return copyWithExecCommand(svgHtml);
+        } catch (err) {
+          return false;
+        }
+      }
+
+      function init() {
+        const svgHtml = getSvgOuterHTML();
+        if (svgHtml) svgSourceEl.textContent = svgHtml;
+
+        document.getElementById("copyRichBtn").addEventListener("click", async () => {
+          setStatus("复制中…");
+          const ok = await copyRich();
+          if (!ok) return setStatus("复制失败：建议用 Chrome 或 localhost 打开。");
+
+          setStatus("已复制，3 秒后提示…");
+          setTimeout(() => {
+            setStatus("已复制！可以粘贴到微信公众号编辑器。", "ok");
+          }, 3000);
+        });
+
+        document.getElementById("copyTextBtn").addEventListener("click", async () => {
+          setStatus("复制中…");
+          const ok = await copyText();
+          if (!ok) return setStatus("复制失败：建议用 Chrome 或 localhost 打开。");
+          setStatus("已复制（纯文本）。", "ok");
+        });
+      }
+
+      init();
+    </script>
+  </body>
+</html>
+

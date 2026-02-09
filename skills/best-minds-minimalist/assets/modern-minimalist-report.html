@@ -1,0 +1,1452 @@
+<!doctype html>
+<html lang="zh-Hans">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="color-scheme" content="light" />
+    <title>{{TITLE}}</title>
+    <!-- favicon-baseline -->
+    <meta name="theme-color" content="#fafafa" />
+    <link rel="icon" href="data:image/svg+xml,%3Csvg%20xmlns%3D'http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg'%20viewBox%3D'0%200%2064%2064'%3E%3Crect%20width%3D'64'%20height%3D'64'%20rx%3D'14'%20fill%3D'%230b0b0b'%2F%3E%3Cpath%20d%3D'M26%2C20L46%2C32L26%2C44Z'%20fill%3D'%23fff'%2F%3E%3C%2Fsvg%3E" type="image/svg+xml" />
+    <link rel="icon" href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAAAWUlEQVR42u3WMQoAIAhAUXfvf96ioTEqs4T8goND9AYVRVVLZAoAAAAAWB61eAroMarDAB4QWfl0BjhBuAGsCFeABXIFsIP4E5CzCUPHMOcq5h4AAADAN4AKk13GRFxvKeYAAAAASUVORK5CYII=" type="image/png" sizes="32x32" />
+
+    <style>
+      * {
+        box-sizing: border-box;
+      }
+
+      :root {
+        --black: #0a0a0a;
+        --white: #fafafa;
+        --gray-100: #f5f5f5;
+        --gray-200: #e8e8e8;
+        --gray-400: #999;
+        --gray-600: #666;
+        --gray-800: #333;
+        --measure: 860px;
+        --mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas,
+          "Liberation Mono", monospace;
+      }
+
+      html {
+        scroll-behavior: smooth;
+      }
+
+      body {
+        margin: 0;
+        background: var(--white);
+        color: var(--black);
+        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC",
+          "Hiragino Sans GB", "Microsoft YaHei", "Noto Sans CJK SC", sans-serif;
+        line-height: 1.8;
+        font-size: 16px;
+        -webkit-font-smoothing: antialiased;
+        text-rendering: optimizeLegibility;
+        color-scheme: light;
+      }
+
+      body::before {
+        content: "";
+        position: fixed;
+        inset: 0;
+        pointer-events: none;
+        background: radial-gradient(
+            1200px 800px at 28% -10%,
+            rgba(10, 10, 10, 0.03),
+            transparent 60%
+          ),
+          radial-gradient(
+            900px 700px at 92% 8%,
+            rgba(10, 10, 10, 0.02),
+            transparent 58%
+          );
+        mix-blend-mode: multiply;
+      }
+
+      ::selection {
+        background: var(--black);
+        color: var(--white);
+      }
+
+      a {
+        color: inherit;
+        text-decoration: none;
+        border-bottom: 1px solid var(--gray-200);
+      }
+
+      :where(a, button, input):focus-visible {
+        outline: 2px solid var(--black);
+        outline-offset: 2px;
+      }
+
+      code {
+        font-family: var(--mono);
+        background: rgba(245, 245, 245, 0.9);
+        border: 1px solid var(--gray-200);
+        padding: 0 4px;
+      }
+
+      .container {
+        max-width: var(--measure);
+        margin: 0 auto;
+        padding: 0 24px;
+      }
+
+      .header {
+        position: sticky;
+        top: 0;
+        z-index: 100;
+        background: rgba(250, 250, 250, 0.92);
+        backdrop-filter: blur(12px);
+        -webkit-backdrop-filter: blur(12px);
+        border-bottom: 1px solid var(--gray-200);
+      }
+
+      .header-inner {
+        max-width: var(--measure);
+        margin: 0 auto;
+        padding: 16px 24px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 16px;
+      }
+
+      .logo {
+        font-size: 11px;
+        letter-spacing: 4px;
+        text-transform: uppercase;
+        font-weight: 650;
+        color: var(--gray-600);
+        white-space: nowrap;
+        display: inline-flex;
+        align-items: baseline;
+        gap: 10px;
+      }
+
+      .tag {
+        font-size: 10px;
+        letter-spacing: 2px;
+        text-transform: uppercase;
+        padding: 7px 12px;
+        border: 1px solid var(--gray-200);
+        color: var(--gray-600);
+        white-space: nowrap;
+        background: rgba(245, 245, 245, 0.6);
+      }
+
+      .nav {
+        display: flex;
+        gap: 10px;
+        flex-wrap: wrap;
+        align-items: center;
+        justify-content: flex-end;
+      }
+
+      .nav:empty {
+        display: none;
+      }
+
+      .nav a {
+        border-bottom: none;
+        color: var(--gray-600);
+        font-size: 10px;
+        letter-spacing: 2px;
+        text-transform: uppercase;
+        padding: 6px 8px;
+        border-radius: 0;
+      }
+
+      .nav a:hover {
+        color: var(--black);
+        background: rgba(245, 245, 245, 0.9);
+      }
+
+      .nav a[aria-current="true"] {
+        color: var(--black);
+        background: rgba(245, 245, 245, 0.9);
+      }
+
+      .hero {
+        padding: 72px 0 36px;
+      }
+
+      body[data-layout="compare"] .hero,
+      body[data-layout="roadmap"] .hero,
+      body[data-layout="playbook"] .hero,
+      body[data-layout="audit"] .hero {
+        text-align: left;
+      }
+
+      body:not([data-layout]) .hero,
+      body[data-layout="memo"] .hero {
+        text-align: center;
+      }
+
+      .hero-label {
+        font-size: 11px;
+        letter-spacing: 6px;
+        text-transform: uppercase;
+        color: var(--gray-400);
+        margin-bottom: 14px;
+      }
+
+      h1 {
+        margin: 0 0 12px;
+        font-size: clamp(30px, 4.6vw, 54px);
+        font-weight: 300;
+        letter-spacing: 2px;
+        line-height: 1.18;
+      }
+
+      h1 strong {
+        font-weight: 700;
+      }
+
+      .hero-sub {
+        margin: 0;
+        font-size: 13px;
+        color: var(--gray-600);
+        letter-spacing: 0.8px;
+      }
+
+      .hero-sub span {
+        margin: 0 10px;
+        color: var(--gray-400);
+      }
+
+      .hero-abstract {
+        margin: 14px auto 0;
+        color: var(--gray-800);
+        max-width: 740px;
+      }
+
+      .hero-abstract:empty {
+        display: none;
+      }
+
+      body[data-layout="compare"] .hero-abstract,
+      body[data-layout="roadmap"] .hero-abstract,
+      body[data-layout="playbook"] .hero-abstract,
+      body[data-layout="audit"] .hero-abstract {
+        margin-left: 0;
+      }
+
+      .toc {
+        margin-top: 18px;
+        display: flex;
+        flex-wrap: wrap;
+        gap: 10px;
+        justify-content: center;
+      }
+
+      .toc:empty {
+        display: none;
+      }
+
+      body[data-layout="compare"] .toc,
+      body[data-layout="roadmap"] .toc,
+      body[data-layout="playbook"] .toc,
+      body[data-layout="audit"] .toc {
+        justify-content: flex-start;
+      }
+
+      .toc a {
+        border-bottom: none;
+        font-size: 10px;
+        letter-spacing: 2px;
+        text-transform: uppercase;
+        padding: 7px 10px;
+        border: 1px solid var(--gray-200);
+        color: var(--gray-600);
+        background: rgba(245, 245, 245, 0.4);
+      }
+
+      hr {
+        border: 0;
+        border-top: 1px solid var(--gray-200);
+        margin: 26px 0;
+      }
+
+      section {
+        margin: 30px 0;
+      }
+
+      h2 {
+        margin: 0 0 14px;
+        font-size: 11px;
+        letter-spacing: 6px;
+        text-transform: uppercase;
+        color: var(--gray-600);
+        font-weight: 650;
+      }
+
+      h3 {
+        margin: 0 0 10px;
+        font-size: 12px;
+        letter-spacing: 2px;
+        text-transform: uppercase;
+        color: var(--gray-600);
+        font-weight: 650;
+      }
+
+      .kicker {
+        margin: 0 0 10px;
+        font-size: 10px;
+        letter-spacing: 4px;
+        text-transform: uppercase;
+        color: var(--gray-400);
+        font-weight: 650;
+      }
+
+      .card {
+        border: 1px solid var(--gray-200);
+        padding: 18px;
+        background: rgba(245, 245, 245, 0.6);
+      }
+
+      .callout {
+        border: 1px solid var(--gray-200);
+        border-left: 3px solid var(--black);
+        background: rgba(245, 245, 245, 0.45);
+        padding: 14px 16px;
+      }
+
+      .grid {
+        display: grid;
+        gap: 18px;
+        align-items: start;
+      }
+
+      .grid.cols-2 {
+        grid-template-columns: 1fr 1fr;
+      }
+
+      .grid.cols-3 {
+        grid-template-columns: 1fr 1fr 1fr;
+      }
+
+      @media (max-width: 760px) {
+        .grid.cols-2,
+        .grid.cols-3 {
+          grid-template-columns: 1fr;
+        }
+      }
+
+      ul,
+      ol {
+        padding-left: 20px;
+        margin: 12px 0 0;
+      }
+
+      li + li {
+        margin-top: 8px;
+      }
+
+      .list-tight {
+        margin-top: 0;
+      }
+
+      .chips {
+        display: flex;
+        gap: 10px;
+        flex-wrap: wrap;
+        margin-top: 12px;
+      }
+
+      .chips:empty {
+        display: none;
+      }
+
+      .chip {
+        font-size: 10px;
+        letter-spacing: 2px;
+        text-transform: uppercase;
+        padding: 6px 10px;
+        border: 1px solid var(--gray-200);
+        color: var(--gray-600);
+        background: rgba(245, 245, 245, 0.4);
+      }
+
+      table {
+        width: 100%;
+        border-collapse: collapse;
+        font-size: 14px;
+      }
+
+      th,
+      td {
+        text-align: left;
+        padding: 12px;
+        border: 1px solid var(--gray-200);
+        vertical-align: top;
+      }
+
+      th {
+        background: rgba(245, 245, 245, 0.8);
+        font-weight: 650;
+        font-size: 11px;
+        letter-spacing: 3px;
+        text-transform: uppercase;
+        color: var(--gray-600);
+      }
+
+      blockquote {
+        margin: 16px 0 0;
+        padding: 14px 16px;
+        border-left: 3px solid var(--black);
+        background: rgba(245, 245, 245, 0.6);
+        color: var(--gray-800);
+      }
+
+      details {
+        margin-top: 14px;
+        border: 1px solid var(--gray-200);
+        background: rgba(245, 245, 245, 0.35);
+      }
+
+      summary {
+        padding: 12px 14px;
+        cursor: pointer;
+        user-select: none;
+        font-size: 10px;
+        letter-spacing: 4px;
+        text-transform: uppercase;
+        color: var(--gray-600);
+        font-weight: 650;
+        list-style: none;
+      }
+
+      summary::-webkit-details-marker {
+        display: none;
+      }
+
+      summary::after {
+        content: "＋";
+        float: right;
+        color: var(--gray-400);
+      }
+
+      details[open] summary::after {
+        content: "－";
+      }
+
+      .details-body {
+        padding: 0 14px 14px;
+        color: var(--gray-800);
+      }
+
+      .figure {
+        border: 1px solid var(--gray-200);
+        background: rgba(245, 245, 245, 0.45);
+        padding: 16px;
+        overflow: hidden;
+      }
+
+      .figure figcaption {
+        margin-top: 10px;
+        font-size: 12px;
+        color: var(--gray-600);
+      }
+
+      .stroke {
+        stroke: var(--black);
+        stroke-width: 1.6;
+        fill: none;
+        stroke-linecap: round;
+        stroke-linejoin: round;
+      }
+
+      .stroke-soft {
+        stroke: var(--gray-200);
+        stroke-width: 1.2;
+        fill: none;
+        stroke-linecap: round;
+        stroke-linejoin: round;
+      }
+
+      .dash {
+        stroke-dasharray: 10 8;
+        animation: dash 5s linear infinite;
+      }
+
+      @media (prefers-reduced-motion: reduce) {
+        .dash {
+          animation: none;
+        }
+      }
+
+      @keyframes dash {
+        to {
+          stroke-dashoffset: -120;
+        }
+      }
+
+      .node-title {
+        font-size: 12px;
+        font-weight: 650;
+        fill: var(--black);
+      }
+
+      .node-sub {
+        font-size: 11px;
+        fill: var(--gray-600);
+      }
+
+      .closing-slot:empty {
+        display: none;
+      }
+
+      .closing-quote-block {
+        margin-top: 28px;
+        padding-top: 22px;
+        border-top: 1px solid var(--gray-200);
+        text-align: center;
+      }
+
+      .closing-quote {
+        font-size: clamp(20px, 4vw, 28px);
+        font-weight: 300;
+        line-height: 1.6;
+        color: var(--black);
+        max-width: 600px;
+        margin: 0 auto 18px;
+      }
+
+      .closing-attr {
+        font-size: 12px;
+        letter-spacing: 2px;
+        text-transform: uppercase;
+        color: var(--gray-600);
+      }
+
+      footer {
+        margin: 52px 0 38px;
+        padding-top: 16px;
+        border-top: 1px solid var(--gray-200);
+        color: var(--gray-600);
+        font-size: 12px;
+      }
+
+      @media print {
+        body::before {
+          display: none;
+        }
+
+        .header {
+          position: static;
+          backdrop-filter: none;
+          -webkit-backdrop-filter: none;
+          background: transparent;
+        }
+
+        body {
+          font-size: 12pt;
+        }
+
+        a {
+          border-bottom: none;
+          text-decoration: underline;
+        }
+
+        .nav {
+          display: none;
+        }
+      }
+    </style>
+    <!-- best-minds:lightbox-css:start -->
+    <style id="best-minds-lightbox-css">
+      /* Data viz primitives (optional) */
+      .kpi-grid {
+        display: grid;
+        gap: 12px;
+        grid-template-columns: repeat(4, minmax(0, 1fr));
+        margin-top: 12px;
+      }
+
+      @media (max-width: 760px) {
+        .kpi-grid {
+          grid-template-columns: repeat(2, minmax(0, 1fr));
+        }
+      }
+
+      .kpi {
+        border: 1px solid var(--gray-200);
+        background: rgba(250, 250, 250, 0.92);
+        padding: 12px;
+      }
+
+      .kpi .k {
+        font-size: 10px;
+        letter-spacing: 3px;
+        text-transform: uppercase;
+        color: var(--gray-600);
+      }
+
+      .kpi .v {
+        margin-top: 6px;
+        font-size: 18px;
+        font-weight: 650;
+        letter-spacing: 0.3px;
+        color: var(--black);
+      }
+
+      .barlist {
+        display: grid;
+        gap: 10px;
+        margin-top: 12px;
+      }
+
+      .barrow {
+        display: grid;
+        grid-template-columns: 160px 1fr 76px;
+        gap: 10px;
+        align-items: center;
+      }
+
+      @media (max-width: 560px) {
+        .barrow {
+          grid-template-columns: 1fr;
+        }
+      }
+
+      .barlabel {
+        font-size: 12px;
+        color: var(--gray-800);
+      }
+
+      .bartrack {
+        height: 10px;
+        border: 1px solid var(--gray-200);
+        background: rgba(245, 245, 245, 0.6);
+        overflow: hidden;
+      }
+
+      .barfill {
+        height: 100%;
+        width: var(--pct, 50%);
+        background: var(--black);
+      }
+
+      .barvalue {
+        font-size: 12px;
+        color: var(--gray-600);
+        font-family: var(--mono);
+        justify-self: end;
+        white-space: nowrap;
+      }
+
+      /* Lightbox / zoom viewer */
+      .zoomable {
+        cursor: zoom-in;
+      }
+
+      .lb-root[hidden] {
+        display: none;
+      }
+
+      .lb-root {
+        position: fixed;
+        inset: 0;
+        z-index: 9999;
+        display: grid;
+        place-items: stretch;
+        padding: 0;
+        background: rgba(250, 250, 250, 0.92);
+      }
+
+      .lb-backdrop {
+        position: absolute;
+        inset: 0;
+        background: rgba(250, 250, 250, 0.92);
+      }
+
+      .lb-dialog {
+        position: relative;
+        width: 100%;
+        height: 100%;
+        max-height: 100%;
+        display: grid;
+        grid-template-rows: auto minmax(240px, 1fr) auto;
+        border: 0;
+        background: rgba(250, 250, 250, 0.96);
+        box-shadow: none;
+      }
+
+      .lb-toolbar {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 12px;
+        padding: 12px 14px;
+        border-bottom: 1px solid var(--gray-200);
+      }
+
+      .lb-title {
+        min-width: 0;
+        display: grid;
+        gap: 2px;
+      }
+
+      .lb-kicker {
+        font-size: 10px;
+        letter-spacing: 3px;
+        text-transform: uppercase;
+        color: var(--gray-600);
+      }
+
+      .lb-title-text {
+        font-size: 12px;
+        color: var(--gray-800);
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+      }
+
+      .lb-actions {
+        display: flex;
+        gap: 8px;
+        flex-wrap: wrap;
+        align-items: center;
+        justify-content: flex-end;
+      }
+
+      .lb-btn {
+        appearance: none;
+        border: 1px solid var(--black);
+        background: transparent;
+        color: var(--black);
+        padding: 7px 10px;
+        font-size: 10px;
+        letter-spacing: 2px;
+        text-transform: uppercase;
+        border-radius: 0;
+        cursor: pointer;
+      }
+
+      .lb-btn:hover {
+        background: var(--black);
+        color: var(--white);
+      }
+
+      .lb-btn.primary {
+        background: var(--black);
+        color: var(--white);
+      }
+
+      .lb-btn.primary:hover {
+        opacity: 0.92;
+      }
+
+      .lb-stage {
+        position: relative;
+        overflow: hidden;
+      }
+
+      .lb-viewport {
+        position: absolute;
+        inset: 0;
+        overflow: hidden;
+        touch-action: none;
+        cursor: grab;
+      }
+
+      .lb-viewport:active {
+        cursor: grabbing;
+      }
+
+      .lb-canvas {
+        position: absolute;
+        left: 0;
+        top: 0;
+        transform-origin: 0 0;
+        will-change: transform;
+      }
+
+      .lb-canvas img,
+      .lb-canvas svg {
+        display: block;
+        max-width: none;
+        max-height: none;
+      }
+
+      .lb-caption {
+        display: flex;
+        justify-content: space-between;
+        gap: 12px;
+        align-items: flex-start;
+        flex-wrap: wrap;
+        padding: 10px 14px;
+        border-top: 1px solid var(--gray-200);
+        color: var(--gray-600);
+        font-size: 12px;
+      }
+
+      .lb-caption-meta {
+        font-size: 10px;
+        letter-spacing: 2px;
+        text-transform: uppercase;
+        color: var(--gray-600);
+        display: inline-flex;
+        gap: 10px;
+        align-items: center;
+        flex-wrap: wrap;
+        justify-content: flex-end;
+      }
+
+      .lb-sep {
+        color: var(--gray-400);
+      }
+
+      .lb-open {
+        overflow: hidden;
+      }
+
+      @media print {
+        .lb-root {
+          display: none !important;
+        }
+      }
+    </style>
+    <!-- best-minds:lightbox-css:end -->
+  </head>
+  <body data-layout="{{LAYOUT}}">
+    <header class="header">
+      <div class="header-inner">
+        <div class="logo">
+          <span>ZON</span>
+          <span class="tag">Minimal Editorial · Light</span>
+        </div>
+        <nav class="nav" id="page-nav" aria-label="On-page navigation"></nav>
+      </div>
+    </header>
+
+    <main class="container">
+      <div class="hero">
+        <div class="hero-label">{{LABEL}}</div>
+        <h1><strong>{{TITLE}}</strong></h1>
+        <p class="hero-sub">
+          {{DATE}} <span>·</span> {{AUDIENCE}} <span>·</span> {{SCOPE}}
+        </p>
+        <p class="hero-sub">{{SUBTITLE}}</p>
+        <p class="hero-abstract">{{ABSTRACT}}</p>
+        <div class="chips">{{BADGES_HTML}}</div>
+        <div class="toc" id="page-toc" aria-label="Quick links"></div>
+      </div>
+
+      <hr />
+
+      {{BLOCKS_HTML}}
+
+      <div class="closing-slot">{{CLOSING_QUOTE_BLOCK_HTML}}</div>
+
+      <footer>Generated by best-minds-minimalist · {{GENERATED_AT}}</footer>
+    </main>
+
+    <script>
+      (() => {
+        const sections = Array.from(
+          document.querySelectorAll("main section[data-nav]")
+        );
+        if (!sections.length) return;
+
+        const nav = document.getElementById("page-nav");
+        const toc = document.getElementById("page-toc");
+        if (!nav || !toc) return;
+
+        const makeLink = (targetId, label) => {
+          const a = document.createElement("a");
+          a.href = `#${targetId}`;
+          a.textContent = label;
+          a.setAttribute("data-target", targetId);
+          return a;
+        };
+
+        const items = sections
+          .map((s) => {
+            const id = s.id || "";
+            const label = (s.getAttribute("data-nav") || "").trim();
+            if (!id || !label) return null;
+            return { id, label };
+          })
+          .filter(Boolean);
+
+        for (const item of items.slice(0, 6))
+          nav.appendChild(makeLink(item.id, item.label));
+        for (const item of items) toc.appendChild(makeLink(item.id, item.label));
+
+        const links = Array.from(nav.querySelectorAll("a[data-target]"));
+        if (!links.length) return;
+
+        const setCurrent = (id) => {
+          for (const a of links) {
+            a.setAttribute(
+              "aria-current",
+              a.dataset.target === id ? "true" : "false"
+            );
+          }
+        };
+
+        const observer = new IntersectionObserver(
+          (entries) => {
+            const inView = entries
+              .filter((e) => e.isIntersecting)
+              .sort(
+                (a, b) =>
+                  (b.intersectionRatio || 0) - (a.intersectionRatio || 0)
+              )[0];
+            if (inView?.target?.id) setCurrent(inView.target.id);
+          },
+          { rootMargin: "-22% 0px -68% 0px", threshold: [0.1, 0.25, 0.5] }
+        );
+
+        for (const s of sections) observer.observe(s);
+        setCurrent(items[0]?.id || "");
+      })();
+    </script>
+
+    <!-- best-minds:lightbox:start -->
+    <div class="lb-root" id="lightbox" hidden aria-hidden="true">
+      <div class="lb-backdrop" data-lb-close></div>
+      <div class="lb-dialog" role="dialog" aria-modal="true" aria-label="Image viewer">
+        <div class="lb-toolbar">
+          <div class="lb-title">
+            <div class="lb-kicker">Viewer</div>
+            <div class="lb-title-text" id="lbTitle">Preview</div>
+          </div>
+          <div class="lb-actions">
+            <button class="lb-btn" type="button" data-lb-zoom-out>-</button>
+            <button class="lb-btn" type="button" data-lb-zoom-in>+</button>
+            <button class="lb-btn" type="button" data-lb-fit>Fit</button>
+            <button class="lb-btn" type="button" data-lb-fs>Full</button>
+            <button class="lb-btn primary" type="button" data-lb-close>Close</button>
+          </div>
+        </div>
+        <div class="lb-stage">
+          <div class="lb-viewport" tabindex="0" aria-label="Pan and zoom area">
+            <div class="lb-canvas" id="lbCanvas"></div>
+          </div>
+        </div>
+        <div class="lb-caption">
+          <div id="lbCaption"></div>
+          <div class="lb-caption-meta">
+            <span id="lbZoom">100%</span>
+            <span class="lb-sep">·</span>
+            <span>滚轮/双指缩放</span>
+            <span class="lb-sep">·</span>
+            <span>拖拽移动</span>
+            <span class="lb-sep">·</span>
+            <span>ESC 关闭</span>
+            <span class="lb-sep">·</span>
+            <span>双击重置</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <script id="best-minds-lightbox">
+      (() => {
+        const lightboxRoot = document.getElementById("lightbox");
+        if (!lightboxRoot) return;
+
+        const canvas = document.getElementById("lbCanvas");
+        const viewport = lightboxRoot.querySelector(".lb-viewport");
+        const titleEl = document.getElementById("lbTitle");
+        const captionEl = document.getElementById("lbCaption");
+        const zoomEl = document.getElementById("lbZoom");
+        const closeBtn = lightboxRoot.querySelector("button[data-lb-close]");
+
+        const btnZoomIn = lightboxRoot.querySelector("[data-lb-zoom-in]");
+        const btnZoomOut = lightboxRoot.querySelector("[data-lb-zoom-out]");
+        const btnFit = lightboxRoot.querySelector("[data-lb-fit]");
+        const btnFs = lightboxRoot.querySelector("[data-lb-fs]");
+
+        const MIN_SCALE = 0.2;
+        const MAX_SCALE = 12;
+
+        let lastActive = null;
+        let pointers = new Map();
+        let panStart = null;
+        let pinchStart = null;
+        let state = { scale: 1, tx: 0, ty: 0, w: 1, h: 1 };
+
+        const clamp = (value, min, max) => Math.max(min, Math.min(max, value));
+
+        const getFocusable = () =>
+          Array.from(
+            lightboxRoot.querySelectorAll(
+              'button,[href],input,select,textarea,[tabindex]:not([tabindex="-1"])'
+            )
+          ).filter((el) => !el.hasAttribute("disabled") && el.offsetParent !== null);
+
+        const trapTab = (event) => {
+          if (event.key !== "Tab") return false;
+          const focusable = getFocusable();
+          if (focusable.length === 0) return false;
+          const first = focusable[0];
+          const last = focusable[focusable.length - 1];
+          const active = document.activeElement;
+          if (event.shiftKey && active === first) {
+            event.preventDefault();
+            last.focus();
+            return true;
+          }
+          if (!event.shiftKey && active === last) {
+            event.preventDefault();
+            first.focus();
+            return true;
+          }
+          return false;
+        };
+
+        const setTransform = () => {
+          canvas.style.transform = `translate3d(${state.tx}px, ${state.ty}px, 0) scale(${state.scale})`;
+          zoomEl.textContent = `${Math.round(state.scale * 100)}%`;
+        };
+
+        const fitToViewport = () => {
+          const rect = viewport.getBoundingClientRect();
+          const vw = rect.width;
+          const vh = rect.height;
+          if (!vw || !vh) return;
+
+          const scale = clamp(
+            Math.min(vw / state.w, vh / state.h) * 0.98,
+            MIN_SCALE,
+            MAX_SCALE
+          );
+          state.scale = scale;
+          state.tx = (vw - state.w * scale) / 2;
+          state.ty = (vh - state.h * scale) / 2;
+          setTransform();
+        };
+
+        const zoomAt = (clientX, clientY, nextScale) => {
+          const rect = viewport.getBoundingClientRect();
+          const px = clientX - rect.left;
+          const py = clientY - rect.top;
+
+          const scale = clamp(nextScale, MIN_SCALE, MAX_SCALE);
+          const cx = (px - state.tx) / state.scale;
+          const cy = (py - state.ty) / state.scale;
+          state.scale = scale;
+          state.tx = px - cx * scale;
+          state.ty = py - cy * scale;
+          setTransform();
+        };
+
+        const stepZoom = (factor) => {
+          const rect = viewport.getBoundingClientRect();
+          zoomAt(
+            rect.left + rect.width / 2,
+            rect.top + rect.height / 2,
+            state.scale * factor
+          );
+        };
+
+        const close = () => {
+          lightboxRoot.hidden = true;
+          lightboxRoot.setAttribute("aria-hidden", "true");
+          document.documentElement.classList.remove("lb-open");
+          document.removeEventListener("keydown", onKeyDown, true);
+          canvas.innerHTML = "";
+          pointers.clear();
+          panStart = null;
+          pinchStart = null;
+          if (
+            document.fullscreenElement &&
+            (document.fullscreenElement === lightboxRoot ||
+              lightboxRoot.contains(document.fullscreenElement))
+          ) {
+            document.exitFullscreen?.().catch(() => {});
+          }
+          if (lastActive && typeof lastActive.focus === "function") lastActive.focus();
+          lastActive = null;
+        };
+
+        const onKeyDown = (event) => {
+          if (lightboxRoot.hidden) return;
+          if (trapTab(event)) return;
+
+          if (event.key === "Escape") {
+            event.preventDefault();
+            close();
+            return;
+          }
+
+          if (!event.metaKey && !event.ctrlKey) {
+            if (event.key === "+" || event.key === "=") {
+              event.preventDefault();
+              stepZoom(1.12);
+              return;
+            }
+            if (event.key === "-") {
+              event.preventDefault();
+              stepZoom(1 / 1.12);
+              return;
+            }
+            if (event.key === "0") {
+              event.preventDefault();
+              fitToViewport();
+            }
+          }
+        };
+
+        lightboxRoot.querySelectorAll("[data-lb-close]").forEach((el) => {
+          el.addEventListener("click", close);
+        });
+        btnZoomIn?.addEventListener("click", () => stepZoom(1.12));
+        btnZoomOut?.addEventListener("click", () => stepZoom(1 / 1.12));
+        btnFit?.addEventListener("click", fitToViewport);
+        btnFs?.addEventListener("click", async () => {
+          try {
+            if (!document.fullscreenElement) {
+              await lightboxRoot.requestFullscreen?.();
+            } else {
+              await document.exitFullscreen?.();
+            }
+          } catch {
+            // ignore fullscreen errors
+          }
+        });
+
+        const syncFsLabel = () => {
+          if (!btnFs) return;
+          btnFs.textContent = document.fullscreenElement ? "Exit" : "Full";
+        };
+        document.addEventListener("fullscreenchange", syncFsLabel);
+
+        viewport.addEventListener(
+          "wheel",
+          (event) => {
+            if (lightboxRoot.hidden) return;
+            event.preventDefault();
+            const factor = Math.exp(-event.deltaY * 0.0015);
+            zoomAt(event.clientX, event.clientY, state.scale * factor);
+          },
+          { passive: false }
+        );
+
+        viewport.addEventListener("dblclick", (event) => {
+          if (lightboxRoot.hidden) return;
+          event.preventDefault();
+          fitToViewport();
+        });
+
+        viewport.addEventListener("pointerdown", (event) => {
+          if (lightboxRoot.hidden) return;
+          if (event.button !== 0 && event.pointerType !== "touch") return;
+          viewport.setPointerCapture(event.pointerId);
+          pointers.set(event.pointerId, { x: event.clientX, y: event.clientY });
+
+          if (pointers.size === 1) {
+            panStart = {
+              x: event.clientX,
+              y: event.clientY,
+              tx: state.tx,
+              ty: state.ty,
+            };
+            pinchStart = null;
+          }
+
+          if (pointers.size === 2) {
+            const pts = Array.from(pointers.values());
+            const p1 = pts[0];
+            const p2 = pts[1];
+            const rect = viewport.getBoundingClientRect();
+            const midX = (p1.x + p2.x) / 2;
+            const midY = (p1.y + p2.y) / 2;
+            const px = midX - rect.left;
+            const py = midY - rect.top;
+            const cx = (px - state.tx) / state.scale;
+            const cy = (py - state.ty) / state.scale;
+            const dist = Math.hypot(p1.x - p2.x, p1.y - p2.y);
+            pinchStart = {
+              rect,
+              cx,
+              cy,
+              dist,
+              scale: state.scale,
+            };
+            panStart = null;
+          }
+        });
+
+        viewport.addEventListener("pointermove", (event) => {
+          if (lightboxRoot.hidden) return;
+          if (!pointers.has(event.pointerId)) return;
+          pointers.set(event.pointerId, { x: event.clientX, y: event.clientY });
+
+          if (pointers.size === 1 && panStart) {
+            const dx = event.clientX - panStart.x;
+            const dy = event.clientY - panStart.y;
+            state.tx = panStart.tx + dx;
+            state.ty = panStart.ty + dy;
+            setTransform();
+            return;
+          }
+
+          if (pointers.size === 2 && pinchStart) {
+            const pts = Array.from(pointers.values());
+            const p1 = pts[0];
+            const p2 = pts[1];
+            const dist = Math.hypot(p1.x - p2.x, p1.y - p2.y);
+            const nextScale = clamp(
+              pinchStart.scale * (dist / pinchStart.dist),
+              MIN_SCALE,
+              MAX_SCALE
+            );
+
+            const midX = (p1.x + p2.x) / 2;
+            const midY = (p1.y + p2.y) / 2;
+            const px = midX - pinchStart.rect.left;
+            const py = midY - pinchStart.rect.top;
+
+            state.scale = nextScale;
+            state.tx = px - pinchStart.cx * nextScale;
+            state.ty = py - pinchStart.cy * nextScale;
+            setTransform();
+          }
+        });
+
+        const clearPointer = (event) => {
+          if (!pointers.has(event.pointerId)) return;
+          pointers.delete(event.pointerId);
+
+          if (pointers.size === 1) {
+            const remaining = Array.from(pointers.values())[0];
+            panStart = {
+              x: remaining.x,
+              y: remaining.y,
+              tx: state.tx,
+              ty: state.ty,
+            };
+            pinchStart = null;
+          }
+
+          if (pointers.size === 0) {
+            panStart = null;
+            pinchStart = null;
+          }
+        };
+
+        viewport.addEventListener("pointerup", clearPointer);
+        viewport.addEventListener("pointercancel", clearPointer);
+
+        const parseViewBox = (viewBox) => {
+          if (!viewBox) return null;
+          const parts = viewBox.trim().split(/[\\s,]+/).map(Number);
+          if (parts.length !== 4 || parts.some((n) => Number.isNaN(n))) return null;
+          return { x: parts[0], y: parts[1], w: parts[2], h: parts[3] };
+        };
+
+        const uniquifySvgIds = (svg) => {
+          const prefix = `lb-${Math.random().toString(16).slice(2)}-`;
+          const map = new Map();
+          svg.querySelectorAll("[id]").forEach((node) => {
+            const oldId = node.id;
+            const nextId = prefix + oldId;
+            map.set(oldId, nextId);
+            node.id = nextId;
+          });
+
+          const refAttrs = [
+            "href",
+            "xlink:href",
+            "clip-path",
+            "mask",
+            "filter",
+            "marker-start",
+            "marker-mid",
+            "marker-end",
+            "fill",
+            "stroke",
+          ];
+
+          const replaceRefs = (value) => {
+            let nextValue = value;
+            for (const [oldId, nextId] of map) {
+              nextValue = nextValue
+                .replaceAll(`url(#${oldId})`, `url(#${nextId})`)
+                .replaceAll(`#${oldId}`, `#${nextId}`);
+            }
+            return nextValue;
+          };
+
+          svg.querySelectorAll("*").forEach((node) => {
+            refAttrs.forEach((attr) => {
+              const value = node.getAttribute(attr);
+              if (!value) return;
+              const nextValue = replaceRefs(value);
+              if (nextValue !== value) node.setAttribute(attr, nextValue);
+            });
+            const style = node.getAttribute("style");
+            if (style) {
+              const nextStyle = replaceRefs(style);
+              if (nextStyle !== style) node.setAttribute("style", nextStyle);
+            }
+          });
+        };
+
+        const open = async ({ node, title, caption, w, h }) => {
+          lastActive = document.activeElement;
+          canvas.innerHTML = "";
+          canvas.appendChild(node);
+
+          state = { scale: 1, tx: 0, ty: 0, w, h };
+          setTransform();
+
+          titleEl.textContent = title || "Preview";
+          captionEl.textContent = caption || "";
+
+          lightboxRoot.hidden = false;
+          lightboxRoot.setAttribute("aria-hidden", "false");
+          document.documentElement.classList.add("lb-open");
+          document.addEventListener("keydown", onKeyDown, true);
+
+          await new Promise((resolve) => requestAnimationFrame(() => resolve()));
+          fitToViewport();
+          closeBtn?.focus();
+        };
+
+        const describeFromElement = async (element) => {
+          const tag = (element.tagName || "").toLowerCase();
+          if (tag === "img") {
+            const img = document.createElement("img");
+            img.src = element.currentSrc || element.src;
+            img.alt = element.alt || "";
+            img.decoding = "async";
+            img.loading = "eager";
+            img.draggable = false;
+            if ("decode" in img) {
+              try {
+                await img.decode();
+              } catch {
+                // ignore decode failures and still try to render
+              }
+            } else if (!img.complete) {
+              await new Promise((resolve) => {
+                img.onload = () => resolve();
+                img.onerror = () => resolve();
+              });
+            }
+
+            const title = element.alt || element.getAttribute("data-title") || "Image";
+            const caption =
+              element.closest("figure")?.querySelector("figcaption")?.textContent?.trim() ||
+              element.alt ||
+              "";
+            const w = img.naturalWidth || element.naturalWidth || 1;
+            const h = img.naturalHeight || element.naturalHeight || 1;
+            return { node: img, title, caption, w, h };
+          }
+
+          if (tag === "canvas") {
+            let dataUrl = null;
+            try {
+              dataUrl = element.toDataURL?.("image/png");
+            } catch {
+              dataUrl = null;
+            }
+            if (!dataUrl) return null;
+            const img = document.createElement("img");
+            img.src = dataUrl;
+            img.alt = element.getAttribute("aria-label") || "";
+            img.decoding = "async";
+            img.loading = "eager";
+            img.draggable = false;
+            if ("decode" in img) {
+              try {
+                await img.decode();
+              } catch {
+                // ignore
+              }
+            }
+
+            const title =
+              element.getAttribute("aria-label") ||
+              element.getAttribute("data-title") ||
+              "Canvas";
+            const caption =
+              element.closest("figure")?.querySelector("figcaption")?.textContent?.trim() ||
+              element.getAttribute("aria-label") ||
+              "";
+            const w = element.width || element.getBoundingClientRect().width || 1;
+            const h = element.height || element.getBoundingClientRect().height || 1;
+            return { node: img, title, caption, w, h };
+          }
+
+          if (tag === "svg") {
+            const cloned = element.cloneNode(true);
+            uniquifySvgIds(cloned);
+            const vb = parseViewBox(element.getAttribute("viewBox"));
+
+            let w = vb?.w;
+            let h = vb?.h;
+            if (!w || !h) {
+              const box = element.getBoundingClientRect();
+              w = box.width || 300;
+              h = box.height || 150;
+            }
+            cloned.setAttribute("width", String(w));
+            cloned.setAttribute("height", String(h));
+            cloned.setAttribute("preserveAspectRatio", "xMinYMin meet");
+
+            const title =
+              element.getAttribute("aria-label") ||
+              element.closest("[aria-label]")?.getAttribute("aria-label") ||
+              element.getAttribute("data-title") ||
+              "Diagram";
+            const caption =
+              element.closest("figure")?.querySelector("figcaption")?.textContent?.trim() ||
+              element.closest("[aria-label]")?.getAttribute("aria-label") ||
+              "";
+            return { node: cloned, title, caption, w, h };
+          }
+
+          return null;
+        };
+
+        const enableZoomable = (element) => {
+          if (!element) return;
+          element.classList.add("zoomable");
+          element.addEventListener("click", async (event) => {
+            if (event.metaKey || event.ctrlKey || event.shiftKey || event.altKey) return;
+            event.preventDefault();
+            event.stopPropagation();
+            const payload = await describeFromElement(element);
+            if (!payload) return;
+            await open(payload);
+          });
+        };
+
+        const enableZoomContainer = (container) => {
+          if (!container) return;
+          const hasMedia = container.querySelector("svg, img, canvas");
+          if (!hasMedia) return;
+          container.classList.add("zoomable");
+          container.addEventListener("click", async (event) => {
+            if (event.metaKey || event.ctrlKey || event.shiftKey || event.altKey) return;
+            if (event.target.closest("a, button, input, textarea, select")) return;
+            const target =
+              event.target.closest("svg, img, canvas") ||
+              container.querySelector("svg, img, canvas");
+            if (!target) return;
+            event.preventDefault();
+            event.stopPropagation();
+            const payload = await describeFromElement(target);
+            if (!payload) return;
+            await open(payload);
+          });
+        };
+
+        document.querySelectorAll(".diagram").forEach(enableZoomContainer);
+        document.querySelectorAll("figure").forEach(enableZoomContainer);
+        document.querySelectorAll("main img").forEach(enableZoomable);
+        document.querySelectorAll("main svg").forEach(enableZoomable);
+        document.querySelectorAll("main canvas").forEach(enableZoomable);
+      })();
+    </script>
+    <!-- best-minds:lightbox:end -->
+  </body>
+</html>

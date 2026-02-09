@@ -1,0 +1,359 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Title · Brutalist Editorial</title>
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      :root {
+        --black: #000;
+        --white: #fff;
+        --gray-100: #f2f2f2;
+        --gray-200: #000;
+        --gray-400: #333;
+        --gray-600: #111;
+        --gray-800: #111;
+      }
+
+      html {
+        scroll-behavior: smooth;
+      }
+
+      body {
+        font-family: ui-sans-serif, system-ui, -apple-system, "Segoe UI", "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei",
+          "Noto Sans CJK SC", "Noto Sans", sans-serif;
+        background: var(--white);
+        color: var(--black);
+        line-height: 1.7;
+        font-size: 16px;
+        -webkit-font-smoothing: antialiased;
+        text-rendering: geometricPrecision;
+      }
+
+      ::selection {
+        background: var(--black);
+        color: var(--white);
+      }
+
+      /* Header */
+      .header {
+        position: sticky;
+        top: 0;
+        z-index: 100;
+        background: var(--white);
+        border-bottom: 3px solid var(--black);
+      }
+
+      .header-inner {
+        max-width: 880px;
+        margin: 0 auto;
+        padding: 18px 18px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 12px;
+      }
+
+      .logo {
+        font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+        font-size: 12px;
+        letter-spacing: 0.22em;
+        text-transform: uppercase;
+        font-weight: 900;
+      }
+
+      .tag {
+        font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+        font-size: 11px;
+        letter-spacing: 0.18em;
+        text-transform: uppercase;
+        padding: 8px 12px;
+        border: 2px solid var(--black);
+      }
+
+      /* Hero */
+      .hero {
+        max-width: 880px;
+        margin: 0 auto;
+        padding: 70px 18px 56px;
+      }
+
+      .hero-label {
+        font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+        font-size: 11px;
+        letter-spacing: 0.22em;
+        text-transform: uppercase;
+        color: var(--gray-400);
+        margin-bottom: 18px;
+      }
+
+      .hero h1 {
+        font-size: clamp(30px, 5vw, 54px);
+        font-weight: 900;
+        letter-spacing: -0.5px;
+        line-height: 1.05;
+        margin-bottom: 12px;
+      }
+
+      .hero h1 strong {
+        font-weight: 950;
+      }
+
+      .hero-sub {
+        font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+        font-size: 12px;
+        color: var(--gray-400);
+        letter-spacing: 0.12em;
+        text-transform: uppercase;
+      }
+
+      .hero-sub span {
+        margin: 0 8px;
+        color: var(--gray-400);
+      }
+
+      /* Card */
+      .container {
+        max-width: 880px;
+        margin: 0 auto;
+        padding: 0 18px;
+      }
+
+      .card {
+        border: 3px solid var(--black);
+        padding: 22px;
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 18px;
+      }
+
+      .card h3 {
+        font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+        font-size: 11px;
+        letter-spacing: 0.22em;
+        text-transform: uppercase;
+        margin-bottom: 10px;
+        font-weight: 900;
+      }
+
+      .card p {
+        font-size: 14px;
+        color: var(--gray-800);
+        line-height: 1.75;
+      }
+
+      .traits {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 8px;
+        margin-top: 8px;
+      }
+
+      .trait {
+        font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+        font-size: 11px;
+        padding: 6px 10px;
+        background: var(--black);
+        color: var(--white);
+        letter-spacing: 0.14em;
+        text-transform: uppercase;
+      }
+
+      /* Conversation */
+      .conversation {
+        max-width: 880px;
+        margin: 0 auto;
+        padding: 0 18px 90px;
+      }
+
+      .conv-header {
+        padding: 44px 0 24px;
+        border-bottom: 3px solid var(--black);
+        margin-bottom: 36px;
+      }
+
+      .conv-header h2 {
+        font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+        font-size: 11px;
+        letter-spacing: 0.22em;
+        text-transform: uppercase;
+        font-weight: 900;
+      }
+
+      .dialog {
+        margin-bottom: 34px;
+        padding-bottom: 18px;
+        border-bottom: 1px solid #000;
+      }
+
+      .speaker {
+        font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+        font-size: 11px;
+        letter-spacing: 0.22em;
+        text-transform: uppercase;
+        font-weight: 900;
+        margin-bottom: 10px;
+      }
+
+      .speaker.q {
+        color: var(--gray-400);
+      }
+
+      .speaker.a {
+        color: var(--black);
+      }
+
+      .content {
+        font-size: 17px;
+        line-height: 1.95;
+        color: var(--gray-800);
+      }
+
+      .content.answer {
+        color: var(--black);
+        font-weight: 650;
+      }
+
+      .content + .content {
+        margin-top: 12px;
+      }
+
+      .highlight {
+        background: #fffb00;
+        padding: 0 2px;
+      }
+
+      blockquote {
+        margin: 18px 0 0;
+        padding: 16px;
+        border: 2px solid var(--black);
+        background: var(--gray-100);
+        font-style: normal;
+        color: var(--black);
+      }
+
+      .divider {
+        max-width: 880px;
+        margin: 0 auto;
+        padding: 0 18px;
+      }
+
+      .divider-line {
+        border: none;
+        border-top: 3px solid var(--black);
+        margin: 54px 0;
+      }
+
+      footer {
+        border-top: 3px solid var(--black);
+        padding: 32px 18px;
+        text-align: left;
+      }
+
+      .footer-inner {
+        max-width: 880px;
+        margin: 0 auto;
+      }
+
+      .footer-note {
+        font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+        font-size: 12px;
+        color: var(--gray-600);
+        line-height: 1.7;
+        max-width: 760px;
+        margin: 0 0 16px;
+      }
+
+      .footer-meta {
+        font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+        font-size: 11px;
+        letter-spacing: 0.2em;
+        text-transform: uppercase;
+        color: var(--gray-400);
+      }
+
+      @media (max-width: 720px) {
+        .card {
+          grid-template-columns: 1fr;
+        }
+      }
+
+      @media print {
+        body {
+          font-size: 12pt;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <header class="header">
+      <div class="header-inner">
+        <div class="logo">Zon Editorial</div>
+        <div class="tag">Brutalist</div>
+      </div>
+    </header>
+
+    <section class="hero">
+      <p class="hero-label">Document</p>
+      <h1><strong>中文标题</strong><br />English Title</h1>
+      <p class="hero-sub">manifesto <span>/</span> outline <span>/</span> ops</p>
+    </section>
+
+    <section class="container" style="padding-bottom: 56px">
+      <div class="card">
+        <div>
+          <h3>About</h3>
+          <p>这里写简短人物介绍、背景、上下文。</p>
+        </div>
+        <div>
+          <h3>Key Traits</h3>
+          <div class="traits">
+            <span class="trait">HARD</span>
+            <span class="trait">RAW</span>
+            <span class="trait">CLEAR</span>
+          </div>
+          <p style="margin-top: 12px; font-size: 12px; color: var(--gray-600)">
+            这套更“硬”：粗边框、无磨皮、强调色更直接。
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <main class="conversation">
+      <div class="conv-header">
+        <h2>The Dialogue</h2>
+      </div>
+
+      <section class="dialog">
+        <p class="speaker q">Interviewer</p>
+        <p class="content">问题句子……</p>
+      </section>
+
+      <section class="dialog">
+        <p class="speaker a">Guest</p>
+        <p class="content answer">
+          回答段落……<span class="highlight">需要强调的句子。</span>
+        </p>
+        <blockquote>“可作为引文/摘录的句子。”</blockquote>
+      </section>
+    </main>
+
+    <div class="divider">
+      <hr class="divider-line" />
+    </div>
+
+    <footer>
+      <div class="footer-inner">
+        <p class="footer-note">备注：来源、版权说明、用途说明。避免整段原文复制，优先摘要与链接。</p>
+        <p class="footer-meta">Series · YYYY</p>
+      </div>
+    </footer>
+  </body>
+</html>
+

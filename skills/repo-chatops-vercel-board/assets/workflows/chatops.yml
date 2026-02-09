@@ -1,0 +1,73 @@
+name: ChatOps → AI Run → Report/PR
+
+on:
+  issues:
+    types: [opened, edited, reopened]
+  issue_comment:
+    types: [created]
+  workflow_dispatch:
+    inputs:
+      issue_number:
+        description: "Issue number to run (optional; for debugging)"
+        required: false
+        type: string
+
+concurrency:
+  group: chatops
+  cancel-in-progress: false
+
+permissions:
+  contents: write
+  issues: write
+  pull-requests: write
+
+jobs:
+  run:
+    if: ${{ github.actor != 'github-actions[bot]' }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          ref: ${{ github.event.repository.default_branch }}
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      - name: Run ChatOps entry
+        run: node scripts/chatops/entry.mjs
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          FORCE_ISSUE_NUMBER: ${{ inputs.issue_number }}
+
+          # AI (optional)
+          AI_PROVIDER: ${{ secrets.AI_PROVIDER || '' }}
+          ANTHROPIC_BASE_URL: ${{ secrets.ANTHROPIC_BASE_URL || '' }}
+          ANTHROPIC_AUTH_TOKEN: ${{ secrets.ANTHROPIC_AUTH_TOKEN || '' }}
+          ANTHROPIC_DEFAULT_HAIKU_MODEL: ${{ secrets.ANTHROPIC_DEFAULT_HAIKU_MODEL || '' }}
+          ANTHROPIC_DEFAULT_SONNET_MODEL: ${{ secrets.ANTHROPIC_DEFAULT_SONNET_MODEL || '' }}
+          ANTHROPIC_DEFAULT_OPUS_MODEL: ${{ secrets.ANTHROPIC_DEFAULT_OPUS_MODEL || '' }}
+          OPENAI_BASE_URL: ${{ secrets.OPENAI_BASE_URL || '' }}
+          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY || '' }}
+          OPENAI_MODEL_FAST: ${{ secrets.OPENAI_MODEL_FAST || '' }}
+          OPENAI_MODEL_STRONG: ${{ secrets.OPENAI_MODEL_STRONG || '' }}
+          OPENAI_WIRE_API: ${{ secrets.OPENAI_WIRE_API || '' }}
+          OPENAI_REASONING_EFFORT: ${{ secrets.OPENAI_REASONING_EFFORT || '' }}
+
+          # Vercel deploy (optional)
+          VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN || '' }}
+          VERCEL_SCOPE: ${{ secrets.VERCEL_SCOPE || '' }}
+          VERCEL_PROJECT_NAME: ${{ secrets.VERCEL_PROJECT_NAME || '' }}
+          VERCEL_DOMAIN: ${{ secrets.VERCEL_DOMAIN || '' }}
+
+      - name: Deploy docs/ to Vercel (prod)
+        if: ${{ env.VERCEL_TOKEN != '' && env.VERCEL_PROJECT_NAME != '' }}
+        continue-on-error: true
+        run: |
+          if [ -n "$VERCEL_DOMAIN" ]; then
+            npx vercel@latest domains add "$VERCEL_DOMAIN" "$VERCEL_PROJECT_NAME" --force --token="$VERCEL_TOKEN" --scope="$VERCEL_SCOPE"
+          fi
+          cd docs
+          npx vercel@latest link --yes --project="$VERCEL_PROJECT_NAME" --token="$VERCEL_TOKEN" --scope="$VERCEL_SCOPE"
+          npx vercel@latest deploy --prod --yes --token="$VERCEL_TOKEN" --scope="$VERCEL_SCOPE"
+

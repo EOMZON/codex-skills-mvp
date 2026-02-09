@@ -1,0 +1,1275 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Title · Luxury Serif</title>
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      :root {
+        --black: #0b0b0b;
+        --white: #fbfbfb;
+        --gray-100: #f3f3f3;
+        --gray-200: #e7e7e7;
+        --gray-400: #9a9a9a;
+        --gray-600: #6a6a6a;
+        --gray-800: #2e2e2e;
+        --accent: #b59a6a;
+        --serif: "Iowan Old Style", "Palatino Linotype", Palatino, "Songti SC", STSong, "Noto Serif CJK SC", serif;
+        --sans: ui-sans-serif, system-ui, -apple-system, "Segoe UI", "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei",
+          "Noto Sans CJK SC", "Noto Sans", sans-serif;
+      }
+
+      html {
+        scroll-behavior: smooth;
+      }
+
+      body {
+        font-family: var(--serif);
+        background: var(--white);
+        color: var(--black);
+        line-height: 1.85;
+        font-size: 16px;
+        -webkit-font-smoothing: antialiased;
+        text-rendering: optimizeLegibility;
+      }
+
+      ::selection {
+        background: var(--black);
+        color: var(--white);
+      }
+
+      .header {
+        position: sticky;
+        top: 0;
+        z-index: 100;
+        background: rgba(251, 251, 251, 0.92);
+        backdrop-filter: blur(12px);
+        border-bottom: 1px solid var(--gray-200);
+      }
+
+      .header-inner {
+        max-width: 800px;
+        margin: 0 auto;
+        padding: 20px 24px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+      }
+
+      .logo {
+        font-family: var(--sans);
+        font-size: 11px;
+        letter-spacing: 4px;
+        text-transform: uppercase;
+        font-weight: 700;
+        color: var(--gray-600);
+      }
+
+      .tag {
+        font-family: var(--sans);
+        font-size: 10px;
+        letter-spacing: 2px;
+        text-transform: uppercase;
+        padding: 6px 12px;
+        border: 1px solid var(--gray-200);
+        color: var(--gray-600);
+      }
+
+      .hero {
+        max-width: 800px;
+        margin: 0 auto;
+        padding: 104px 24px 84px;
+        text-align: center;
+      }
+
+      .hero-label {
+        font-family: var(--sans);
+        font-size: 11px;
+        letter-spacing: 6px;
+        text-transform: uppercase;
+        color: var(--gray-400);
+        margin-bottom: 24px;
+      }
+
+      .hero h1 {
+        font-size: clamp(34px, 6vw, 58px);
+        font-weight: 400;
+        letter-spacing: 0.5px;
+        line-height: 1.12;
+        margin-bottom: 16px;
+      }
+
+      .hero h1 strong {
+        font-weight: 700;
+      }
+
+      .hero-sub {
+        font-family: var(--sans);
+        font-size: 14px;
+        color: var(--gray-600);
+        letter-spacing: 1px;
+      }
+
+      .hero-sub span {
+        margin: 0 8px;
+        color: var(--gray-400);
+      }
+
+      .container {
+        max-width: 800px;
+        margin: 0 auto;
+        padding: 0 24px;
+      }
+
+      .card {
+        border: 1px solid var(--gray-200);
+        padding: 42px;
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 42px;
+      }
+
+      .card h3 {
+        font-family: var(--sans);
+        font-size: 10px;
+        letter-spacing: 3px;
+        text-transform: uppercase;
+        color: var(--gray-400);
+        margin-bottom: 12px;
+        font-weight: 700;
+      }
+
+      .card p {
+        font-size: 14px;
+        color: var(--gray-800);
+        line-height: 1.85;
+      }
+
+      .traits {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 8px;
+        margin-top: 8px;
+      }
+
+      .trait {
+        font-family: var(--sans);
+        font-size: 12px;
+        padding: 6px 14px;
+        border: 1px solid var(--gray-200);
+        color: var(--black);
+        letter-spacing: 1px;
+      }
+
+      .conversation {
+        max-width: 800px;
+        margin: 0 auto;
+        padding: 0 24px 100px;
+      }
+
+      .conv-header {
+        text-align: center;
+        padding-bottom: 60px;
+        border-bottom: 1px solid var(--gray-200);
+        margin-bottom: 60px;
+      }
+
+      .conv-header h2 {
+        font-family: var(--sans);
+        font-size: 11px;
+        letter-spacing: 6px;
+        text-transform: uppercase;
+        color: var(--gray-400);
+        font-weight: 700;
+      }
+
+      .dialog {
+        margin-bottom: 48px;
+      }
+
+      .speaker {
+        font-family: var(--sans);
+        font-size: 11px;
+        letter-spacing: 3px;
+        text-transform: uppercase;
+        font-weight: 700;
+        margin-bottom: 12px;
+        display: flex;
+        align-items: center;
+        gap: 12px;
+      }
+
+      .speaker::after {
+        content: "";
+        flex: 1;
+        height: 1px;
+        background: var(--gray-200);
+      }
+
+      .speaker.q {
+        color: var(--gray-400);
+      }
+
+      .speaker.a {
+        color: var(--black);
+      }
+
+      .content {
+        font-size: 17px;
+        line-height: 2.02;
+        color: var(--gray-800);
+      }
+
+      .content.answer {
+        color: var(--black);
+        font-size: 18px;
+      }
+
+      .content + .content {
+        margin-top: 16px;
+      }
+
+      .highlight {
+        background: linear-gradient(transparent 60%, rgba(181, 154, 106, 0.18) 60%);
+        padding: 0 2px;
+      }
+
+      blockquote {
+        margin: 26px 0;
+        padding: 26px 34px;
+        border-left: 3px solid var(--accent);
+        background: var(--gray-100);
+        font-style: italic;
+        color: var(--gray-800);
+      }
+
+      .divider {
+        max-width: 800px;
+        margin: 0 auto;
+        padding: 0 24px;
+      }
+
+      .divider-line {
+        border: none;
+        border-top: 1px solid var(--gray-200);
+        margin: 60px 0;
+      }
+
+      footer {
+        border-top: 1px solid var(--gray-200);
+        padding: 40px 24px;
+        text-align: center;
+      }
+
+      .footer-inner {
+        max-width: 800px;
+        margin: 0 auto;
+      }
+
+      .footer-note {
+        font-family: var(--sans);
+        font-size: 12px;
+        color: var(--gray-600);
+        line-height: 1.8;
+        max-width: 520px;
+        margin: 0 auto 24px;
+      }
+
+      .footer-meta {
+        font-family: var(--sans);
+        font-size: 11px;
+        letter-spacing: 2px;
+        text-transform: uppercase;
+        color: var(--gray-400);
+      }
+
+      @media (max-width: 640px) {
+        .hero {
+          padding: 62px 24px 52px;
+        }
+
+        .card {
+          grid-template-columns: 1fr;
+          gap: 32px;
+          padding: 32px 24px;
+        }
+
+        .content {
+          font-size: 16px;
+        }
+
+        .content.answer {
+          font-size: 17px;
+        }
+      }
+
+      @media print {
+        .header {
+          position: static;
+          background: transparent;
+          backdrop-filter: none;
+        }
+
+        body {
+          font-size: 12pt;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <header class="header">
+      <div class="header-inner">
+        <div class="logo">Zon Editorial</div>
+        <div class="tag">Luxury Serif</div>
+      </div>
+    </header>
+
+    <section class="hero">
+      <p class="hero-label">A Conversation With</p>
+      <h1><strong>中文标题</strong><br />English Title</h1>
+      <p class="hero-sub">feature <span>/</span> profile <span>/</span> essay</p>
+    </section>
+
+    <section class="container" style="padding-bottom: 80px">
+      <div class="card">
+        <div>
+          <h3>About</h3>
+          <p>这里写简短人物介绍、背景、上下文。</p>
+        </div>
+        <div>
+          <h3>Key Traits</h3>
+          <div class="traits">
+            <span class="trait">Refined</span>
+            <span class="trait">Serif</span>
+            <span class="trait">Feature</span>
+          </div>
+          <p style="margin-top: 16px; font-size: 13px; color: var(--gray-600); font-family: var(--sans)">
+            更像书刊特稿：衬线正文 + 轻金色强调（克制）。
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <main class="conversation">
+      <div class="conv-header">
+        <h2>The Dialogue</h2>
+      </div>
+
+      <section class="dialog">
+        <p class="speaker q">Interviewer</p>
+        <p class="content">问题句子……</p>
+      </section>
+
+      <section class="dialog">
+        <p class="speaker a">Guest</p>
+        <p class="content answer">
+          回答段落……<span class="highlight">需要强调的句子。</span>
+        </p>
+        <blockquote>“可作为引文/摘录的句子。”</blockquote>
+      </section>
+    </main>
+
+    <div class="divider">
+      <hr class="divider-line" />
+    </div>
+
+    <footer>
+      <div class="footer-inner">
+        <p class="footer-note">备注：来源、版权说明、用途说明。避免整段原文复制，优先摘要与链接。</p>
+        <p class="footer-meta">Series · YYYY</p>
+      </div>
+    </footer>
+
+<!-- best-minds:lightbox:start -->
+<style id="best-minds-lightbox-css">
+  /* Data viz primitives (optional) */
+  .kpi-grid {
+    display: grid;
+    gap: 12px;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    margin-top: 12px;
+  }
+
+  @media (max-width: 760px) {
+    .kpi-grid {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+  }
+
+  .kpi {
+    border: 1px solid var(--gray-200, #e8e8e8);
+    background: rgba(250, 250, 250, 0.92);
+    padding: 12px;
+  }
+
+  .kpi .k {
+    font-size: 10px;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    color: var(--gray-600, #666);
+  }
+
+  .kpi .v {
+    margin-top: 6px;
+    font-size: 18px;
+    font-weight: 650;
+    letter-spacing: 0.3px;
+    color: var(--black, #0a0a0a);
+  }
+
+  .barlist {
+    display: grid;
+    gap: 10px;
+    margin-top: 12px;
+  }
+
+  .barrow {
+    display: grid;
+    grid-template-columns: 160px 1fr 76px;
+    gap: 10px;
+    align-items: center;
+  }
+
+  @media (max-width: 560px) {
+    .barrow {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  .barlabel {
+    font-size: 12px;
+    color: var(--gray-800, #333);
+  }
+
+  .bartrack {
+    height: 10px;
+    border: 1px solid var(--gray-200, #e8e8e8);
+    background: rgba(245, 245, 245, 0.6);
+    overflow: hidden;
+  }
+
+  .barfill {
+    height: 100%;
+    width: var(--pct, 50%);
+    background: var(--black, #0a0a0a);
+  }
+
+  .barvalue {
+    font-size: 12px;
+    color: var(--gray-600, #666);
+    font-family: var(
+      --mono,
+      ui-monospace,
+      SFMono-Regular,
+      Menlo,
+      Monaco,
+      Consolas,
+      "Liberation Mono",
+      monospace
+    );
+    justify-self: end;
+    white-space: nowrap;
+  }
+
+  /* Lightbox / zoom viewer */
+  :root {
+    --lb-bg: rgba(250, 250, 250, 0.92);
+    --lb-surface: rgba(250, 250, 250, 0.96);
+    --lb-border: var(--gray-200, #e8e8e8);
+    --lb-fg: var(--black, #0a0a0a);
+    --lb-muted: var(--gray-600, #666);
+    --lb-muted2: var(--gray-400, #999);
+    --lb-btn-border: var(--black, #0a0a0a);
+    --lb-btn-bg: transparent;
+    --lb-btn-fg: var(--black, #0a0a0a);
+    --lb-btn-hover-bg: var(--black, #0a0a0a);
+    --lb-btn-hover-fg: var(--white, #fafafa);
+    --lb-btn-primary-bg: var(--black, #0a0a0a);
+    --lb-btn-primary-fg: var(--white, #fafafa);
+  }
+
+  html.lb-theme-dark {
+    --lb-bg: rgba(11, 12, 16, 0.92);
+    --lb-surface: rgba(11, 12, 16, 0.96);
+    --lb-border: rgba(255, 255, 255, 0.14);
+    --lb-fg: var(--white, #f4f4f3);
+    --lb-muted: rgba(255, 255, 255, 0.72);
+    --lb-muted2: rgba(255, 255, 255, 0.48);
+    --lb-btn-border: rgba(255, 255, 255, 0.28);
+    --lb-btn-bg: transparent;
+    --lb-btn-fg: var(--white, #f4f4f3);
+    --lb-btn-hover-bg: var(--white, #f4f4f3);
+    --lb-btn-hover-fg: var(--black, #0b0c10);
+    --lb-btn-primary-bg: var(--white, #f4f4f3);
+    --lb-btn-primary-fg: var(--black, #0b0c10);
+  }
+
+  .zoomable {
+    cursor: zoom-in;
+  }
+
+  .lb-root[hidden] {
+    display: none;
+  }
+
+  .lb-root {
+    position: fixed;
+    inset: 0;
+    z-index: 9999;
+    display: grid;
+    place-items: stretch;
+    padding: 0;
+    background: var(--lb-bg);
+  }
+
+  .lb-backdrop {
+    position: absolute;
+    inset: 0;
+    background: var(--lb-bg);
+  }
+
+  .lb-dialog {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    max-height: 100%;
+    display: grid;
+    grid-template-rows: auto minmax(240px, 1fr) auto;
+    border: 0;
+    background: var(--lb-surface);
+    box-shadow: none;
+    color: var(--lb-fg);
+  }
+
+  .lb-toolbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 12px;
+    padding: 12px 14px;
+    border-bottom: 1px solid var(--lb-border);
+  }
+
+  .lb-title {
+    min-width: 0;
+    display: grid;
+    gap: 2px;
+  }
+
+  .lb-kicker {
+    font-size: 10px;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    color: var(--lb-muted);
+  }
+
+  .lb-title-text {
+    font-size: 12px;
+    color: var(--lb-fg);
+    opacity: 0.82;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .lb-actions {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: flex-end;
+  }
+
+  .lb-btn {
+    appearance: none;
+    border: 1px solid var(--lb-btn-border);
+    background: var(--lb-btn-bg);
+    color: var(--lb-btn-fg);
+    padding: 7px 10px;
+    font-size: 10px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    border-radius: 0;
+    cursor: pointer;
+  }
+
+  .lb-btn:hover {
+    background: var(--lb-btn-hover-bg);
+    color: var(--lb-btn-hover-fg);
+  }
+
+  .lb-btn.primary {
+    background: var(--lb-btn-primary-bg);
+    color: var(--lb-btn-primary-fg);
+  }
+
+  .lb-btn.primary:hover {
+    opacity: 0.92;
+  }
+
+  .lb-stage {
+    position: relative;
+    overflow: hidden;
+  }
+
+  .lb-viewport {
+    position: absolute;
+    inset: 0;
+    overflow: hidden;
+    touch-action: none;
+    cursor: grab;
+  }
+
+  .lb-viewport:active {
+    cursor: grabbing;
+  }
+
+  .lb-canvas {
+    position: absolute;
+    left: 0;
+    top: 0;
+    transform-origin: 0 0;
+    will-change: transform;
+  }
+
+  .lb-canvas img,
+  .lb-canvas svg {
+    display: block;
+    max-width: none;
+    max-height: none;
+  }
+
+  .lb-caption {
+    display: flex;
+    justify-content: space-between;
+    gap: 12px;
+    align-items: flex-start;
+    flex-wrap: wrap;
+    padding: 10px 14px;
+    border-top: 1px solid var(--lb-border);
+    color: var(--lb-muted);
+    font-size: 12px;
+  }
+
+  .lb-caption-meta {
+    font-size: 10px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--lb-muted);
+    display: inline-flex;
+    gap: 10px;
+    align-items: center;
+    flex-wrap: wrap;
+    justify-content: flex-end;
+  }
+
+  .lb-sep {
+    color: var(--lb-muted2);
+  }
+
+  .lb-open {
+    overflow: hidden;
+  }
+
+  @media print {
+    .lb-root {
+      display: none !important;
+    }
+  }
+</style>
+
+<div class="lb-root" id="lightbox" hidden aria-hidden="true">
+  <div class="lb-backdrop" data-lb-close></div>
+  <div class="lb-dialog" role="dialog" aria-modal="true" aria-label="Image viewer">
+    <div class="lb-toolbar">
+      <div class="lb-title">
+        <div class="lb-kicker">Viewer</div>
+        <div class="lb-title-text" id="lbTitle">Preview</div>
+      </div>
+      <div class="lb-actions">
+        <button class="lb-btn" type="button" data-lb-zoom-out>-</button>
+        <button class="lb-btn" type="button" data-lb-zoom-in>+</button>
+        <button class="lb-btn" type="button" data-lb-fit>Fit</button>
+        <button class="lb-btn" type="button" data-lb-fs>Full</button>
+        <button class="lb-btn primary" type="button" data-lb-close>Close</button>
+      </div>
+    </div>
+    <div class="lb-stage">
+      <div class="lb-viewport" tabindex="0" aria-label="Pan and zoom area">
+        <div class="lb-canvas" id="lbCanvas"></div>
+      </div>
+    </div>
+    <div class="lb-caption">
+      <div id="lbCaption"></div>
+      <div class="lb-caption-meta">
+        <span id="lbZoom">100%</span>
+        <span class="lb-sep">·</span>
+        <span>滚轮/双指缩放</span>
+        <span class="lb-sep">·</span>
+        <span>拖拽移动</span>
+        <span class="lb-sep">·</span>
+        <span>ESC 关闭</span>
+        <span class="lb-sep">·</span>
+        <span>双击重置</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script id="best-minds-lightbox">
+  (() => {
+    const lightboxRoot = document.getElementById("lightbox");
+    if (!lightboxRoot) return;
+
+    const parseRgb = (value) => {
+      const m = String(value || "").match(/rgba?\\(([^)]+)\\)/i);
+      if (!m) return null;
+      const parts = m[1]
+        .split(",")
+        .slice(0, 3)
+        .map((s) => Number.parseFloat(s.trim()));
+      if (parts.length !== 3 || parts.some((n) => !Number.isFinite(n))) return null;
+      return { r: parts[0], g: parts[1], b: parts[2] };
+    };
+
+    const relLuminance = ({ r, g, b }) => {
+      const toLinear = (v) => {
+        const s = v / 255;
+        return s <= 0.03928 ? s / 12.92 : Math.pow((s + 0.055) / 1.055, 2.4);
+      };
+      const R = toLinear(r);
+      const G = toLinear(g);
+      const B = toLinear(b);
+      return 0.2126 * R + 0.7152 * G + 0.0722 * B;
+    };
+
+    const isDarkPage = () => {
+      try {
+        const bg = getComputedStyle(document.body).backgroundColor;
+        const rgb = parseRgb(bg);
+        if (!rgb) return false;
+        return relLuminance(rgb) < 0.36;
+      } catch {
+        return false;
+      }
+    };
+
+    try {
+      document.documentElement.classList.toggle("lb-theme-dark", isDarkPage());
+    } catch {
+      // ignore
+    }
+
+    const canvas = document.getElementById("lbCanvas");
+    const viewport = lightboxRoot.querySelector(".lb-viewport");
+    const titleEl = document.getElementById("lbTitle");
+    const captionEl = document.getElementById("lbCaption");
+    const zoomEl = document.getElementById("lbZoom");
+    const closeBtn = lightboxRoot.querySelector("button[data-lb-close]");
+
+    const btnZoomIn = lightboxRoot.querySelector("[data-lb-zoom-in]");
+    const btnZoomOut = lightboxRoot.querySelector("[data-lb-zoom-out]");
+    const btnFit = lightboxRoot.querySelector("[data-lb-fit]");
+    const btnFs = lightboxRoot.querySelector("[data-lb-fs]");
+
+    const MIN_SCALE = 0.2;
+    const MAX_SCALE = 12;
+
+    let lastActive = null;
+    let pointers = new Map();
+    let panStart = null;
+    let pinchStart = null;
+    let state = { scale: 1, tx: 0, ty: 0, w: 1, h: 1 };
+
+    const clamp = (value, min, max) => Math.max(min, Math.min(max, value));
+
+    const getFocusable = () =>
+      Array.from(
+        lightboxRoot.querySelectorAll(
+          'button,[href],input,select,textarea,[tabindex]:not([tabindex="-1"])'
+        )
+      ).filter((el) => !el.hasAttribute("disabled") && el.offsetParent !== null);
+
+    const trapTab = (event) => {
+      if (event.key !== "Tab") return false;
+      const focusable = getFocusable();
+      if (focusable.length === 0) return false;
+      const first = focusable[0];
+      const last = focusable[focusable.length - 1];
+      const active = document.activeElement;
+      if (event.shiftKey && active === first) {
+        event.preventDefault();
+        last.focus();
+        return true;
+      }
+      if (!event.shiftKey && active === last) {
+        event.preventDefault();
+        first.focus();
+        return true;
+      }
+      return false;
+    };
+
+    const setTransform = () => {
+      canvas.style.transform =
+        "translate3d(" +
+        state.tx +
+        "px, " +
+        state.ty +
+        "px, 0) scale(" +
+        state.scale +
+        ")";
+      zoomEl.textContent = Math.round(state.scale * 100) + "%";
+    };
+
+    const fitToViewport = () => {
+      const rect = viewport.getBoundingClientRect();
+      const vw = rect.width;
+      const vh = rect.height;
+      if (!vw || !vh) return;
+
+      const scale = clamp(
+        Math.min(vw / state.w, vh / state.h) * 0.995,
+        MIN_SCALE,
+        MAX_SCALE
+      );
+      state.scale = scale;
+      state.tx = (vw - state.w * scale) / 2;
+      state.ty = (vh - state.h * scale) / 2;
+      setTransform();
+    };
+
+    const zoomAt = (clientX, clientY, nextScale) => {
+      const rect = viewport.getBoundingClientRect();
+      const px = clientX - rect.left;
+      const py = clientY - rect.top;
+
+      const scale = clamp(nextScale, MIN_SCALE, MAX_SCALE);
+      const cx = (px - state.tx) / state.scale;
+      const cy = (py - state.ty) / state.scale;
+      state.scale = scale;
+      state.tx = px - cx * scale;
+      state.ty = py - cy * scale;
+      setTransform();
+    };
+
+    const stepZoom = (factor) => {
+      const rect = viewport.getBoundingClientRect();
+      zoomAt(
+        rect.left + rect.width / 2,
+        rect.top + rect.height / 2,
+        state.scale * factor
+      );
+    };
+
+    const close = () => {
+      lightboxRoot.hidden = true;
+      lightboxRoot.setAttribute("aria-hidden", "true");
+      document.documentElement.classList.remove("lb-open");
+      document.removeEventListener("keydown", onKeyDown, true);
+      canvas.innerHTML = "";
+      pointers.clear();
+      panStart = null;
+      pinchStart = null;
+      if (
+        document.fullscreenElement &&
+        (document.fullscreenElement === lightboxRoot ||
+          lightboxRoot.contains(document.fullscreenElement))
+      ) {
+        document.exitFullscreen && document.exitFullscreen().catch(() => {});
+      }
+      if (lastActive && typeof lastActive.focus === "function") lastActive.focus();
+      lastActive = null;
+    };
+
+    const onKeyDown = (event) => {
+      if (lightboxRoot.hidden) return;
+      if (trapTab(event)) return;
+
+      if (event.key === "Escape") {
+        event.preventDefault();
+        close();
+        return;
+      }
+
+      if (!event.metaKey && !event.ctrlKey) {
+        if (event.key === "+" || event.key === "=") {
+          event.preventDefault();
+          stepZoom(1.12);
+          return;
+        }
+        if (event.key === "-") {
+          event.preventDefault();
+          stepZoom(1 / 1.12);
+          return;
+        }
+        if (event.key === "0") {
+          event.preventDefault();
+          fitToViewport();
+        }
+      }
+    };
+
+    Array.from(lightboxRoot.querySelectorAll("[data-lb-close]")).forEach((el) => {
+      el.addEventListener("click", close);
+    });
+    btnZoomIn && btnZoomIn.addEventListener("click", () => stepZoom(1.12));
+    btnZoomOut && btnZoomOut.addEventListener("click", () => stepZoom(1 / 1.12));
+    btnFit && btnFit.addEventListener("click", fitToViewport);
+    btnFs &&
+      btnFs.addEventListener("click", async () => {
+        try {
+          if (!document.fullscreenElement) {
+            if (lightboxRoot.requestFullscreen) await lightboxRoot.requestFullscreen();
+          } else if (document.exitFullscreen) {
+            await document.exitFullscreen();
+          }
+        } catch {
+          // ignore
+        }
+      });
+
+    const syncFsLabel = () => {
+      if (!btnFs) return;
+      btnFs.textContent = document.fullscreenElement ? "Exit" : "Full";
+    };
+    document.addEventListener("fullscreenchange", syncFsLabel);
+
+    viewport.addEventListener(
+      "wheel",
+      (event) => {
+        if (lightboxRoot.hidden) return;
+        event.preventDefault();
+        const factor = Math.exp(-event.deltaY * 0.0015);
+        zoomAt(event.clientX, event.clientY, state.scale * factor);
+      },
+      { passive: false }
+    );
+
+    viewport.addEventListener("dblclick", (event) => {
+      if (lightboxRoot.hidden) return;
+      event.preventDefault();
+      fitToViewport();
+    });
+
+    viewport.addEventListener("pointerdown", (event) => {
+      if (lightboxRoot.hidden) return;
+      if (event.button !== 0 && event.pointerType !== "touch") return;
+      viewport.setPointerCapture(event.pointerId);
+      pointers.set(event.pointerId, { x: event.clientX, y: event.clientY });
+
+      if (pointers.size === 1) {
+        panStart = {
+          x: event.clientX,
+          y: event.clientY,
+          tx: state.tx,
+          ty: state.ty,
+        };
+        pinchStart = null;
+      }
+
+      if (pointers.size === 2) {
+        const pts = Array.from(pointers.values());
+        const p1 = pts[0];
+        const p2 = pts[1];
+        const rect = viewport.getBoundingClientRect();
+        const midX = (p1.x + p2.x) / 2;
+        const midY = (p1.y + p2.y) / 2;
+        const px = midX - rect.left;
+        const py = midY - rect.top;
+        const cx = (px - state.tx) / state.scale;
+        const cy = (py - state.ty) / state.scale;
+        const dist = Math.hypot(p1.x - p2.x, p1.y - p2.y);
+        pinchStart = { rect, cx, cy, dist, scale: state.scale };
+        panStart = null;
+      }
+    });
+
+    viewport.addEventListener("pointermove", (event) => {
+      if (lightboxRoot.hidden) return;
+      if (!pointers.has(event.pointerId)) return;
+      pointers.set(event.pointerId, { x: event.clientX, y: event.clientY });
+
+      if (pointers.size === 1 && panStart) {
+        const dx = event.clientX - panStart.x;
+        const dy = event.clientY - panStart.y;
+        state.tx = panStart.tx + dx;
+        state.ty = panStart.ty + dy;
+        setTransform();
+        return;
+      }
+
+      if (pointers.size === 2 && pinchStart) {
+        const pts = Array.from(pointers.values());
+        const p1 = pts[0];
+        const p2 = pts[1];
+        const dist = Math.hypot(p1.x - p2.x, p1.y - p2.y);
+        const nextScale = clamp(
+          pinchStart.scale * (dist / pinchStart.dist),
+          MIN_SCALE,
+          MAX_SCALE
+        );
+
+        const midX = (p1.x + p2.x) / 2;
+        const midY = (p1.y + p2.y) / 2;
+        const px = midX - pinchStart.rect.left;
+        const py = midY - pinchStart.rect.top;
+
+        state.scale = nextScale;
+        state.tx = px - pinchStart.cx * nextScale;
+        state.ty = py - pinchStart.cy * nextScale;
+        setTransform();
+      }
+    });
+
+    const clearPointer = (event) => {
+      if (!pointers.has(event.pointerId)) return;
+      pointers.delete(event.pointerId);
+
+      if (pointers.size === 1) {
+        const remaining = Array.from(pointers.values())[0];
+        panStart = { x: remaining.x, y: remaining.y, tx: state.tx, ty: state.ty };
+        pinchStart = null;
+      }
+
+      if (pointers.size === 0) {
+        panStart = null;
+        pinchStart = null;
+      }
+    };
+
+    viewport.addEventListener("pointerup", clearPointer);
+    viewport.addEventListener("pointercancel", clearPointer);
+
+    const parseViewBox = (viewBox) => {
+      if (!viewBox) return null;
+      const parts = viewBox.trim().split(/[\\s,]+/).map(Number);
+      if (parts.length !== 4 || parts.some((n) => Number.isNaN(n))) return null;
+      return { x: parts[0], y: parts[1], w: parts[2], h: parts[3] };
+    };
+
+    const uniquifySvgIds = (svg) => {
+      const prefix = "lb-" + Math.random().toString(16).slice(2) + "-";
+      const map = new Map();
+      svg.querySelectorAll("[id]").forEach((node) => {
+        const oldId = node.id;
+        const nextId = prefix + oldId;
+        map.set(oldId, nextId);
+        node.id = nextId;
+      });
+
+      const refAttrs = [
+        "href",
+        "xlink:href",
+        "clip-path",
+        "mask",
+        "filter",
+        "marker-start",
+        "marker-mid",
+        "marker-end",
+        "fill",
+        "stroke",
+      ];
+
+      const replaceRefs = (value) => {
+        let nextValue = value;
+        for (const [oldId, nextId] of map) {
+          nextValue = nextValue
+            .replaceAll("url(#" + oldId + ")", "url(#" + nextId + ")")
+            .replaceAll("#" + oldId, "#" + nextId);
+        }
+        return nextValue;
+      };
+
+      svg.querySelectorAll("*").forEach((node) => {
+        refAttrs.forEach((attr) => {
+          const value = node.getAttribute(attr);
+          if (!value) return;
+          const nextValue = replaceRefs(value);
+          if (nextValue !== value) node.setAttribute(attr, nextValue);
+        });
+        const style = node.getAttribute("style");
+        if (style) {
+          const nextStyle = replaceRefs(style);
+          if (nextStyle !== style) node.setAttribute("style", nextStyle);
+        }
+      });
+    };
+
+    const open = async ({ node, title, caption, w, h }) => {
+      lastActive = document.activeElement;
+      canvas.innerHTML = "";
+      canvas.appendChild(node);
+
+      state = { scale: 1, tx: 0, ty: 0, w, h };
+      setTransform();
+
+      titleEl.textContent = title || "Preview";
+      captionEl.textContent = caption || "";
+
+      lightboxRoot.hidden = false;
+      lightboxRoot.setAttribute("aria-hidden", "false");
+      document.documentElement.classList.add("lb-open");
+      document.addEventListener("keydown", onKeyDown, true);
+
+      await new Promise((resolve) => requestAnimationFrame(() => resolve()));
+      fitToViewport();
+      closeBtn && closeBtn.focus();
+    };
+
+    const describeFromElement = async (element) => {
+      const tag = (element.tagName || "").toLowerCase();
+      if (tag === "img") {
+        const img = document.createElement("img");
+        img.src = element.currentSrc || element.src;
+        img.alt = element.alt || "";
+        img.decoding = "async";
+        img.loading = "eager";
+        img.draggable = false;
+        if ("decode" in img) {
+          try {
+            await img.decode();
+          } catch {
+            // ignore
+          }
+        } else if (!img.complete) {
+          await new Promise((resolve) => {
+            img.onload = () => resolve();
+            img.onerror = () => resolve();
+          });
+        }
+
+        const title = element.alt || element.getAttribute("data-title") || "Image";
+        const caption =
+          (element.closest("figure") &&
+            element.closest("figure").querySelector("figcaption") &&
+            element.closest("figure").querySelector("figcaption").textContent.trim()) ||
+          element.alt ||
+          "";
+        const w = img.naturalWidth || element.naturalWidth || 1;
+        const h = img.naturalHeight || element.naturalHeight || 1;
+        return { node: img, title, caption, w, h };
+      }
+
+      if (tag === "canvas") {
+        let dataUrl = null;
+        try {
+          dataUrl = element.toDataURL && element.toDataURL("image/png");
+        } catch {
+          dataUrl = null;
+        }
+        if (!dataUrl) return null;
+        const img = document.createElement("img");
+        img.src = dataUrl;
+        img.alt = element.getAttribute("aria-label") || "";
+        img.decoding = "async";
+        img.loading = "eager";
+        img.draggable = false;
+        if ("decode" in img) {
+          try {
+            await img.decode();
+          } catch {
+            // ignore
+          }
+        }
+
+        const title =
+          element.getAttribute("aria-label") ||
+          element.getAttribute("data-title") ||
+          "Canvas";
+        const caption =
+          (element.closest("figure") &&
+            element.closest("figure").querySelector("figcaption") &&
+            element.closest("figure").querySelector("figcaption").textContent.trim()) ||
+          element.getAttribute("aria-label") ||
+          "";
+        const w = element.width || element.getBoundingClientRect().width || 1;
+        const h = element.height || element.getBoundingClientRect().height || 1;
+        return { node: img, title, caption, w, h };
+      }
+
+      if (tag === "svg") {
+        const cloned = element.cloneNode(true);
+        uniquifySvgIds(cloned);
+        const vb = parseViewBox(element.getAttribute("viewBox"));
+
+        let w = vb && vb.w;
+        let h = vb && vb.h;
+        if (!w || !h) {
+          const box = element.getBoundingClientRect();
+          w = box.width || 300;
+          h = box.height || 150;
+        }
+        cloned.setAttribute("width", String(w));
+        cloned.setAttribute("height", String(h));
+        cloned.setAttribute("preserveAspectRatio", "xMinYMin meet");
+
+        const title =
+          element.getAttribute("aria-label") ||
+          (element.closest("[aria-label]") &&
+            element.closest("[aria-label]").getAttribute("aria-label")) ||
+          element.getAttribute("data-title") ||
+          "Diagram";
+        const caption =
+          (element.closest("figure") &&
+            element.closest("figure").querySelector("figcaption") &&
+            element.closest("figure").querySelector("figcaption").textContent.trim()) ||
+          (element.closest("[aria-label]") &&
+            element.closest("[aria-label]").getAttribute("aria-label")) ||
+          "";
+        return { node: cloned, title, caption, w, h };
+      }
+
+      return null;
+    };
+
+    const enableZoomable = (element) => {
+      if (!element) return;
+      element.classList.add("zoomable");
+      element.addEventListener("click", async (event) => {
+        if (event.metaKey || event.ctrlKey || event.shiftKey || event.altKey) return;
+        event.preventDefault();
+        event.stopPropagation();
+        const payload = await describeFromElement(element);
+        if (!payload) return;
+        await open(payload);
+      });
+    };
+
+    const enableZoomContainer = (container) => {
+      if (!container) return;
+      const hasMedia = container.querySelector("svg, img, canvas");
+      if (!hasMedia) return;
+      container.classList.add("zoomable");
+      container.addEventListener("click", async (event) => {
+        if (event.metaKey || event.ctrlKey || event.shiftKey || event.altKey) return;
+        if (event.target.closest("a, button, input, textarea, select")) return;
+        const target =
+          event.target.closest("svg, img, canvas") ||
+          container.querySelector("svg, img, canvas");
+        if (!target) return;
+        event.preventDefault();
+        event.stopPropagation();
+        const payload = await describeFromElement(target);
+        if (!payload) return;
+        await open(payload);
+      });
+    };
+
+    document.querySelectorAll(".diagram").forEach(enableZoomContainer);
+    document.querySelectorAll("figure").forEach(enableZoomContainer);
+    document.querySelectorAll("main img").forEach(enableZoomable);
+    document.querySelectorAll("main svg").forEach(enableZoomable);
+    document.querySelectorAll("main canvas").forEach(enableZoomable);
+  })();
+</script>
+<!-- best-minds:lightbox:end -->
+  </body>
+</html>
+

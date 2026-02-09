@@ -1,0 +1,1762 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <title>__GAME_TITLE__</title>
+    <style>
+      :root {
+        --bg: #070708;
+        --white: #fafafa;
+        --black: #0a0a0a;
+        --gray-100: #f3f3f3;
+        --gray-200: #e7e7e7;
+        --gray-400: #a9a9a9;
+        --gray-600: #666;
+        --gray-800: #262626;
+        --mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", monospace;
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
+      html,
+      body {
+        width: 100%;
+        height: 100%;
+        margin: 0;
+        background: var(--bg);
+        color: var(--white);
+        font-family: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+          "Helvetica Neue", Arial, "Noto Sans", "Liberation Sans", sans-serif;
+        text-rendering: optimizeLegibility;
+        overflow: hidden;
+      }
+
+      ::selection {
+        background: rgba(250, 250, 250, 0.92);
+        color: rgba(10, 10, 10, 0.92);
+      }
+
+      :where(a, button, input, textarea):focus-visible {
+        outline: 2px solid rgba(255, 255, 255, 0.7);
+        outline-offset: 2px;
+      }
+
+      code,
+      kbd {
+        font-family: var(--mono);
+        font-size: 12px;
+      }
+
+      kbd {
+        display: inline-flex;
+        align-items: center;
+        padding: 2px 6px;
+        border: 1px solid rgba(255, 255, 255, 0.18);
+        background: rgba(0, 0, 0, 0.22);
+        color: rgba(250, 250, 250, 0.82);
+        letter-spacing: 0.6px;
+      }
+
+      #app {
+        position: fixed;
+        inset: 0;
+      }
+
+      .stage {
+        position: absolute;
+        inset: 0;
+        overflow: hidden;
+      }
+
+      .bg {
+        position: absolute;
+        inset: 0;
+        opacity: 0;
+        transition: opacity 520ms ease;
+      }
+      .bg.is-active {
+        opacity: 1;
+      }
+
+      .bg img,
+      .bg svg {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        display: block;
+      }
+
+      .vignette {
+        position: absolute;
+        inset: 0;
+        pointer-events: none;
+        background: radial-gradient(
+            1200px 820px at 18% 12%,
+            rgba(250, 250, 250, 0.06),
+            transparent 55%
+          ),
+          radial-gradient(
+            900px 650px at 92% 12%,
+            rgba(250, 250, 250, 0.05),
+            transparent 60%
+          ),
+          linear-gradient(to bottom, rgba(7, 7, 8, 0.04), rgba(7, 7, 8, 0.72));
+      }
+
+      /* Characters */
+      .characters {
+        position: absolute;
+        inset: 0;
+        z-index: 2;
+        pointer-events: none;
+        display: grid;
+        grid-template-columns: 1fr 1fr 1fr;
+        align-items: end;
+        gap: clamp(10px, 2vw, 28px);
+        padding: 0 6vw calc(132px + env(safe-area-inset-bottom));
+      }
+
+      .char {
+        max-height: 84vh;
+        display: grid;
+        align-items: end;
+        justify-items: center;
+        opacity: 0.72;
+        transform: translateY(12px) scale(0.985);
+        transition: opacity 220ms ease, transform 220ms ease, filter 220ms ease;
+        filter: drop-shadow(0 16px 36px rgba(0, 0, 0, 0.36));
+      }
+
+      .char.is-active {
+        opacity: 0.96;
+        transform: translateY(0) scale(1);
+        filter: drop-shadow(0 20px 52px rgba(0, 0, 0, 0.48));
+      }
+
+      .char[data-side="left"] {
+        grid-column: 1;
+        justify-self: end;
+      }
+      .char[data-side="center"] {
+        grid-column: 2;
+        justify-self: center;
+      }
+      .char[data-side="right"] {
+        grid-column: 3;
+        justify-self: start;
+      }
+
+      .char svg {
+        width: min(460px, 62vw);
+        height: auto;
+      }
+
+      .char img {
+        width: min(460px, 62vw);
+        height: auto;
+        display: block;
+        object-fit: contain;
+      }
+
+      /* HUD */
+      .hud {
+        position: absolute;
+        left: 16px;
+        right: 16px;
+        top: 14px;
+        z-index: 4;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 12px;
+        pointer-events: none;
+      }
+
+      .hud-left {
+        pointer-events: auto;
+        display: grid;
+        gap: 6px;
+        padding: 10px 12px;
+        border: 1px solid rgba(255, 255, 255, 0.14);
+        background: rgba(0, 0, 0, 0.26);
+        backdrop-filter: blur(12px);
+        border-radius: 12px;
+      }
+
+      .hud-title {
+        font-size: 10px;
+        letter-spacing: 4px;
+        text-transform: uppercase;
+        color: rgba(250, 250, 250, 0.74);
+        font-weight: 650;
+      }
+
+      .hud-stats {
+        font-family: var(--mono);
+        font-size: 12px;
+        color: rgba(250, 250, 250, 0.74);
+        letter-spacing: 0.4px;
+        white-space: nowrap;
+      }
+
+      .hud-right {
+        pointer-events: auto;
+        display: flex;
+        gap: 10px;
+        align-items: center;
+      }
+
+      .hud-btn {
+        border: 1px solid rgba(255, 255, 255, 0.14);
+        background: rgba(0, 0, 0, 0.26);
+        backdrop-filter: blur(12px);
+        padding: 10px 12px;
+        cursor: pointer;
+        letter-spacing: 2px;
+        font-size: 10px;
+        text-transform: uppercase;
+        color: rgba(250, 250, 250, 0.74);
+        font-weight: 650;
+        border-radius: 12px;
+      }
+
+      .hud-btn:hover {
+        border-color: rgba(255, 255, 255, 0.4);
+        color: rgba(250, 250, 250, 0.92);
+      }
+
+      /* Dialogue box */
+      .dialog {
+        position: absolute;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        z-index: 10;
+        padding: 18px 16px calc(18px + env(safe-area-inset-bottom));
+        pointer-events: none;
+      }
+
+      .dialog-inner {
+        pointer-events: auto;
+        max-width: 980px;
+        margin: 0 auto;
+        border: 1px solid rgba(255, 255, 255, 0.16);
+        background: rgba(10, 10, 10, 0.66);
+        backdrop-filter: blur(18px) saturate(1.15);
+        box-shadow: 0 18px 70px rgba(0, 0, 0, 0.34);
+        padding: 14px 14px;
+        border-radius: 16px;
+        position: relative;
+        z-index: 0;
+      }
+
+      .dialog-top {
+        display: grid;
+        grid-template-columns: auto 1fr;
+        align-items: center;
+        gap: 12px;
+        padding-bottom: 8px;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.14);
+        margin-bottom: 10px;
+      }
+
+      .portrait {
+        width: 72px;
+        height: 72px;
+        border-radius: 999px;
+        --accent: rgba(255, 255, 255, 0.18);
+        border: 1px solid var(--accent);
+        background: radial-gradient(
+            120% 120% at 28% 22%,
+            rgba(255, 255, 255, 0.22),
+            rgba(255, 255, 255, 0.06) 52%,
+            rgba(255, 255, 255, 0.02)
+          ),
+          rgba(15, 15, 16, 0.6);
+        display: grid;
+        place-items: center;
+        overflow: hidden;
+        flex: none;
+        position: relative;
+        box-shadow: 0 12px 30px rgba(0, 0, 0, 0.22);
+      }
+
+      .portrait::after {
+        content: "";
+        position: absolute;
+        inset: 3px;
+        border-radius: inherit;
+        border: 1px solid rgba(255, 255, 255, 0.12);
+        pointer-events: none;
+      }
+
+      .portrait[data-key="worried"] {
+        --accent: rgba(126, 196, 255, 0.46);
+      }
+      .portrait[data-key="suspicious"] {
+        --accent: rgba(255, 206, 120, 0.46);
+      }
+      .portrait[data-key="determined"] {
+        --accent: rgba(255, 120, 120, 0.46);
+      }
+
+      .portrait img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        object-position: center 18%;
+        display: block;
+        filter: saturate(1.06) contrast(1.04);
+      }
+
+      .portrait svg {
+        width: 100%;
+        height: 100%;
+        display: block;
+      }
+
+      .nameplate {
+        display: flex;
+        align-items: baseline;
+        justify-content: space-between;
+        gap: 12px;
+      }
+
+      .name {
+        font-size: 10px;
+        letter-spacing: 4px;
+        text-transform: uppercase;
+        color: rgba(250, 250, 250, 0.82);
+        font-weight: 650;
+        white-space: nowrap;
+      }
+
+      .meta {
+        font-family: var(--mono);
+        font-size: 12px;
+        color: rgba(250, 250, 250, 0.7);
+        white-space: nowrap;
+      }
+
+      .line {
+        min-height: 84px;
+        font-size: clamp(16px, 2.1vw, 19px);
+        line-height: 1.9;
+        color: rgba(250, 250, 250, 0.92);
+      }
+
+      .line p + p {
+        margin-top: 10px;
+      }
+
+      .hl {
+        background: linear-gradient(transparent 62%, rgba(255, 255, 255, 0.14) 62%);
+        padding: 0 2px;
+      }
+
+      .choices {
+        margin-top: 12px;
+        display: grid;
+        gap: 10px;
+      }
+
+      .choice {
+        width: 100%;
+        text-align: left;
+        border: 1px solid rgba(255, 255, 255, 0.16);
+        background: rgba(255, 255, 255, 0.06);
+        padding: 12px 12px;
+        cursor: pointer;
+        transition: border-color 140ms ease, transform 140ms ease;
+        border-radius: 12px;
+        color: rgba(250, 250, 250, 0.92);
+      }
+
+      .choice:hover {
+        border-color: rgba(255, 255, 255, 0.38);
+        transform: translateY(-1px);
+      }
+
+      .choice:active {
+        transform: translateY(0);
+      }
+
+      .choice[disabled] {
+        cursor: not-allowed;
+        opacity: 0.58;
+        border-style: dashed;
+        transform: none;
+      }
+
+      .choice-inner {
+        display: grid;
+        grid-template-columns: auto 1fr;
+        gap: 10px;
+        align-items: baseline;
+      }
+
+      .choice-index {
+        font-family: var(--mono);
+        font-size: 11px;
+        letter-spacing: 1px;
+        color: rgba(250, 250, 250, 0.75);
+        border: 1px solid rgba(255, 255, 255, 0.22);
+        padding: 2px 7px;
+        background: rgba(0, 0, 0, 0.24);
+        border-radius: 999px;
+      }
+
+      .choice-label {
+        font-size: 14px;
+        color: rgba(250, 250, 250, 0.92);
+        letter-spacing: 0.4px;
+      }
+
+      .choice-hint {
+        margin-top: 6px;
+        font-size: 12px;
+        color: rgba(250, 250, 250, 0.62);
+      }
+
+      .continue {
+        margin-top: 10px;
+        display: flex;
+        justify-content: flex-end;
+        align-items: center;
+        gap: 10px;
+        color: rgba(250, 250, 250, 0.7);
+        font-size: 12px;
+      }
+
+      .caret {
+        width: 10px;
+        height: 10px;
+        border-right: 2px solid rgba(250, 250, 250, 0.86);
+        border-bottom: 2px solid rgba(250, 250, 250, 0.86);
+        transform: rotate(-45deg);
+        opacity: 0.75;
+        animation: blink 1.2s ease-in-out infinite;
+      }
+
+      @keyframes blink {
+        0%,
+        100% {
+          opacity: 0.25;
+        }
+        50% {
+          opacity: 0.9;
+        }
+      }
+
+      /* Start overlay */
+      .start {
+        position: absolute;
+        inset: 0;
+        z-index: 20;
+        display: grid;
+        place-items: center;
+        padding: 24px;
+        background: rgba(0, 0, 0, 0.55);
+        backdrop-filter: blur(12px);
+        transition: opacity 260ms ease, transform 260ms ease;
+      }
+
+      .start.is-hidden {
+        opacity: 0;
+        transform: translateY(6px);
+        pointer-events: none;
+      }
+
+      .start-card {
+        width: min(720px, 100%);
+        border: 1px solid rgba(255, 255, 255, 0.14);
+        background: rgba(10, 10, 10, 0.62);
+        padding: 18px 18px;
+        text-align: center;
+        border-radius: 16px;
+      }
+
+      .start-kicker {
+        font-size: 11px;
+        letter-spacing: 6px;
+        text-transform: uppercase;
+        color: rgba(250, 250, 250, 0.62);
+        margin-bottom: 10px;
+        font-weight: 650;
+      }
+
+      .start-title {
+        font-size: clamp(30px, 5.2vw, 52px);
+        font-weight: 300;
+        letter-spacing: 2px;
+        line-height: 1.18;
+      }
+
+      .start-title strong {
+        font-weight: 750;
+      }
+
+      .start-sub {
+        margin-top: 10px;
+        color: rgba(250, 250, 250, 0.72);
+        font-size: 13px;
+        letter-spacing: 0.6px;
+      }
+
+      .start-actions {
+        margin-top: 14px;
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 10px;
+      }
+
+      .btn {
+        border: 1px solid rgba(255, 255, 255, 0.16);
+        background: rgba(255, 255, 255, 0.06);
+        padding: 12px 12px;
+        cursor: pointer;
+        letter-spacing: 1px;
+        font-size: 12px;
+        color: rgba(250, 250, 250, 0.92);
+        border-radius: 12px;
+      }
+
+      .btn:hover {
+        border-color: rgba(255, 255, 255, 0.38);
+      }
+
+      .btn.primary {
+        border-color: rgba(255, 255, 255, 0.38);
+        background: rgba(255, 255, 255, 0.1);
+      }
+
+      /* Menu modal */
+      .modal {
+        position: absolute;
+        inset: 0;
+        z-index: 30;
+        display: none;
+        place-items: center;
+        padding: 24px;
+        background: rgba(0, 0, 0, 0.66);
+        backdrop-filter: blur(12px);
+      }
+
+      .modal.is-open {
+        display: grid;
+      }
+
+      .modal-card {
+        width: min(740px, 100%);
+        border: 1px solid rgba(255, 255, 255, 0.14);
+        background: rgba(10, 10, 10, 0.62);
+        padding: 16px;
+        border-radius: 16px;
+      }
+
+      .modal-head {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 10px;
+        margin-bottom: 10px;
+      }
+
+      .modal-title {
+        font-size: 11px;
+        letter-spacing: 4px;
+        text-transform: uppercase;
+        color: rgba(250, 250, 250, 0.74);
+        font-weight: 650;
+      }
+
+      .modal-body {
+        display: grid;
+        gap: 12px;
+      }
+
+      .input {
+        width: 100%;
+        padding: 10px 10px;
+        border: 1px solid rgba(255, 255, 255, 0.16);
+        background: rgba(0, 0, 0, 0.22);
+        color: rgba(250, 250, 250, 0.92);
+        border-radius: 12px;
+      }
+
+      .row {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 10px;
+      }
+
+      textarea.input {
+        min-height: 120px;
+        font-family: var(--mono);
+        font-size: 12px;
+        resize: vertical;
+      }
+
+      .debug {
+        position: absolute;
+        right: 14px;
+        bottom: calc(138px + env(safe-area-inset-bottom));
+        z-index: 40;
+        width: min(520px, 92vw);
+        max-height: 44vh;
+        overflow: auto;
+        border: 1px solid rgba(255, 255, 255, 0.14);
+        background: rgba(0, 0, 0, 0.34);
+        backdrop-filter: blur(10px);
+        border-radius: 14px;
+        padding: 10px 12px;
+        font-family: var(--mono);
+        font-size: 11px;
+        line-height: 1.5;
+        color: rgba(250, 250, 250, 0.72);
+        display: none;
+        white-space: pre-wrap;
+      }
+
+      .debug.is-open {
+        display: block;
+      }
+
+      @media (max-width: 560px) {
+        .hud-left {
+          display: none;
+        }
+        .characters {
+          padding: 0 4vw calc(150px + env(safe-area-inset-bottom));
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div id="app">
+      <div class="stage" id="stage" aria-label="舞台">
+        <div class="bg is-active" id="bgA"></div>
+        <div class="bg" id="bgB"></div>
+        <div class="characters" id="characters"></div>
+        <div class="vignette"></div>
+
+        <div class="hud" aria-label="HUD">
+          <div class="hud-left">
+            <div class="hud-title">__GAME_TITLE_EN__</div>
+            <div class="hud-stats" id="hudStats">INT 0 · TRUST 0 · CLUE 0 · STA 3</div>
+          </div>
+          <div class="hud-right">
+            <button class="hud-btn" id="menuBtn" type="button">Menu</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="dialog" aria-label="对话框">
+        <div class="dialog-inner" id="dialogBox">
+          <div class="dialog-top">
+            <div class="portrait" id="portrait" aria-label="角色头像"></div>
+            <div class="nameplate">
+              <div class="name" id="speakerName">—</div>
+              <div class="meta" id="sceneMeta">SCENE</div>
+            </div>
+          </div>
+          <div class="line" id="line"></div>
+          <div class="choices" id="choices"></div>
+          <div class="continue" id="continueHint">
+            <span>点击继续 / <kbd>Space</kbd></span>
+            <span class="caret" aria-hidden="true"></span>
+          </div>
+        </div>
+      </div>
+
+      <div class="debug" id="debug"></div>
+
+      <div class="start" id="startOverlay" aria-label="开始界面">
+        <div class="start-card">
+          <div class="start-kicker">Immersive HTML VN</div>
+          <div class="start-title"><strong>__GAME_TITLE__</strong></div>
+          <div class="start-sub">全屏背景 · 立绘 · 对话框 · 选择 · 存档</div>
+          <div class="start-actions">
+            <button class="btn primary" id="startBtn" type="button">开始</button>
+            <button class="btn" id="loadBtn" type="button">读档</button>
+          </div>
+          <div class="start-sub" style="margin-top: 12px">
+            快捷键：<kbd>1</kbd>–<kbd>9</kbd> 选项 · <kbd>Space</kbd> 继续 · <kbd>S</kbd> 存档 ·
+            <kbd>L</kbd> 读档 · <kbd>R</kbd> 重开 · <kbd>D</kbd> Debug
+          </div>
+        </div>
+      </div>
+
+      <div class="modal" id="menuModal" aria-label="菜单">
+        <div class="modal-card">
+          <div class="modal-head">
+            <div class="modal-title">Menu</div>
+            <button class="hud-btn" id="closeMenuBtn" type="button">Close</button>
+          </div>
+          <div class="modal-body">
+            <label>
+              <div class="modal-title" style="margin-bottom: 8px">主角名字</div>
+              <input class="input" id="nameInput" type="text" maxlength="16" placeholder="例如：小雨" />
+            </label>
+
+            <label>
+              <div class="modal-title" style="margin: 8px 0">画风素材包</div>
+              <select class="input" id="packSelect">
+                <option value="svg">SVG 占位</option>
+                <option value="jp">日系二次元（jp03）</option>
+                <option value="comic">彩漫（cm03）</option>
+              </select>
+            </label>
+
+            <label>
+              <div class="modal-title" style="margin: 8px 0">主角服装</div>
+              <select class="input" id="outfitSelect">
+                <option value="coat">COAT / 风衣</option>
+                <option value="hoodie">HOODIE / 帽衫</option>
+              </select>
+            </label>
+
+            <div class="row">
+              <button class="btn" id="saveBtn" type="button">存档（S）</button>
+              <button class="btn" id="loadBtn2" type="button">读档（L）</button>
+            </div>
+            <div class="row">
+              <button class="btn" id="restartBtn" type="button">重开（R）</button>
+              <button class="btn" id="exportBtn" type="button">导出 JSON</button>
+            </div>
+            <div class="row">
+              <button class="btn" id="importBtn" type="button">导入 JSON</button>
+              <button class="btn" id="copyBtn" type="button">复制 JSON</button>
+            </div>
+
+            <label>
+              <div class="modal-title" style="margin: 8px 0">存档 JSON（可复制到其它设备）</div>
+              <textarea class="input" id="saveIO" placeholder="导出后会显示在这里…"></textarea>
+            </label>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <script id="GAME_DATA" type="application/json">
+      {
+        "meta": {
+          "id": "__GAME_SLUG__",
+          "title": "__GAME_TITLE__",
+          "titleEn": "__GAME_TITLE_EN__",
+          "version": 1,
+          "start": "start"
+        },
+        "assetPacks": {
+          "svg": null,
+          "jp": {
+            "label": "日系二次元（jp03）",
+            "backgrounds": { "default": "./assets/generated/jp/jp03-bg.png" },
+            "heroOutfits": {
+              "coat": "./assets/generated/jp/jp03-char_a-alpha.png",
+              "hoodie": "./assets/generated/jp/jp03-char_b-alpha.png"
+            },
+            "chars": { "you": "./assets/generated/jp/jp03-char_a-alpha.png" },
+            "portraits": {
+              "neutral": "./assets/generated/jp/jp03-expr-1-alpha.png",
+              "worried": "./assets/generated/jp/jp03-expr-2-alpha.png",
+              "suspicious": "./assets/generated/jp/jp03-expr-3-alpha.png",
+              "determined": "./assets/generated/jp/jp03-expr-4-alpha.png"
+            }
+          },
+          "comic": {
+            "label": "彩漫（cm03）",
+            "backgrounds": { "default": "./assets/generated/comic/cm03-bg.png" },
+            "heroOutfits": {
+              "coat": "./assets/generated/comic/cm03-char_a-alpha.png",
+              "hoodie": "./assets/generated/comic/cm03-char_b-alpha.png"
+            },
+            "chars": { "you": "./assets/generated/comic/cm03-char_a-alpha.png" },
+            "portraits": {
+              "neutral": "./assets/generated/comic/cm03-expr-1-alpha.png",
+              "worried": "./assets/generated/comic/cm03-expr-2-alpha.png",
+              "suspicious": "./assets/generated/comic/cm03-expr-3-alpha.png",
+              "determined": "./assets/generated/comic/cm03-expr-4-alpha.png"
+            }
+          }
+        },
+        "characters": {
+          "narrator": { "label": "旁白" },
+          "you": { "label": "{{name}}" },
+          "aunt": { "label": "前台" },
+          "lin": { "label": "林" },
+          "shadow": { "label": "黑影" },
+          "trap": { "label": "细线" }
+        },
+        "state": {
+          "player": { "name": "你", "outfit": "coat", "emotion": "neutral" },
+          "stats": { "intuition": 0, "trust": 0, "clue": 0, "stamina": 3 },
+          "flags": {}
+        },
+        "bgPresets": {
+          "rain": { "label": "LOBBY / RAIN", "hint": "云港公寓 · 大厅" },
+          "stairs": { "label": "STAIRS / ECHO", "hint": "楼梯间 · 回声" },
+          "elevator": { "label": "ELEVATOR / BOX", "hint": "电梯 · 纸箱" },
+          "corridor": { "label": "CORRIDOR / NOTE", "hint": "12 层 · 走廊" },
+          "kitchen": { "label": "KITCHEN / CLICK", "hint": "厨房 · 金属声" },
+          "ending": { "label": "ENDING", "hint": "结局" }
+        },
+        "scenes": {
+          "start": {
+            "bg": { "preset": "rain", "title": "云港公寓", "subtitle": "雨夜 / 大厅" },
+            "cast": [{ "id": "you", "side": "center", "mood": "湿透" }],
+            "ui": { "portrait": "worried" },
+            "lines": [
+              {
+                "speaker": "narrator",
+                "text": "雨把城市洗得发白。你抱着湿透的外套走进云港公寓，大厅的灯在水汽里泛着冷光。"
+              },
+              { "speaker": "narrator", "text": "前台旁的公告写着：[mono]12 层电路检修，照明不稳定[/mono]。" },
+              {
+                "speaker": "narrator",
+                "text": "你在心里对自己说：[hl]“{{name}}，别慌。”[/hl] 可那种说不清的预感，像潮湿的袖口一样贴在皮肤上。"
+              }
+            ],
+            "choices": [
+              {
+                "label": "走楼梯（更安全，但更累）",
+                "to": "stairs",
+                "effects": [
+                  { "op": "inc", "path": "stats.intuition", "value": 1 },
+                  { "op": "dec", "path": "stats.stamina", "value": 1 }
+                ]
+              },
+              {
+                "label": "坐电梯（更快）",
+                "to": "elevator",
+                "effects": [{ "op": "inc", "path": "stats.trust", "value": 1 }]
+              },
+              {
+                "label": "先去前台问一句（拿到信息）",
+                "to": "concierge",
+                "effects": [
+                  { "op": "inc", "path": "stats.clue", "value": 1 },
+                  { "op": "set", "path": "flags.askedConcierge", "value": true }
+                ]
+              }
+            ]
+          },
+          "concierge": {
+            "bg": { "preset": "rain", "label": "LOBBY / FRONT DESK", "hint": "前台", "intensity": 1.1 },
+            "cast": [
+              { "id": "you", "side": "left", "mood": "谨慎" },
+              { "id": "aunt", "side": "right", "mood": "眼神闪躲" }
+            ],
+            "ui": { "portrait": "neutral" },
+            "lines": [
+              { "speaker": "you", "text": "阿姨，12 层今天怎么回事？" },
+              { "speaker": "aunt", "text": "有人来修电。电梯别停太久。" },
+              { "speaker": "you", "text": "有人上去过吗？" },
+              { "speaker": "aunt", "text": "……如果你回去发现不对劲，[hl]先别开灯[/hl]。" }
+            ],
+            "choices": [
+              { "label": "走向楼梯间", "to": "stairs", "effects": [{ "op": "inc", "path": "stats.intuition", "value": 1 }] },
+              { "label": "转向电梯", "to": "elevator" }
+            ]
+          },
+          "stairs": {
+            "bg": { "preset": "stairs", "title": "楼梯间", "subtitle": "灯一闪一闪" },
+            "cast": [{ "id": "you", "side": "center", "mood": "听见回声" }],
+            "ui": { "portrait": "worried" },
+            "lines": [
+              { "speaker": "narrator", "text": "楼梯间的灯一闪一闪。每上一层，回声都像更靠近你一步。" },
+              { "speaker": "narrator", "text": "到 6 楼拐角，你看到一扇门虚掩着，门缝里漏出一点暖黄的光。" },
+              { "speaker": "narrator", "text": "你停住脚步：那光像邀请，也像陷阱。" }
+            ],
+            "choices": [
+              {
+                "label": "凑近看一眼（+线索）",
+                "to": "stairs_peek",
+                "effects": [
+                  { "op": "inc", "path": "stats.clue", "value": 1 },
+                  { "op": "inc", "path": "stats.intuition", "value": 1 }
+                ]
+              },
+              { "label": "不惹麻烦，继续上楼", "to": "corridor" }
+            ]
+          },
+          "stairs_peek": {
+            "bg": { "preset": "stairs", "label": "STAIRS / DOOR GAP", "hint": "门缝", "intensity": 1.05 },
+            "cast": [{ "id": "you", "side": "center", "mood": "呼吸放轻" }],
+            "ui": { "portrait": "suspicious" },
+            "lines": [
+              { "speaker": "narrator", "text": "门后是空的，但地上有一截被剪断的扎带。" },
+              { "speaker": "narrator", "text": "你把它放进口袋：一小段线头，也可能是答案的开始。" }
+            ],
+            "choices": [{ "label": "继续上楼", "to": "corridor" }]
+          },
+          "elevator": {
+            "bg": { "preset": "elevator", "title": "电梯", "subtitle": "金属箱体" },
+            "cast": [{ "id": "you", "side": "center", "mood": "按下 12F" }],
+            "ui": { "portrait": "neutral" },
+            "lines": [
+              { "speaker": "narrator", "text": "电梯门合上。你的影子被金属箱体折成两段。" },
+              { "speaker": "narrator", "text": "你盯着数字跳动：11……12。" }
+            ],
+            "choices": [
+              {
+                "label": "走廊尽头的门（需要线索 ≥ 1）",
+                "to": "corridor",
+                "requires": { "path": "stats.clue", "gte": 1 },
+                "lockedHint": "你总觉得少了点什么。"
+              },
+              { "label": "直接回房（稳）", "to": "ending_safe" }
+            ]
+          },
+          "corridor": {
+            "bg": { "preset": "corridor", "title": "12 层", "subtitle": "走廊尽头" },
+            "cast": [{ "id": "you", "side": "center", "mood": "手电握紧" }],
+            "ui": { "portrait": "determined" },
+            "lines": [
+              { "speaker": "narrator", "text": "你把光压得很低，只照地面。地毯边缘有一条不自然的凸起，像是藏着细线。" },
+              { "speaker": "narrator", "text": "厨房门半开，里面有金属轻轻碰撞的声音，像工具箱。" }
+            ],
+            "choices": [
+              { "label": "后退到门口，报警（稳）", "to": "ending_safe" },
+              {
+                "label": "绕开地毯凸起，去看厨房（+线索）",
+                "to": "kitchen",
+                "effects": [{ "op": "inc", "path": "stats.clue", "value": 1 }]
+              }
+            ]
+          },
+          "kitchen": {
+            "bg": { "preset": "kitchen", "title": "厨房", "subtitle": "金属轻响" },
+            "cast": [
+              { "id": "you", "side": "left", "mood": "屏住呼吸" },
+              { "id": "shadow", "side": "right", "mood": "一动不动" }
+            ],
+            "ui": { "portrait": "determined" },
+            "lines": [
+              { "speaker": "narrator", "text": "你把光打在台面上：刀架空了一格，水槽里却没有洗过的痕迹。" },
+              { "speaker": "narrator", "text": "地上有一枚塑料卡扣，像工牌上的扣子。" },
+              { "speaker": "narrator", "text": "背后突然传来一声轻响，像有人踩到了地毯的边。" }
+            ],
+            "choices": [
+              {
+                "label": "立刻后退到门口（保命）",
+                "to": "ending_safe",
+                "effects": [{ "op": "inc", "path": "stats.intuition", "value": 1 }]
+              },
+              {
+                "label": "大声呼救（如果你联系过前台，会有人注意到）",
+                "toIf": {
+                  "if": { "path": "flags.askedConcierge", "eq": true },
+                  "then": "ending_truth",
+                  "else": "ending_safe"
+                }
+              },
+              { "label": "赌错一步（Bad End）", "to": "ending_trap" }
+            ]
+          },
+          "ending_safe": {
+            "bg": { "preset": "ending", "title": "结局", "subtitle": "保守的安全", "intensity": 0.9 },
+            "end": true,
+            "cast": [{ "id": "you", "side": "center", "mood": "站在走廊尽头" }],
+            "ui": { "portrait": "neutral" },
+            "lines": [
+              { "speaker": "narrator", "text": "你选择了最保守的路线：退出、锁门、报警/联系物业。" },
+              { "speaker": "narrator", "text": "你不知道屋里那个人最终是否被抓到，但你至少保住了今天。" },
+              { "speaker": "narrator", "text": "下一次回家之前，你会换一把锁。" }
+            ],
+            "choices": [{ "label": "重开一次", "to": "start", "effects": [{ "op": "reset" }] }]
+          },
+          "ending_truth": {
+            "bg": { "preset": "ending", "title": "真结局", "subtitle": "你抓住了线头", "intensity": 1.05 },
+            "end": true,
+            "cast": [
+              { "id": "you", "side": "left", "mood": "不抖" },
+              { "id": "lin", "side": "right", "mood": "手电像刀" }
+            ],
+            "ui": { "portrait": "determined" },
+            "lines": [
+              { "speaker": "narrator", "text": "走廊里传来急促的脚步声。林的手电光像刀一样切进来。" },
+              { "speaker": "narrator", "text": "那一瞬间你看清了对方的工装——并不属于任何你见过的物业。" },
+              { "speaker": "narrator", "text": "你不是英雄，你只是没让自己变成“下一条新闻”。" }
+            ],
+            "choices": [{ "label": "重开一次", "to": "start", "effects": [{ "op": "reset" }] }]
+          },
+          "ending_trap": {
+            "bg": { "preset": "ending", "title": "坏结局", "subtitle": "灯亮的那一下", "intensity": 1.2 },
+            "end": true,
+            "cast": [
+              { "id": "you", "side": "left", "mood": "脚下一空" },
+              { "id": "trap", "side": "right", "mood": "咔" }
+            ],
+            "ui": { "portrait": "worried" },
+            "lines": [
+              { "speaker": "narrator", "text": "灯亮的瞬间，你的脚踩到了那条细线。" },
+              { "speaker": "narrator", "text": "你只听见“咔”的一声——像开关，也像某种被释放的东西。" },
+              { "speaker": "narrator", "text": "[hl]有些选择，真的只能做一次。[/hl]" }
+            ],
+            "choices": [{ "label": "重开一次", "to": "start", "effects": [{ "op": "reset" }] }]
+          }
+        }
+      }
+    </script>
+
+    <script>
+      (() => {
+        const GAME_DATA_EL = document.getElementById("GAME_DATA");
+        if (!GAME_DATA_EL) throw new Error("Missing GAME_DATA");
+        const DATA = JSON.parse(GAME_DATA_EL.textContent || "{}");
+
+        const STORAGE_KEY = `${DATA?.meta?.id || "vn"}_save_v${Number(DATA?.meta?.version || 1)}`;
+        const PACK_STORAGE_KEY = `${DATA?.meta?.id || "vn"}_pack_v${Number(DATA?.meta?.version || 1)}`;
+
+        const $ = (id) => document.getElementById(id);
+        const bgAEl = $("bgA");
+        const bgBEl = $("bgB");
+        const charactersEl = $("characters");
+        const hudStatsEl = $("hudStats");
+        const dialogBoxEl = $("dialogBox");
+        const portraitEl = $("portrait");
+        const speakerNameEl = $("speakerName");
+        const sceneMetaEl = $("sceneMeta");
+        const lineEl = $("line");
+        const choicesEl = $("choices");
+        const continueHintEl = $("continueHint");
+
+        const debugEl = $("debug");
+
+        const startOverlayEl = $("startOverlay");
+        const startBtn = $("startBtn");
+        const loadBtn = $("loadBtn");
+        const menuBtn = $("menuBtn");
+        const menuModalEl = $("menuModal");
+        const closeMenuBtn = $("closeMenuBtn");
+        const saveBtn = $("saveBtn");
+        const loadBtn2 = $("loadBtn2");
+        const restartBtn = $("restartBtn");
+        const exportBtn = $("exportBtn");
+        const importBtn = $("importBtn");
+        const copyBtn = $("copyBtn");
+        const saveIOEl = $("saveIO");
+        const nameInputEl = $("nameInput");
+        const packSelectEl = $("packSelect");
+        const outfitSelectEl = $("outfitSelect");
+
+        const escapeHTML = (str) =>
+          String(str)
+            .replaceAll("&", "&amp;")
+            .replaceAll("<", "&lt;")
+            .replaceAll(">", "&gt;")
+            .replaceAll('"', "&quot;")
+            .replaceAll("'", "&#39;");
+
+        const safeNumber = (value, fallback = 0) => {
+          const n = Number(value);
+          return Number.isFinite(n) ? n : fallback;
+        };
+
+        const clone = (obj) => {
+          if (typeof structuredClone === "function") return structuredClone(obj);
+          return JSON.parse(JSON.stringify(obj));
+        };
+
+        const nowISO = () => new Date().toISOString();
+
+        const DEFAULT_STATE = () => clone(DATA?.state || {});
+
+        const DEFAULT_SAVE = () => ({
+          version: Number(DATA?.meta?.version || 1),
+          savedAt: nowISO(),
+          sceneId: String(DATA?.meta?.start || "start"),
+          lineIndex: 0,
+          mode: "line", // line | choice | end
+          state: DEFAULT_STATE(),
+          history: [],
+        });
+
+        const ASSET_PACKS = DATA?.assetPacks || {};
+        const CHARACTERS = DATA?.characters || {};
+        const BG_PRESETS = DATA?.bgPresets || {};
+        const SCENES = DATA?.scenes || {};
+
+        const getPath = (obj, path) => {
+          const p = String(path || "").trim();
+          if (!p) return undefined;
+          const parts = p.split(".");
+          let cur = obj;
+          for (const part of parts) {
+            if (!cur || typeof cur !== "object") return undefined;
+            cur = cur[part];
+          }
+          return cur;
+        };
+
+        const setPath = (obj, path, value) => {
+          const p = String(path || "").trim();
+          if (!p) return;
+          const parts = p.split(".");
+          let cur = obj;
+          for (let i = 0; i < parts.length - 1; i += 1) {
+            const key = parts[i];
+            if (!cur[key] || typeof cur[key] !== "object") cur[key] = {};
+            cur = cur[key];
+          }
+          cur[parts[parts.length - 1]] = value;
+        };
+
+        const replaceTokens = (raw, state) =>
+          String(raw)
+            .replaceAll("{{name}}", state?.player?.name || "你")
+            .replaceAll("{{clue}}", String(state?.stats?.clue ?? 0));
+
+        const format = (raw, state) => {
+          const replaced = replaceTokens(raw, state);
+          return escapeHTML(replaced)
+            .replace(/\[hl\]([\s\S]*?)\[\/hl\]/g, '<span class="hl">$1</span>')
+            .replace(/\[mono\]([\s\S]*?)\[\/mono\]/g, "<code>$1</code>");
+        };
+
+        const toPlain = (raw, state) =>
+          replaceTokens(raw || "", state)
+            .replaceAll(/\[\/?hl\]/g, "")
+            .replaceAll(/\[\/?mono\]/g, "");
+
+        const getSpeakerLabel = (speakerId, state) => {
+          const sp = speakerId ? String(speakerId) : "narrator";
+          const def = CHARACTERS?.[sp];
+          const label = def && typeof def === "object" ? def.label : sp;
+          return toPlain(String(label || sp), state) || String(sp);
+        };
+
+        const evalCondition = (cond, state) => {
+          if (!cond) return true;
+          if (Array.isArray(cond)) return cond.every((c) => evalCondition(c, state));
+          if (typeof cond !== "object") return true;
+
+          if (Array.isArray(cond.all)) return cond.all.every((c) => evalCondition(c, state));
+          if (Array.isArray(cond.any)) return cond.any.some((c) => evalCondition(c, state));
+
+          const v = getPath(state, cond.path);
+          if ("eq" in cond) return v === cond.eq;
+          if ("ne" in cond) return v !== cond.ne;
+          if ("gt" in cond) return Number(v) > Number(cond.gt);
+          if ("gte" in cond) return Number(v) >= Number(cond.gte);
+          if ("lt" in cond) return Number(v) < Number(cond.lt);
+          if ("lte" in cond) return Number(v) <= Number(cond.lte);
+          return true;
+        };
+
+        const applyEffects = (effects, state) => {
+          const list = Array.isArray(effects) ? effects : [];
+          for (const e of list) {
+            if (!e || typeof e !== "object") continue;
+            const op = String(e.op || "").trim().toLowerCase();
+            if (op === "reset") {
+              const fresh = DEFAULT_STATE();
+              Object.keys(state).forEach((k) => delete state[k]);
+              Object.assign(state, fresh);
+              continue;
+            }
+            const p = String(e.path || "").trim();
+            if (!p) continue;
+            const cur = getPath(state, p);
+            if (op === "set") setPath(state, p, e.value);
+            else if (op === "inc") setPath(state, p, Number(cur || 0) + Number(e.value || 1));
+            else if (op === "dec") setPath(state, p, Number(cur || 0) - Number(e.value || 1));
+          }
+        };
+
+        const makeBGSVG = (bg) => {
+          const palette = String(bg?.preset || bg?.palette || "rain").toLowerCase();
+          const intensity = safeNumber(bg?.intensity, 1);
+          const noise = Math.max(0.06, Math.min(0.18, 0.06 + 0.05 * intensity));
+          const stroke = Math.max(0.05, Math.min(0.14, 0.06 + 0.03 * intensity));
+
+          const patterns = {
+            rain: `
+              <pattern id="p" width="36" height="36" patternUnits="userSpaceOnUse">
+                <path d="M0 32 L32 0" stroke="#fafafa" stroke-opacity="${stroke}" stroke-width="1.2" />
+                <path d="M8 36 L36 8" stroke="#fafafa" stroke-opacity="${stroke * 0.65}" stroke-width="1.2" />
+                <circle cx="8" cy="10" r="1.4" fill="#fafafa" fill-opacity="${noise}" />
+                <circle cx="24" cy="22" r="1.4" fill="#fafafa" fill-opacity="${noise * 0.7}" />
+              </pattern>
+            `,
+            stairs: `
+              <pattern id="p" width="48" height="48" patternUnits="userSpaceOnUse">
+                <path d="M6 42 H42 V6" fill="none" stroke="#fafafa" stroke-opacity="${stroke}" stroke-width="1.6" />
+                <path d="M16 42 H42 V16" fill="none" stroke="#fafafa" stroke-opacity="${stroke * 0.7}" stroke-width="1.6" />
+                <path d="M26 42 H42 V26" fill="none" stroke="#fafafa" stroke-opacity="${stroke * 0.5}" stroke-width="1.6" />
+              </pattern>
+            `,
+            elevator: `
+              <pattern id="p" width="60" height="60" patternUnits="userSpaceOnUse">
+                <rect x="14" y="10" width="32" height="40" fill="none" stroke="#fafafa" stroke-opacity="${stroke}" stroke-width="1.6" />
+                <path d="M30 10 V50" stroke="#fafafa" stroke-opacity="${stroke * 0.7}" stroke-width="1.6" />
+                <circle cx="30" cy="22" r="1.4" fill="#fafafa" fill-opacity="${noise}" />
+                <circle cx="30" cy="36" r="1.4" fill="#fafafa" fill-opacity="${noise}" />
+              </pattern>
+            `,
+            corridor: `
+              <pattern id="p" width="56" height="56" patternUnits="userSpaceOnUse">
+                <path d="M10 10 H46 V46 H10 Z" fill="none" stroke="#fafafa" stroke-opacity="${stroke}" stroke-width="1.6" />
+                <path d="M10 28 H46" stroke="#fafafa" stroke-opacity="${stroke * 0.7}" stroke-width="1.6" />
+                <circle cx="16" cy="18" r="1.4" fill="#fafafa" fill-opacity="${noise}" />
+                <circle cx="40" cy="38" r="1.4" fill="#fafafa" fill-opacity="${noise * 0.7}" />
+              </pattern>
+            `,
+            kitchen: `
+              <pattern id="p" width="64" height="64" patternUnits="userSpaceOnUse">
+                <path d="M10 18 H54" stroke="#fafafa" stroke-opacity="${stroke}" stroke-width="1.8" />
+                <path d="M18 10 V54" stroke="#fafafa" stroke-opacity="${stroke * 0.7}" stroke-width="1.8" />
+                <path d="M28 54 C28 42, 36 42, 36 54" fill="none" stroke="#fafafa" stroke-opacity="${stroke}" stroke-width="1.8" />
+                <circle cx="46" cy="30" r="1.4" fill="#fafafa" fill-opacity="${noise}" />
+              </pattern>
+            `,
+            ending: `
+              <pattern id="p" width="72" height="72" patternUnits="userSpaceOnUse">
+                <path d="M10 62 L62 10" stroke="#fafafa" stroke-opacity="${stroke}" stroke-width="2" />
+                <path d="M10 10 L62 62" stroke="#fafafa" stroke-opacity="${stroke * 0.55}" stroke-width="2" />
+              </pattern>
+            `,
+          };
+
+          const p = patterns[palette] || patterns.rain;
+          return `
+            <svg viewBox="0 0 1200 800" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid slice">
+              <defs>${p}</defs>
+              <rect width="1200" height="800" fill="#070708" />
+              <rect width="1200" height="800" fill="url(#p)" />
+              <rect width="1200" height="800" fill="rgba(0,0,0,0.25)" />
+            </svg>
+          `.trim();
+        };
+
+        const makeCharSVG = (char, isActive) => {
+          const name = escapeHTML(String(char?.name || "角色"));
+          const mood = escapeHTML(String(char?.mood || ""));
+          const accent = isActive ? "rgba(250,250,250,0.16)" : "rgba(250,250,250,0.10)";
+          const stroke = isActive ? "rgba(250,250,250,0.55)" : "rgba(250,250,250,0.38)";
+          return `
+            <svg viewBox="0 0 520 980" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="角色立绘占位">
+              <defs>
+                <linearGradient id="g" x1="0" y1="0" x2="0" y2="1">
+                  <stop offset="0" stop-color="#070708" stop-opacity="0.0" />
+                  <stop offset="1" stop-color="#fafafa" stop-opacity="0.07" />
+                </linearGradient>
+              </defs>
+              <path d="M90 940 C120 760, 160 640, 260 600 C360 640, 400 760, 430 940" fill="${accent}" stroke="${stroke}" stroke-width="2.2" />
+              <path d="M160 610 C160 520, 190 460, 260 460 C330 460, 360 520, 360 610" fill="none" stroke="${stroke}" stroke-width="2.2" />
+              <circle cx="260" cy="360" r="92" fill="none" stroke="${stroke}" stroke-width="2.2" />
+              <path d="M210 350 C230 330, 290 330, 310 350" fill="none" stroke="${stroke}" stroke-width="2.2" stroke-linecap="round" />
+              <path d="M220 390 C240 410, 280 410, 300 390" fill="none" stroke="${stroke}" stroke-width="2.2" stroke-linecap="round" />
+              <rect x="70" y="36" width="380" height="110" fill="rgba(10,10,10,0.62)" stroke="rgba(255,255,255,0.18)" />
+              <text x="96" y="78" font-size="12" letter-spacing="4" fill="rgba(250,250,250,0.78)" style="text-transform: uppercase">${name}</text>
+              <text x="96" y="110" font-size="13" fill="rgba(250,250,250,0.88)">${mood}</text>
+              <rect x="0" y="0" width="520" height="980" fill="url(#g)" />
+            </svg>
+          `.trim();
+        };
+
+        const makePortraitSVG = (key, speaker) => {
+          const safeKey = escapeHTML(String(key || "neutral"));
+          const sp = String(speaker || "").trim();
+          const initial = escapeHTML(sp ? sp.slice(0, 1) : "—");
+          return `
+            <svg viewBox="0 0 72 72" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="头像占位">
+              <rect x="0" y="0" width="72" height="72" fill="rgba(0,0,0,0.0)" />
+              <circle cx="36" cy="30" r="16" fill="rgba(255,255,255,0.10)" stroke="rgba(255,255,255,0.55)" stroke-width="1.6" />
+              <path d="M22 62 C26 52, 30 48, 36 48 C42 48, 46 52, 50 62" fill="none" stroke="rgba(255,255,255,0.42)" stroke-width="1.6" stroke-linecap="round" />
+              <text x="36" y="33" text-anchor="middle" font-family="ui-monospace, Menlo, Monaco, Consolas, monospace" font-size="12" fill="rgba(255,255,255,0.78)">${initial}</text>
+              <text x="36" y="69" text-anchor="middle" font-family="ui-monospace, Menlo, Monaco, Consolas, monospace" font-size="9" letter-spacing="1.2" fill="rgba(255,255,255,0.46)">${safeKey.toUpperCase()}</text>
+            </svg>
+          `.trim();
+        };
+
+        let save = DEFAULT_SAVE();
+        let bgActive = "A";
+        let started = false;
+        let assetPackKey = "jp";
+
+        const getScene = (id) => SCENES[id] || null;
+
+        const getCurrentLine = (scene) => {
+          const lines = Array.isArray(scene?.lines) ? scene.lines : [];
+          const idx = safeNumber(save.lineIndex, 0);
+          return lines[idx] || null;
+        };
+
+        const setBG = (scene) => {
+          const pack = ASSET_PACKS[assetPackKey] || null;
+          const bgBase = scene?.bg || {};
+
+          const presetKey = String(bgBase.preset || bgBase.palette || "").trim();
+          const preset = presetKey && BG_PRESETS[presetKey] ? BG_PRESETS[presetKey] : null;
+
+          const packBg =
+            (presetKey && pack?.backgrounds && typeof pack.backgrounds[presetKey] === "string"
+              ? pack.backgrounds[presetKey]
+              : "") ||
+            (pack?.backgrounds && typeof pack.backgrounds.default === "string" ? pack.backgrounds.default : "") ||
+            "";
+
+          const nextHTML = packBg
+            ? `<img alt="场景背景" src="${escapeHTML(packBg)}" />`
+            : makeBGSVG({ ...preset, ...bgBase });
+
+          const incoming = bgActive === "A" ? bgBEl : bgAEl;
+          const outgoing = bgActive === "A" ? bgAEl : bgBEl;
+
+          incoming.innerHTML = nextHTML;
+          incoming.classList.add("is-active");
+          outgoing.classList.remove("is-active");
+          bgActive = bgActive === "A" ? "B" : "A";
+        };
+
+        const resolveCast = (scene) => {
+          const raw = Array.isArray(scene?.cast) ? scene.cast : [];
+          return raw
+            .map((c) => {
+              if (typeof c === "string") return { id: c, side: "center" };
+              if (c && typeof c === "object") return c;
+              return null;
+            })
+            .filter(Boolean);
+        };
+
+        const renderCharacters = (scene) => {
+          const cast = resolveCast(scene);
+          const line = getCurrentLine(scene);
+          const activeId = line?.speaker ? String(line.speaker) : "";
+          const activePack = ASSET_PACKS[assetPackKey] || null;
+          const outfit =
+            typeof save.state.player?.outfit === "string" && save.state.player.outfit.trim()
+              ? save.state.player.outfit.trim().toLowerCase()
+              : "coat";
+
+          if (!cast.length) {
+            charactersEl.innerHTML = "";
+            return;
+          }
+
+          const rows = cast.map((entry) => {
+            const cid = String(entry.id || "").trim();
+            if (!cid) return "";
+            const side = String(entry.side || (cid === "you" ? "center" : "right")).trim().toLowerCase();
+            const isActive = cid === activeId;
+            const displayName = getSpeakerLabel(cid, save.state);
+            const displayMood = toPlain(entry.mood || "", save.state);
+
+            const overrideSrc = String(entry.src || "").trim();
+            const packSrc =
+              cid === "you"
+                ? activePack?.heroOutfits?.[outfit] || activePack?.chars?.you || ""
+                : activePack?.chars?.[cid] || "";
+            const src = overrideSrc || packSrc;
+
+            if (src) {
+              const alt = escapeHTML(displayName);
+              return `<div class="char ${isActive ? "is-active" : ""}" data-side="${escapeHTML(
+                side
+              )}"><img alt="${alt}" src="${escapeHTML(src)}" /></div>`;
+            }
+
+            const svg = makeCharSVG({ name: displayName, mood: displayMood }, isActive);
+            return `<div class="char ${isActive ? "is-active" : ""}" data-side="${escapeHTML(
+              side
+            )}">${svg}</div>`;
+          });
+
+          charactersEl.innerHTML = rows.join("");
+        };
+
+        const renderHUD = () => {
+          const st = save.state.stats || {};
+          hudStatsEl.textContent = `INT ${safeNumber(st.intuition, 0)} · TRUST ${safeNumber(
+            st.trust,
+            0
+          )} · CLUE ${safeNumber(st.clue, 0)} · STA ${safeNumber(st.stamina, 0)}`;
+        };
+
+        const renderLine = (scene) => {
+          const line = getCurrentLine(scene);
+          const speakerId = line?.speaker ? String(line.speaker) : "narrator";
+          const speaker = getSpeakerLabel(speakerId, save.state);
+          const activePack = ASSET_PACKS[assetPackKey] || null;
+
+          const portraitKey =
+            (typeof line?.portrait === "string" ? line.portrait.trim().toLowerCase() : "") ||
+            (typeof scene?.ui?.portrait === "string" ? scene.ui.portrait.trim().toLowerCase() : "") ||
+            (typeof save.state.player?.emotion === "string"
+              ? save.state.player.emotion.trim().toLowerCase()
+              : "") ||
+            "neutral";
+          const portraitSrc =
+            (portraitKey && typeof activePack?.portraits?.[portraitKey] === "string"
+              ? activePack.portraits[portraitKey].trim()
+              : "") || "";
+
+          portraitEl.dataset.key = portraitKey;
+          portraitEl.innerHTML = portraitSrc
+            ? `<img alt="${escapeHTML(portraitKey)}" src="${escapeHTML(portraitSrc)}" />`
+            : makePortraitSVG(portraitKey, speaker);
+
+          speakerNameEl.textContent = speaker;
+
+          const bg = scene?.bg || {};
+          const presetKey = String(bg?.preset || bg?.palette || "").trim();
+          sceneMetaEl.textContent = String(bg?.label || BG_PRESETS[presetKey]?.label || "SCENE");
+
+          if (!line) {
+            lineEl.innerHTML = "<p>（……）</p>";
+            return;
+          }
+          lineEl.innerHTML = `<p>${format(line.text || "", save.state)}</p>`;
+        };
+
+        const renderChoices = (scene) => {
+          const choices = Array.isArray(scene?.choices) ? scene.choices : [];
+          choicesEl.innerHTML = "";
+
+          const show = save.mode === "choice";
+          continueHintEl.style.display = show ? "none" : "flex";
+          if (!show) return;
+
+          choices.forEach((choice, idx) => {
+            const enabled = evalCondition(choice?.requires, save.state);
+            const keyHint = idx < 9 ? String(idx + 1) : "…";
+
+            const row = document.createElement("div");
+            const btn = document.createElement("button");
+            btn.type = "button";
+            btn.className = "choice";
+            btn.disabled = !enabled;
+            btn.innerHTML = `
+              <div class="choice-inner">
+                <span class="choice-index">${escapeHTML(keyHint)}</span>
+                <span class="choice-label">${escapeHTML(choice.label || "")}</span>
+              </div>
+            `;
+            btn.addEventListener("click", () => pickChoice(idx));
+
+            row.appendChild(btn);
+            if (!enabled) {
+              const hint = document.createElement("div");
+              hint.className = "choice-hint";
+              hint.textContent = choice.lockedHint || "条件未满足。";
+              row.appendChild(hint);
+            }
+            choicesEl.appendChild(row);
+          });
+        };
+
+        const renderDebug = () => {
+          if (!debugEl.classList.contains("is-open")) return;
+          const scene = getScene(save.sceneId);
+          debugEl.textContent = JSON.stringify(
+            {
+              sceneId: save.sceneId,
+              mode: save.mode,
+              lineIndex: save.lineIndex,
+              pack: assetPackKey,
+              state: save.state,
+              scene: scene?.bg?.title || scene?.bg?.label || null,
+            },
+            null,
+            2
+          );
+        };
+
+        const render = () => {
+          const scene = getScene(save.sceneId);
+          if (!scene) return;
+          setBG(scene);
+          renderHUD();
+          renderCharacters(scene);
+          renderLine(scene);
+          renderChoices(scene);
+          renderDebug();
+        };
+
+        const saveToLocal = () => {
+          const payload = {
+            version: save.version,
+            savedAt: nowISO(),
+            sceneId: save.sceneId,
+            lineIndex: save.lineIndex,
+            mode: save.mode,
+            state: save.state,
+            history: save.history,
+          };
+          try {
+            localStorage.setItem(STORAGE_KEY, JSON.stringify(payload));
+          } catch {
+            // ignore
+          }
+        };
+
+        const normalizeSave = (input) => {
+          const base = DEFAULT_SAVE();
+          const s = input && typeof input === "object" ? input : {};
+          const sceneId = typeof s.sceneId === "string" ? s.sceneId : base.sceneId;
+          base.sceneId = getScene(sceneId) ? sceneId : String(DATA?.meta?.start || "start");
+          base.lineIndex = safeNumber(s.lineIndex, 0);
+          base.mode = typeof s.mode === "string" ? s.mode : "line";
+
+          if (s.state && typeof s.state === "object") base.state = s.state;
+          if (Array.isArray(s.history)) base.history = s.history;
+          return base;
+        };
+
+        const loadFromLocal = () => {
+          try {
+            const raw = localStorage.getItem(STORAGE_KEY);
+            if (!raw) return false;
+            const parsed = JSON.parse(raw);
+            save = normalizeSave(parsed);
+            return true;
+          } catch {
+            return false;
+          }
+        };
+
+        const hideStartOverlay = () => {
+          started = true;
+          startOverlayEl.classList.add("is-hidden");
+          startOverlayEl.setAttribute("aria-hidden", "true");
+        };
+
+        const applyName = () => {
+          const name = nameInputEl.value.trim().slice(0, 16) || "你";
+          if (!save.state.player) save.state.player = {};
+          save.state.player.name = name;
+          render();
+        };
+
+        const setOutfit = (raw) => {
+          const outfit = typeof raw === "string" ? raw.trim().toLowerCase() : "";
+          if (!save.state.player) save.state.player = {};
+          save.state.player.outfit = outfit || "coat";
+          render();
+        };
+
+        const setAssetPack = (key) => {
+          const k = typeof key === "string" ? key : "svg";
+          assetPackKey = ASSET_PACKS[k] ? k : "svg";
+          try {
+            localStorage.setItem(PACK_STORAGE_KEY, assetPackKey);
+          } catch {
+            // ignore
+          }
+          if (packSelectEl) packSelectEl.value = assetPackKey;
+          render();
+        };
+
+        const openMenu = () => {
+          menuModalEl.classList.add("is-open");
+          nameInputEl.value = save.state.player?.name || "你";
+          if (packSelectEl) packSelectEl.value = assetPackKey;
+          if (outfitSelectEl) outfitSelectEl.value = save.state.player?.outfit || "coat";
+          nameInputEl.focus();
+        };
+
+        const closeMenu = () => {
+          menuModalEl.classList.remove("is-open");
+        };
+
+        const exportJSON = () => {
+          const payload = {
+            version: save.version,
+            savedAt: nowISO(),
+            sceneId: save.sceneId,
+            lineIndex: save.lineIndex,
+            mode: save.mode,
+            state: save.state,
+            history: save.history,
+          };
+          saveIOEl.value = JSON.stringify(payload, null, 2);
+        };
+
+        const copyJSON = async () => {
+          const text = saveIOEl.value.trim();
+          if (!text) return;
+          try {
+            await navigator.clipboard.writeText(text);
+          } catch {
+            saveIOEl.focus();
+            saveIOEl.select();
+          }
+        };
+
+        const importJSON = () => {
+          const text = saveIOEl.value.trim();
+          if (!text) return;
+          try {
+            const parsed = JSON.parse(text);
+            save = normalizeSave(parsed);
+            render();
+            closeMenu();
+          } catch {
+            // ignore
+          }
+        };
+
+        const restart = () => {
+          save = DEFAULT_SAVE();
+          render();
+          closeMenu();
+        };
+
+        const advance = () => {
+          const scene = getScene(save.sceneId);
+          if (!scene) return;
+
+          if (save.mode !== "line") return;
+
+          const lines = Array.isArray(scene.lines) ? scene.lines : [];
+          const nextIdx = safeNumber(save.lineIndex, 0) + 1;
+          if (nextIdx < lines.length) {
+            save.lineIndex = nextIdx;
+            render();
+            return;
+          }
+
+          const hasChoices = Array.isArray(scene.choices) && scene.choices.length > 0;
+          if (hasChoices) {
+            save.mode = "choice";
+            render();
+            return;
+          }
+          if (scene.end) {
+            save.mode = "end";
+            render();
+            return;
+          }
+        };
+
+        const pickChoice = (index) => {
+          const scene = getScene(save.sceneId);
+          if (!scene) return;
+          const choices = Array.isArray(scene.choices) ? scene.choices : [];
+          const choice = choices[index];
+          if (!choice) return;
+          if (!evalCondition(choice.requires, save.state)) return;
+
+          applyEffects(choice.effects, save.state);
+
+          let nextId = "";
+          if (choice.toIf && typeof choice.toIf === "object") {
+            const ok = evalCondition(choice.toIf.if, save.state);
+            nextId = ok ? choice.toIf.then : choice.toIf.else;
+          } else {
+            nextId = choice.to;
+          }
+
+          if (!nextId || !getScene(nextId)) nextId = String(DATA?.meta?.start || "start");
+
+          save.history.push({ at: nowISO(), from: save.sceneId, to: nextId, choice: choice.label });
+          save.sceneId = nextId;
+          save.lineIndex = 0;
+          save.mode = "line";
+          render();
+        };
+
+        const boot = () => {
+          startBtn.addEventListener("click", () => {
+            hideStartOverlay();
+            render();
+          });
+          loadBtn.addEventListener("click", () => {
+            const ok = loadFromLocal();
+            hideStartOverlay();
+            if (!ok) save = DEFAULT_SAVE();
+            render();
+          });
+          menuBtn.addEventListener("click", openMenu);
+          closeMenuBtn.addEventListener("click", closeMenu);
+          saveBtn.addEventListener("click", saveToLocal);
+          loadBtn2.addEventListener("click", () => {
+            const ok = loadFromLocal();
+            if (ok) render();
+          });
+          restartBtn.addEventListener("click", restart);
+          exportBtn.addEventListener("click", exportJSON);
+          importBtn.addEventListener("click", importJSON);
+          copyBtn.addEventListener("click", copyJSON);
+
+          nameInputEl.addEventListener("change", applyName);
+          packSelectEl.addEventListener("change", (e) => setAssetPack(e.target.value));
+          outfitSelectEl.addEventListener("change", (e) => setOutfit(e.target.value));
+
+          dialogBoxEl.addEventListener("click", () => {
+            if (save.mode === "choice" || save.mode === "end") return;
+            advance();
+          });
+
+          document.addEventListener("keydown", (e) => {
+            const tag = (e.target && e.target.tagName) || "";
+            if (tag === "INPUT" || tag === "TEXTAREA") return;
+
+            const k = String(e.key || "").toLowerCase();
+            if (!started && (k === " " || k === "enter")) {
+              hideStartOverlay();
+              render();
+              return;
+            }
+            if (!started) return;
+
+            if (k >= "1" && k <= "9") {
+              const idx = Number(k) - 1;
+              if (save.mode === "choice") pickChoice(idx);
+              return;
+            }
+            if (k === " " || k === "enter") {
+              advance();
+              return;
+            }
+            if (k === "s") saveToLocal();
+            if (k === "l") {
+              const ok = loadFromLocal();
+              if (ok) render();
+            }
+            if (k === "r") restart();
+            if (k === "escape") closeMenu();
+            if (k === "d") {
+              debugEl.classList.toggle("is-open");
+              renderDebug();
+            }
+          });
+
+          // Restore pack
+          try {
+            const storedPack = localStorage.getItem(PACK_STORAGE_KEY);
+            if (storedPack && ASSET_PACKS[storedPack]) assetPackKey = storedPack;
+          } catch {
+            // ignore
+          }
+
+          // Allow quick preview/share via URL, e.g. ?pack=jp|comic|svg
+          try {
+            const params = new URLSearchParams(location.search);
+            const packParam = (params.get("pack") || "").trim();
+            if (packParam && ASSET_PACKS[packParam]) assetPackKey = packParam;
+          } catch {
+            // ignore
+          }
+
+          try {
+            localStorage.setItem(PACK_STORAGE_KEY, assetPackKey);
+          } catch {
+            // ignore
+          }
+
+          render();
+        };
+
+        boot();
+      })();
+    </script>
+  </body>
+</html>
+

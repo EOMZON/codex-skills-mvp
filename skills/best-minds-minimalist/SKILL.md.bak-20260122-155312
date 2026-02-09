@@ -1,0 +1,189 @@
+---
+name: best-minds-minimalist
+description: Combine “best-minds” research synthesis (谁最懂这个？TA 会怎么说？) with a black/white minimalist report layout (极简黑白/Modern Minimalist). Use for 调研、研究报告、方案对比、路线规划、决策梳理 when you want expert-simulated viewpoints + synthesis, presented in a clean monochrome format, and automatically generate a printable HTML report in the workspace.
+---
+
+# Best Minds Minimalist
+
+## Overview
+
+用“最佳专家视角模拟（best-minds）”产出调研结论，并以黑白极简排版交付。默认会在 workspace 自动落一份可打印的 HTML 报告文件（无需你在 prompt 里额外说明）。
+
+## Workflow Decision Tree
+
+1. 明确交付物
+   - 受众是谁？（自己/团队/老板/外部）
+   - 目的是什么？（学习/决策/说服/立项/避坑）
+   - 时间预算与深度？（15min/2h/1d）
+   - 输出偏好：`Markdown`（默认）或 `HTML`（可打印）
+2. 选择 “best minds”（1–5 位）
+   - 一个人能定调就 1 位；需要碰撞观点再加人
+   - 只选真正最懂的：领域奠基者/长期一线实践者/关键论文作者/标准制定者
+3. 逐位模拟与归纳
+   - 对每位专家输出：核心立场（thesis）→ 关键论据 → 反例/限制 → 适用边界
+   - 引用规则：只在**高度确定**时给“原话 + 来源链接”；否则标注为“paraphrase”
+4. 合成可执行结论
+   - 把一致点/分歧点写清楚，指出分歧的“关键变量（crux）”
+   - 给出 2–4 个可选方案：适用场景、收益、代价、主要风险、第一步
+5. 黑白极简呈现
+   - 无表情符号、少装饰、留白、细分隔线、少量加粗
+   - 默认输出 Markdown + 自动生成 HTML（见下方“Auto HTML”）
+
+## Style Spec (Zon Minimal Editorial · Light)
+
+- Tokens：`--black #0a0a0a`，`--white #fafafa`，`--gray-100 #f5f5f5`，`--gray-200 #e8e8e8`，`--gray-400 #999`，`--gray-600 #666`，`--gray-800 #333`
+- Typography：系统 UI 字体栈（含中文系统字体）；正文 `16px/1.8`；标题轻字重 + 细字距；标签使用大写 + 高 tracking
+- Layout：窄阅读宽度（`max-width: 860px`），sticky header + 细分割线，内容优先、留白克制
+
+**默认增强（你要求的）：**
+
+- 报告末尾必须有“Closing Summary”（结尾总结 + One next action）
+- 默认内置 SVG（流程图 / 时序图 / 轻动画 dash），**默认中文**；SVG 文案尽量复用报告里的同一组字段（如 `{{TITLE}}` / `{{ABSTRACT}}` / 关键结论短句），避免“SVG 还停留在模板文案”
+- 页面内所有图片/图表（`<img>` / `<svg>` / `<canvas>`）必须支持点击打开**全屏浮窗**（拖拽移动、滚轮/双指缩放、双击重置、`ESC` 关闭；不依赖外部库）
+- 尽可能把关键信息做成数据可视化：优先用模板自带的 `.kpi-grid` / `.barlist` 或 `<figure class="figure"><svg>...</svg></figure>`
+- 有操作步骤必须给 Step-by-step（面向新手、通俗易懂）
+- 遵循奥卡姆剃刀：主页面只放必要内容；复杂推导/长表格/补充材料放二级页面
+
+## Content-Driven Layout（核心）
+
+目标：**保持同一视觉系统（Zon Minimal Editorial · Light）**，但让每份报告根据内容选择更合适的展现形式（cards / grid / table / figure / stepper），避免“永远同一套章节 + 同一套版式”。
+
+**硬规则：**
+
+- 先选一个 `LAYOUT`（写入 HTML 模板的 `data-layout`）：`memo / compare / roadmap / playbook / audit`（五选一；不要留空）
+- 主内容必须用 `{{BLOCKS_HTML}}` 组装（每个 block 用一个 `<section>`），而不是机械填固定 TLDR_1/2/3 那种字段
+- 每个 `<section>` 必须同时具备：
+  - `id="..."`（用于锚点）
+  - `data-nav="..."`（用于自动生成 TOC / 顶部导航）
+- 不要输出“空 section / 空表格 / 空图解”：没内容就不生成该 block
+
+**最低 UX 保底（每篇都要有）：**
+
+- 一个“结论/要点”block（可以是 bullets，也可以是 cards）
+- 一个“一个下一步动作（One next action）”block（最好用 `.callout` 或 `.card`）
+- Sources block（可用 list 或 table）
+- 至少两个图解：① 结构图（流程/时序/架构）② 数据图（对比条形图/矩阵/热力图/时间线/评分图），都用 `<figure class="figure">...</figure>`
+
+**常见内容 → 推荐版式（示例，不是硬模板）：**
+
+- `compare`（A vs B / 方案对比）：双列卡片 + 对比表 + 风险/代价清单 + 最终推荐（callout）
+- `roadmap`（路线图 / 计划）：时间线（列表或表格）+ 里程碑卡片 + 依赖/风险 + 第一周行动（stepper）
+- `playbook`（执行指南）：stepper + checklist + “常见坑/反例”（details 折叠）
+- `audit`（评估/复盘/体检）：评分表 + 证据链（table）+ 缺口清单 + 修复顺序（roadmap mini）
+- `memo`（通用决策备忘）：开场摘要 + 关键洞见（cards 或 numbered list）+ 选项/权衡 + 下一步
+
+## Output Template (Markdown)
+
+默认按下列结构输出（必要时可删减）：
+
+```md
+# {Title}
+{One-line subtitle}
+{Date} · {Audience} · {Scope}
+
+---
+
+## TL;DR
+- ...
+
+## Key Insights
+1. ...
+
+## Expert Views
+### {Expert 1 — credential}
+- Thesis: ...
+- Arguments: ...
+- Limits: ...
+- Quote (if certain): “...” — {Source}
+
+### {Expert 2 — credential}
+...
+
+## Options
+| Option | Best for | Upside | Downside | Key risk | First step |
+|---|---|---|---|---|---|
+| A |  |  |  |  |  |
+
+## Evidence & Confidence
+| Claim | Evidence | Confidence | Source |
+|---|---|---|---|
+|  |  | Low/Med/High |  |
+
+## Next Steps
+- ...
+
+## Sources
+- ...
+```
+
+## Output Template (HTML)
+
+## Auto HTML (默认行为)
+
+除非用户明确说“只要 Markdown / 不要生成文件”，否则每次调用本 skill 都自动生成一份黑白极简 HTML 报告：
+
+**硬性要求（不要跳过）：**
+
+1. **先落盘，再回复。** 在组织回答内容前，先创建/更新 `docs/report.html`（最差也要先写入一个“占位版 HTML”，随后再覆盖为最终版）。
+2. 读取并填充 `assets/modern-minimalist-report.html`（保持黑白极简，不要引入彩色主题；由 `{{BLOCKS_HTML}}` 组装内容，模板会自动生成 TOC/Nav）。
+3. 确保 `docs/` 存在（不存在则创建）。
+4. 输出路径必须是“用户提问时所在目录（当前工作目录）”下的相对路径，不要写到别的项目目录。
+5. 每次都创建**全新文件**（不要覆盖旧文件），使用时间戳命名：
+   - 目录：`docs/reports/`
+   - 文件名：`report-YYYYMMDD-HHMMSS.html`（例如 `report-20260112-142305.html`）
+   - 若同一秒内冲突：在末尾追加 `-2`、`-3`… 直到不冲突
+6. 回复末尾必须包含可点击文件路径：`docs/reports/report-YYYYMMDD-HHMMSS.html`。
+
+**模板字段（必须替换）：**
+
+- `{{LAYOUT}}`：`memo / compare / roadmap / playbook / audit`
+- `{{LABEL}}`：一句话定位（例如 `Decision Memo` / `Roadmap` / `Playbook`）
+- `{{TITLE}} / {{SUBTITLE}} / {{DATE}} / {{AUDIENCE}} / {{SCOPE}}`
+- `{{ABSTRACT}}`：1–2 句“这页讲什么 + 结论倾向”（可为空字符串）
+- `{{BADGES_HTML}}`：0–8 个 badge（可为空字符串），格式示例：`<span class="chip">风险</span><span class="chip">时间线</span>`
+- `{{BLOCKS_HTML}}`：整篇的 block 组合（见下方 block 约定）
+- `{{CLOSING_QUOTE_BLOCK_HTML}}`：收束节奏的 closing quote（可为空字符串）
+- `{{GENERATED_AT}}`：生成时间（例如 `2026-01-19 12:34`）
+
+**Block 约定（写进 `{{BLOCKS_HTML}}`）：**
+
+- 基本形态：`<section id="tldr" data-nav="TL;DR"> ... </section>`
+- 可用组件类（在模板 CSS 里已内置）：
+  - `.callout`：结论/推荐/警告
+  - `.card`：摘要、信息卡、清单块
+  - `.grid cols-2 / cols-3`：并排对比、分栏
+  - `.figure`：图解（SVG/流程/时序）
+  - `details + .details-body`：可折叠的“深挖/证据/附录”
+
+**Closing quote（写进 `{{CLOSING_QUOTE_BLOCK_HTML}}`）示例：**
+
+```html
+<div class="closing-quote-block">
+  <div class="closing-quote">把结论变成第一步。</div>
+  <div class="closing-attr">— Closing note</div>
+</div>
+```
+
+**二级页面（可点击跳转，默认在内容复杂时创建）：**
+
+- 当出现“复杂推导/长列表/长表格/多套方案细节/大量来源摘录”时，生成一个 details 页：
+  - 模板：`assets/zon-minimal-editorial-details.html`
+  - 文件名：`docs/reports/report-YYYYMMDD-HHMMSS-details.html`
+  - 主报告的 `Details (Optional)` 区块里，必须放入链接（建议用 bullet list）
+
+**降级策略（当工具写文件不可用/失败时）：**
+
+- 仍然要生成完整 HTML（使用同一黑白极简样式），把 HTML 直接输出在回复中，并明确说明“本次无法写入 `docs/report.html`，请手动保存”。
+- 手动保存时的推荐路径仍为当前目录下的 `docs/reports/report-YYYYMMDD-HHMMSS.html`（不覆盖旧文件）。
+
+## Safety & Integrity
+
+- 不要编造“原话”；不确定就用 paraphrase 并标注不确定性
+- 把 sources 放在末尾，优先给可验证链接；没网就说明“无法在线核验”
+- 不在未确认的情况下建议执行破坏性命令；所有文件写入先说明写到哪里、写什么
+
+## Example Triggers
+
+- “$best-minds 帮我调研 X，并用黑白极简风格输出”
+- “做个对比报告：A vs B，给 3 个方案和结论”
+- “帮我做路线规划，按专家观点拆分，然后合成决策建议”

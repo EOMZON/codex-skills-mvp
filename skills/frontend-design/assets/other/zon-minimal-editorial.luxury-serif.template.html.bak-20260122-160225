@@ -1,0 +1,390 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Title · Luxury Serif</title>
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      :root {
+        --black: #0b0b0b;
+        --white: #fbfbfb;
+        --gray-100: #f3f3f3;
+        --gray-200: #e7e7e7;
+        --gray-400: #9a9a9a;
+        --gray-600: #6a6a6a;
+        --gray-800: #2e2e2e;
+        --accent: #b59a6a;
+        --serif: "Iowan Old Style", "Palatino Linotype", Palatino, "Songti SC", STSong, "Noto Serif CJK SC", serif;
+        --sans: ui-sans-serif, system-ui, -apple-system, "Segoe UI", "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei",
+          "Noto Sans CJK SC", "Noto Sans", sans-serif;
+      }
+
+      html {
+        scroll-behavior: smooth;
+      }
+
+      body {
+        font-family: var(--serif);
+        background: var(--white);
+        color: var(--black);
+        line-height: 1.85;
+        font-size: 16px;
+        -webkit-font-smoothing: antialiased;
+        text-rendering: optimizeLegibility;
+      }
+
+      ::selection {
+        background: var(--black);
+        color: var(--white);
+      }
+
+      .header {
+        position: sticky;
+        top: 0;
+        z-index: 100;
+        background: rgba(251, 251, 251, 0.92);
+        backdrop-filter: blur(12px);
+        border-bottom: 1px solid var(--gray-200);
+      }
+
+      .header-inner {
+        max-width: 800px;
+        margin: 0 auto;
+        padding: 20px 24px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+      }
+
+      .logo {
+        font-family: var(--sans);
+        font-size: 11px;
+        letter-spacing: 4px;
+        text-transform: uppercase;
+        font-weight: 700;
+        color: var(--gray-600);
+      }
+
+      .tag {
+        font-family: var(--sans);
+        font-size: 10px;
+        letter-spacing: 2px;
+        text-transform: uppercase;
+        padding: 6px 12px;
+        border: 1px solid var(--gray-200);
+        color: var(--gray-600);
+      }
+
+      .hero {
+        max-width: 800px;
+        margin: 0 auto;
+        padding: 104px 24px 84px;
+        text-align: center;
+      }
+
+      .hero-label {
+        font-family: var(--sans);
+        font-size: 11px;
+        letter-spacing: 6px;
+        text-transform: uppercase;
+        color: var(--gray-400);
+        margin-bottom: 24px;
+      }
+
+      .hero h1 {
+        font-size: clamp(34px, 6vw, 58px);
+        font-weight: 400;
+        letter-spacing: 0.5px;
+        line-height: 1.12;
+        margin-bottom: 16px;
+      }
+
+      .hero h1 strong {
+        font-weight: 700;
+      }
+
+      .hero-sub {
+        font-family: var(--sans);
+        font-size: 14px;
+        color: var(--gray-600);
+        letter-spacing: 1px;
+      }
+
+      .hero-sub span {
+        margin: 0 8px;
+        color: var(--gray-400);
+      }
+
+      .container {
+        max-width: 800px;
+        margin: 0 auto;
+        padding: 0 24px;
+      }
+
+      .card {
+        border: 1px solid var(--gray-200);
+        padding: 42px;
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 42px;
+      }
+
+      .card h3 {
+        font-family: var(--sans);
+        font-size: 10px;
+        letter-spacing: 3px;
+        text-transform: uppercase;
+        color: var(--gray-400);
+        margin-bottom: 12px;
+        font-weight: 700;
+      }
+
+      .card p {
+        font-size: 14px;
+        color: var(--gray-800);
+        line-height: 1.85;
+      }
+
+      .traits {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 8px;
+        margin-top: 8px;
+      }
+
+      .trait {
+        font-family: var(--sans);
+        font-size: 12px;
+        padding: 6px 14px;
+        border: 1px solid var(--gray-200);
+        color: var(--black);
+        letter-spacing: 1px;
+      }
+
+      .conversation {
+        max-width: 800px;
+        margin: 0 auto;
+        padding: 0 24px 100px;
+      }
+
+      .conv-header {
+        text-align: center;
+        padding-bottom: 60px;
+        border-bottom: 1px solid var(--gray-200);
+        margin-bottom: 60px;
+      }
+
+      .conv-header h2 {
+        font-family: var(--sans);
+        font-size: 11px;
+        letter-spacing: 6px;
+        text-transform: uppercase;
+        color: var(--gray-400);
+        font-weight: 700;
+      }
+
+      .dialog {
+        margin-bottom: 48px;
+      }
+
+      .speaker {
+        font-family: var(--sans);
+        font-size: 11px;
+        letter-spacing: 3px;
+        text-transform: uppercase;
+        font-weight: 700;
+        margin-bottom: 12px;
+        display: flex;
+        align-items: center;
+        gap: 12px;
+      }
+
+      .speaker::after {
+        content: "";
+        flex: 1;
+        height: 1px;
+        background: var(--gray-200);
+      }
+
+      .speaker.q {
+        color: var(--gray-400);
+      }
+
+      .speaker.a {
+        color: var(--black);
+      }
+
+      .content {
+        font-size: 17px;
+        line-height: 2.02;
+        color: var(--gray-800);
+      }
+
+      .content.answer {
+        color: var(--black);
+        font-size: 18px;
+      }
+
+      .content + .content {
+        margin-top: 16px;
+      }
+
+      .highlight {
+        background: linear-gradient(transparent 60%, rgba(181, 154, 106, 0.18) 60%);
+        padding: 0 2px;
+      }
+
+      blockquote {
+        margin: 26px 0;
+        padding: 26px 34px;
+        border-left: 3px solid var(--accent);
+        background: var(--gray-100);
+        font-style: italic;
+        color: var(--gray-800);
+      }
+
+      .divider {
+        max-width: 800px;
+        margin: 0 auto;
+        padding: 0 24px;
+      }
+
+      .divider-line {
+        border: none;
+        border-top: 1px solid var(--gray-200);
+        margin: 60px 0;
+      }
+
+      footer {
+        border-top: 1px solid var(--gray-200);
+        padding: 40px 24px;
+        text-align: center;
+      }
+
+      .footer-inner {
+        max-width: 800px;
+        margin: 0 auto;
+      }
+
+      .footer-note {
+        font-family: var(--sans);
+        font-size: 12px;
+        color: var(--gray-600);
+        line-height: 1.8;
+        max-width: 520px;
+        margin: 0 auto 24px;
+      }
+
+      .footer-meta {
+        font-family: var(--sans);
+        font-size: 11px;
+        letter-spacing: 2px;
+        text-transform: uppercase;
+        color: var(--gray-400);
+      }
+
+      @media (max-width: 640px) {
+        .hero {
+          padding: 62px 24px 52px;
+        }
+
+        .card {
+          grid-template-columns: 1fr;
+          gap: 32px;
+          padding: 32px 24px;
+        }
+
+        .content {
+          font-size: 16px;
+        }
+
+        .content.answer {
+          font-size: 17px;
+        }
+      }
+
+      @media print {
+        .header {
+          position: static;
+          background: transparent;
+          backdrop-filter: none;
+        }
+
+        body {
+          font-size: 12pt;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <header class="header">
+      <div class="header-inner">
+        <div class="logo">Zon Editorial</div>
+        <div class="tag">Luxury Serif</div>
+      </div>
+    </header>
+
+    <section class="hero">
+      <p class="hero-label">A Conversation With</p>
+      <h1><strong>中文标题</strong><br />English Title</h1>
+      <p class="hero-sub">feature <span>/</span> profile <span>/</span> essay</p>
+    </section>
+
+    <section class="container" style="padding-bottom: 80px">
+      <div class="card">
+        <div>
+          <h3>About</h3>
+          <p>这里写简短人物介绍、背景、上下文。</p>
+        </div>
+        <div>
+          <h3>Key Traits</h3>
+          <div class="traits">
+            <span class="trait">Refined</span>
+            <span class="trait">Serif</span>
+            <span class="trait">Feature</span>
+          </div>
+          <p style="margin-top: 16px; font-size: 13px; color: var(--gray-600); font-family: var(--sans)">
+            更像书刊特稿：衬线正文 + 轻金色强调（克制）。
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <main class="conversation">
+      <div class="conv-header">
+        <h2>The Dialogue</h2>
+      </div>
+
+      <section class="dialog">
+        <p class="speaker q">Interviewer</p>
+        <p class="content">问题句子……</p>
+      </section>
+
+      <section class="dialog">
+        <p class="speaker a">Guest</p>
+        <p class="content answer">
+          回答段落……<span class="highlight">需要强调的句子。</span>
+        </p>
+        <blockquote>“可作为引文/摘录的句子。”</blockquote>
+      </section>
+    </main>
+
+    <div class="divider">
+      <hr class="divider-line" />
+    </div>
+
+    <footer>
+      <div class="footer-inner">
+        <p class="footer-note">备注：来源、版权说明、用途说明。避免整段原文复制，优先摘要与链接。</p>
+        <p class="footer-meta">Series · YYYY</p>
+      </div>
+    </footer>
+  </body>
+</html>
+

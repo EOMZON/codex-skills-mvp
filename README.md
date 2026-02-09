@@ -9,8 +9,36 @@
 ## 你会得到什么
 
 - 一个可被其他仓库 `uses:` 的 GitHub Action（本仓库根目录 `action.yml`）
-- 一个 `skills/` 目录（MVP 先放 `best-minds`，后续可同步更多）
+- 一个 `skills/` 目录（**只同步“不依赖本机隐私信息/绝对路径”的 skills**，用于跨仓库复用）
 - 一个自测 workflow（推上 GitHub 后可直接跑）
+
+## 已同步的 skills（public-safe pack）
+
+当前仓库包含这些 skills（均不包含本机绝对路径如 `/Users/...`，可直接公开在 repo 中）：
+
+- `best-minds`
+- `best-minds-minimalist`
+- `doc-coauthoring`
+- `frontend-design`
+- `theme-factory`
+- `repo-chatops-vercel-board`
+- `vercel-deploy`
+- `mcp-builder`
+- `pdf`
+- `xlsx`
+- `web-artifacts-builder`
+- `webapp-testing`
+- `game-vn-immersive`
+- `wechat-article-creation`
+- `wechat-svg`
+- `algorithmic-art`
+- `image-upscale-best`
+- `img-handdrawn-run-report`
+- `img-vn-pack`
+- `style-run-sop`
+- `skill-creator`
+
+> 没同步的（例如 `chatops-main-push/github-ops/vercel-ship/...`）通常包含本机绝对路径或强绑定你个人环境的说明；如确实要同步，建议先做“公开版脱敏”再放进来。
 
 ## 本机同步（不改变你的本地使用）
 
@@ -18,7 +46,7 @@
 
 ```bash
 cd tools/codex-skills-mvp
-./scripts/sync-from-local.sh best-minds
+./scripts/sync-from-local.sh best-minds best-minds-minimalist doc-coauthoring
 ```
 
 > 只读复制：不会修改 `~/.codex/skills`。
@@ -53,18 +81,16 @@ test -f /tmp/codex-skills-mvp/.codex/skills/best-minds/SKILL.md
 
 ```bash
 cd tools/codex-skills-mvp
-git init
 git add -A
-git commit -m "init: codex skills mvp"
-git branch -M main
+git commit -m "chore: sync public-safe skills"
 ```
 
 创建远端 repo（两种方式二选一）：
 
 - GitHub 网页 UI 手动创建 repo，然后：
   - `git remote add origin git@github.com:<OWNER>/<REPO>.git`
-- 或用脚本（需要 token）：
-  - `python3 /Users/zon/.codex/skills/github-repo-bootstrap/scripts/create_repo.py --owner <OWNER> --name <REPO> --private --env-file /Users/zon/Desktop/MINE/.env`
+- 或用 `gh`：
+  - `gh repo create <OWNER>/<REPO> --public --source . --remote origin --push`
 
 最后 push：
 
