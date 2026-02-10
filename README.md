@@ -46,6 +46,10 @@
 
 - 生成：`node scripts/build-docs-site.mjs`（输出到 `docs/index.html`）
 - 本地打开：直接打开 `docs/index.html`
+- 一键部署（Vercel CLI；推荐用 token 文件避免泄露）：
+  - 把 Vercel Token 写入：`pbpaste > /tmp/VERCEL_TOKEN.txt`
+  - 预览：`node scripts/deploy-docs-vercel.mjs --preview`
+  - 生产：`node scripts/deploy-docs-vercel.mjs`（默认 prod）
 - Vercel CLI 部署（以 `docs/` 作为静态站）：
   - `cd docs`
   - `npx vercel@latest link --yes --project <YOUR_PROJECT> --token=$VERCEL_TOKEN`
