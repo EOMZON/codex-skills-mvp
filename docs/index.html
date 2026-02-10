@@ -1,0 +1,1178 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="theme-color" content="#fafafa" />
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%2064%2064%22%3E%3Crect%20x%3D%228%22%20y%3D%228%22%20width%3D%2248%22%20height%3D%2248%22%20rx%3D%2212%22%20fill%3D%22%230a0a0a%22%2F%3E%3Cpath%20d%3D%22M23%2020h18v4H23zm0%2010h18v4H23zm0%2010h12v4H23z%22%20fill%3D%22%23fafafa%22%2F%3E%3C%2Fsvg%3E" />
+    <title>Codex Skills · Docs</title>
+    <style>
+      *{ margin:0; padding:0; box-sizing:border-box; }
+      :root{
+        --black:#0a0a0a;
+        --white:#fafafa;
+        --gray-100:#f5f5f5;
+        --gray-200:#e8e8e8;
+        --gray-400:#999;
+        --gray-600:#666;
+        --gray-800:#333;
+        --measure:1220px;
+        --radius:14px;
+        --shadow: 0 18px 60px rgba(0,0,0,.06);
+        --mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", monospace;
+      }
+
+      html{ scroll-behavior:smooth; }
+      body{
+        font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","PingFang SC","Hiragino Sans GB","Microsoft YaHei","Noto Sans CJK SC",sans-serif;
+        background:var(--white);
+        color:var(--black);
+        line-height:1.8;
+        font-size:16px;
+        -webkit-font-smoothing:antialiased;
+        text-rendering:optimizeLegibility;
+      }
+      ::selection{ background:var(--black); color:var(--white); }
+      a{ color:inherit; text-decoration:none; }
+      button, input{ font:inherit; }
+
+      .header{
+        position:sticky;
+        top:0;
+        z-index:50;
+        background:rgba(250,250,250,.92);
+        backdrop-filter: blur(12px);
+        border-bottom:1px solid var(--gray-200);
+      }
+      .header-inner{
+        max-width:var(--measure);
+        margin:0 auto;
+        padding:18px 18px;
+        display:flex;
+        align-items:center;
+        justify-content:space-between;
+        gap:14px;
+      }
+      .logo{
+        display:flex;
+        align-items:baseline;
+        gap:10px;
+        min-width:0;
+      }
+      .logo .mark{
+        font-size:11px;
+        letter-spacing:4px;
+        text-transform:uppercase;
+        font-weight:700;
+        color:var(--gray-600);
+        white-space:nowrap;
+      }
+      .logo .sub{
+        font-size:11px;
+        letter-spacing:3px;
+        text-transform:uppercase;
+        color:var(--gray-400);
+        overflow:hidden;
+        text-overflow:ellipsis;
+        white-space:nowrap;
+      }
+      .header-actions{ display:flex; align-items:center; gap:8px; flex-wrap:wrap; justify-content:flex-end; }
+      .btn{
+        appearance:none;
+        border:1px solid var(--gray-200);
+        background:transparent;
+        color:inherit;
+        padding:7px 10px;
+        font-size:10px;
+        letter-spacing:2px;
+        text-transform:uppercase;
+        cursor:pointer;
+        border-radius:0;
+      }
+      .btn:hover{ border-color:var(--black); }
+      .btn.primary{ background:var(--black); color:var(--white); border-color:var(--black); }
+      .btn.primary:hover{ opacity:.92; }
+      .btn.small{ padding:6px 8px; font-size:10px; letter-spacing:2px; }
+
+      .searchbar{
+        max-width:var(--measure);
+        margin:0 auto;
+        padding:0 18px 16px;
+        display:flex;
+        gap:10px;
+        align-items:center;
+      }
+      .search{
+        flex:1;
+        display:flex;
+        align-items:center;
+        border:1px solid var(--gray-200);
+        background:rgba(245,245,245,.6);
+        padding:9px 10px;
+        gap:10px;
+      }
+      .search .hint{
+        font-family:var(--mono);
+        font-size:11px;
+        color:var(--gray-600);
+        opacity:.9;
+      }
+      .search input{
+        border:0;
+        outline:none;
+        background:transparent;
+        width:100%;
+        color:inherit;
+        font-size:14px;
+      }
+      .pillrow{
+        display:flex;
+        gap:6px;
+        flex-wrap:wrap;
+        justify-content:flex-end;
+      }
+      .pill{
+        border:1px solid var(--gray-200);
+        background:transparent;
+        color:var(--gray-600);
+        padding:6px 10px;
+        font-size:10px;
+        letter-spacing:2px;
+        text-transform:uppercase;
+        cursor:pointer;
+      }
+      .pill[aria-pressed="true"]{
+        background:var(--black);
+        color:var(--white);
+        border-color:var(--black);
+      }
+
+      .scrim{
+        position:fixed;
+        inset:0;
+        background:rgba(10,10,10,.42);
+        z-index:40;
+        opacity:0;
+        pointer-events:none;
+        transition:opacity .18s ease;
+      }
+      body.nav-open .scrim{ opacity:1; pointer-events:auto; }
+
+      .layout{
+        max-width:var(--measure);
+        margin:0 auto;
+        padding:18px 18px 80px;
+        display:grid;
+        grid-template-columns: 320px minmax(0, 1fr) 260px;
+        gap:18px;
+      }
+
+      .sidebar{
+        border:1px solid var(--gray-200);
+        background:rgba(250,250,250,.92);
+        align-self:start;
+        position:sticky;
+        top:124px;
+        max-height: calc(100vh - 150px);
+        overflow:auto;
+      }
+      .sidebar-head{
+        padding:14px 14px 10px;
+        border-bottom:1px solid var(--gray-200);
+        display:flex;
+        align-items:baseline;
+        justify-content:space-between;
+        gap:12px;
+      }
+      .sidebar-head .k{
+        font-size:10px;
+        letter-spacing:3px;
+        text-transform:uppercase;
+        color:var(--gray-400);
+        font-weight:700;
+      }
+      .sidebar-head .v{
+        font-family:var(--mono);
+        font-size:11px;
+        color:var(--gray-600);
+        white-space:nowrap;
+      }
+      .skill-list{ list-style:none; }
+      .skill-item{
+        border-bottom:1px solid var(--gray-200);
+      }
+      .skill-btn{
+        width:100%;
+        text-align:left;
+        padding:12px 14px;
+        border:0;
+        background:transparent;
+        cursor:pointer;
+      }
+      .skill-btn:hover{ background:rgba(245,245,245,.75); }
+      .skill-btn[aria-current="true"]{ background:rgba(10,10,10,.06); }
+      .skill-name{
+        display:flex;
+        align-items:center;
+        justify-content:space-between;
+        gap:10px;
+        font-size:13px;
+        letter-spacing:.2px;
+        color:var(--black);
+      }
+      .skill-meta{
+        margin-top:4px;
+        display:flex;
+        gap:10px;
+        align-items:center;
+        justify-content:space-between;
+      }
+      .skill-desc{
+        font-size:12px;
+        color:var(--gray-600);
+        display:-webkit-box;
+        -webkit-line-clamp:2;
+        -webkit-box-orient:vertical;
+        overflow:hidden;
+      }
+      .skill-tag{
+        font-family:var(--mono);
+        font-size:10px;
+        color:var(--gray-400);
+        text-transform:uppercase;
+        letter-spacing:1.5px;
+        white-space:nowrap;
+      }
+
+      .content{
+        border:1px solid var(--gray-200);
+        background:rgba(250,250,250,.92);
+        box-shadow: var(--shadow);
+        padding:22px 22px 26px;
+        min-height: 60vh;
+      }
+      .kicker{
+        font-size:10px;
+        letter-spacing:4px;
+        text-transform:uppercase;
+        color:var(--gray-400);
+        font-weight:700;
+      }
+      h1{
+        margin-top:10px;
+        font-size: clamp(26px, 3.2vw, 44px);
+        font-weight:300;
+        letter-spacing:1.4px;
+        line-height:1.15;
+      }
+      .subtitle{
+        margin-top:10px;
+        color:var(--gray-600);
+        font-size:14px;
+        line-height:1.8;
+      }
+      .content-actions{
+        margin-top:14px;
+        display:flex;
+        gap:8px;
+        flex-wrap:wrap;
+      }
+
+      .doc{
+        margin-top:18px;
+        padding-top:18px;
+        border-top:1px solid var(--gray-200);
+      }
+      .doc :is(h1,h2,h3,h4){ scroll-margin-top: 120px; }
+      .doc h2{
+        margin-top:28px;
+        padding-top:16px;
+        border-top:1px solid var(--gray-200);
+        font-size:16px;
+        letter-spacing: .6px;
+        font-weight:650;
+      }
+      .doc h3{
+        margin-top:18px;
+        font-size:14px;
+        font-weight:650;
+        color:var(--gray-800);
+      }
+      .doc p{ margin-top:12px; color:var(--gray-800); }
+      .doc ul, .doc ol{ margin-top:10px; padding-left: 22px; color:var(--gray-800); }
+      .doc li{ margin-top:6px; }
+      .doc a{ border-bottom:1px solid var(--gray-200); }
+      .doc a:hover{ border-bottom-color: var(--black); }
+      .doc blockquote{
+        margin-top:16px;
+        border-left:3px solid var(--black);
+        background:var(--gray-100);
+        padding:14px 16px;
+        color:var(--gray-800);
+        font-style:italic;
+      }
+      .doc hr{
+        border:0;
+        border-top:1px solid var(--gray-200);
+        margin:18px 0;
+      }
+      .doc code{
+        font-family:var(--mono);
+        font-size: 12px;
+        padding:2px 6px;
+        border:1px solid var(--gray-200);
+        background:rgba(245,245,245,.75);
+      }
+
+      .codeblock{
+        margin-top:14px;
+        border:1px solid var(--gray-200);
+        background:rgba(245,245,245,.62);
+      }
+      .codebar{
+        display:flex;
+        align-items:center;
+        justify-content:space-between;
+        gap:10px;
+        padding:8px 10px;
+        border-bottom:1px solid var(--gray-200);
+      }
+      .codelang{
+        font-family:var(--mono);
+        font-size:10px;
+        letter-spacing:2px;
+        text-transform:uppercase;
+        color:var(--gray-600);
+      }
+      .codeblock pre{
+        margin:0;
+        padding:12px 12px 14px;
+        overflow:auto;
+      }
+      .codeblock pre code{
+        border:0;
+        background:transparent;
+        padding:0;
+        font-size:12px;
+        line-height:1.7;
+        color:var(--black);
+      }
+
+      table{
+        width:100%;
+        border-collapse:collapse;
+        margin-top:14px;
+        border:1px solid var(--gray-200);
+        background:rgba(250,250,250,.92);
+      }
+      th, td{
+        border:1px solid var(--gray-200);
+        padding:10px 10px;
+        vertical-align:top;
+        text-align:left;
+        font-size:13px;
+        line-height:1.7;
+      }
+      th{
+        background:rgba(245,245,245,.8);
+        font-size:10px;
+        letter-spacing:2px;
+        text-transform:uppercase;
+        color:var(--gray-600);
+      }
+
+      .raw{
+        margin-top:14px;
+        border:1px solid var(--gray-200);
+        background:rgba(245,245,245,.62);
+        padding:14px;
+        overflow:auto;
+        font-family:var(--mono);
+        font-size:12px;
+        line-height:1.7;
+        white-space:pre;
+      }
+
+      .toc{
+        border:1px solid var(--gray-200);
+        background:rgba(250,250,250,.92);
+        align-self:start;
+        position:sticky;
+        top:124px;
+        max-height: calc(100vh - 150px);
+        overflow:auto;
+        padding:14px 14px 16px;
+      }
+      .toc .t{
+        font-size:10px;
+        letter-spacing:3px;
+        text-transform:uppercase;
+        color:var(--gray-400);
+        font-weight:700;
+      }
+      .toc ol{ list-style:none; margin-top:10px; }
+      .toc a{
+        display:block;
+        padding:6px 8px;
+        border-left:2px solid transparent;
+        color:var(--gray-600);
+        font-size:12px;
+        line-height:1.5;
+      }
+      .toc a:hover{ color:var(--black); }
+      .toc a[aria-current="true"]{
+        color:var(--black);
+        border-left-color:var(--black);
+        background:rgba(10,10,10,.06);
+      }
+      .toc .foot{
+        margin-top:12px;
+        border-top:1px solid var(--gray-200);
+        padding-top:12px;
+        display:flex;
+        gap:8px;
+        flex-wrap:wrap;
+      }
+
+      .toast{
+        position:fixed;
+        left:50%;
+        bottom:18px;
+        transform:translateX(-50%);
+        background:rgba(10,10,10,.92);
+        color:var(--white);
+        padding:10px 12px;
+        font-size:12px;
+        border-radius:999px;
+        box-shadow: var(--shadow);
+        opacity:0;
+        pointer-events:none;
+        transition: opacity .16s ease, transform .16s ease;
+        z-index:60;
+      }
+      .toast.show{
+        opacity:1;
+        transform:translateX(-50%) translateY(-4px);
+      }
+
+      footer{
+        border-top:1px solid var(--gray-200);
+        padding:22px 18px;
+        color:var(--gray-600);
+      }
+      .footer-inner{
+        max-width:var(--measure);
+        margin:0 auto;
+        display:flex;
+        align-items:center;
+        justify-content:space-between;
+        gap:12px;
+        flex-wrap:wrap;
+      }
+      .footer-note{
+        font-size:12px;
+        line-height:1.7;
+      }
+      .footer-meta{
+        font-family:var(--mono);
+        font-size:11px;
+        color:var(--gray-400);
+      }
+
+      /* Mobile */
+      @media (max-width: 1040px){
+        .layout{ grid-template-columns: 300px minmax(0, 1fr); }
+        .toc{ display:none; }
+      }
+      @media (max-width: 860px){
+        .layout{ grid-template-columns: 1fr; }
+        .sidebar{
+          position:fixed;
+          left:0;
+          top:0;
+          bottom:0;
+          width:min(92vw, 360px);
+          max-height:none;
+          z-index:45;
+          transform: translateX(-105%);
+          transition: transform .18s ease;
+          border-right:1px solid var(--gray-200);
+          border-left:0;
+          border-top:0;
+          border-bottom:0;
+        }
+        body.nav-open .sidebar{ transform: translateX(0); }
+        .sidebar-head{ padding-top:18px; }
+      }
+
+      @media (prefers-reduced-motion: reduce){
+        html{ scroll-behavior:auto; }
+        .scrim, .sidebar, .toast{ transition:none; }
+      }
+
+      @media print{
+        .header, .sidebar, .toc, .scrim, .toast, .pillrow{ display:none !important; }
+        .layout{ max-width: 100%; padding:0; grid-template-columns:1fr; }
+        .content{ border:0; box-shadow:none; padding:0; }
+        a{ border-bottom:none; text-decoration:underline; }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="scrim" id="scrim" hidden></div>
+    <header class="header">
+      <div class="header-inner">
+        <a class="logo" href="#/" aria-label="Codex Skills Docs">
+          <span class="mark">CODEX SKILLS</span>
+          <span class="sub" id="activeSub">Docs</span>
+        </a>
+        <div class="header-actions">
+          <button class="btn" id="menuBtn" type="button" aria-controls="sidebar" aria-expanded="false">Menu</button>
+          <a class="btn" href="https://github.com/EOMZON/codex-skills-mvp" target="_blank" rel="noreferrer">GitHub</a>
+        </div>
+      </div>
+      <div class="searchbar">
+        <div class="search" role="search">
+          <span class="hint">/</span>
+          <input id="q" type="search" placeholder="Search skills… (name / description / full text)" autocomplete="off" />
+        </div>
+        <div class="pillrow" id="pillRow" aria-label="Category filter"></div>
+      </div>
+    </header>
+
+    <main class="layout">
+      <nav class="sidebar" id="sidebar" aria-label="Skills">
+        <div class="sidebar-head">
+          <div class="k">Skills</div>
+          <div class="v" id="countText">0</div>
+        </div>
+        <ul class="skill-list" id="list"></ul>
+      </nav>
+
+      <article class="content" id="content">
+        <div class="kicker" id="kicker">Overview</div>
+        <h1 id="title">Codex Skills · Docs</h1>
+        <p class="subtitle" id="desc">一个符合 Zon Minimal Editorial · Light 的单页文档站：支持全局搜索、目录、代码块一键复制、移动端菜单、可打印。</p>
+        <div class="content-actions" id="actions">
+          <button class="btn primary" id="copyAll" type="button">Copy</button>
+          <button class="btn" id="copyLink" type="button">Copy Link</button>
+          <button class="btn" id="toggleRaw" type="button">Raw</button>
+        </div>
+        <div class="doc" id="doc"></div>
+      </article>
+
+      <aside class="toc" id="toc" aria-label="Table of contents">
+        <div class="t">On this page</div>
+        <ol id="tocList"></ol>
+        <div class="foot">
+          <button class="btn small" id="topBtn" type="button">Top</button>
+          <button class="btn small" id="printBtn" type="button">Print</button>
+        </div>
+      </aside>
+    </main>
+
+    <footer>
+      <div class="footer-inner">
+        <div class="footer-note">
+          Install in Actions: <code>uses: EOMZON/codex-skills-mvp@v0</code> · Runner default: <code>~/.codex/skills</code>
+        </div>
+        <div class="footer-meta">Generated · 2026-02-10T00:00:51.013Z</div>
+      </div>
+    </footer>
+
+    <div class="toast" id="toast" role="status" aria-live="polite">Copied.</div>
+
+    <script id="skillsData" type="application/json">{"generatedAt":"2026-02-10T00:00:51.013Z","categories":[{"id":"research","label":"Research"},{"id":"deploy","label":"Deploy"},{"id":"design","label":"Design"},{"id":"media","label":"Media"},{"id":"data","label":"Data"},{"id":"dev","label":"Dev"},{"id":"docs","label":"Docs"},{"id":"misc","label":"Misc"}],"skills":[{"slug":"algorithmic-art","category":"design","name":"img-algorithmic-art","description":"Creating algorithmic art using p5.js with seeded randomness and interactive parameter exploration. Use this when users request creating art using code, generative art, algorithmic art, flow fields, or particle systems. Create original algorithmic art rather than copying existing artists' work to avoid copyright violations.","license":"Complete terms in LICENSE.txt","md":"---\nname: img-algorithmic-art\ndescription: Creating algorithmic art using p5.js with seeded randomness and interactive parameter exploration. Use this when users request creating art using code, generative art, algorithmic art, flow fields, or particle systems. Create original algorithmic art rather than copying existing artists' work to avoid copyright violations.\nlicense: Complete terms in LICENSE.txt\n---\n\nAlgorithmic philosophies are computational aesthetic movements that are then expressed through code. Output .md files (philosophy), .html files (interactive viewer), and .js files (generative algorithms).\n\nThis happens in two steps:\n1. Algorithmic Philosophy Creation (.md file)\n2. Express by creating p5.js generative art (.html + .js files)\n\nFirst, undertake this task:\n\n## ALGORITHMIC PHILOSOPHY CREATION\n\nTo begin, create an ALGORITHMIC PHILOSOPHY (not static images or templates) that will be interpreted through:\n- Computational processes, emergent behavior, mathematical beauty\n- Seeded randomness, noise fields, organic systems\n- Particles, flows, fields, forces\n- Parametric variation and controlled chaos\n\n### THE CRITICAL UNDERSTANDING\n- What is received: Some subtle input or instructions by the user to take into account, but use as a foundation; it should not constrain creative freedom.\n- What is created: An algorithmic philosophy/generative aesthetic movement.\n- What happens next: The same version receives the philosophy and EXPRESSES IT IN CODE - creating p5.js sketches that are 90% algorithmic generation, 10% essential parameters.\n\nConsider this approach:\n- Write a manifesto for a generative art movement\n- The next phase involves writing the algorithm that brings it to life\n\nThe philosophy must emphasize: Algorithmic expression. Emergent behavior. Computational beauty. Seeded variation.\n\n### HOW TO GENERATE AN ALGORITHMIC PHILOSOPHY\n\n**Name the movement** (1-2 words): \"Organic Turbulence\" / \"Quantum Harmonics\" / \"Emergent Stillness\"\n\n**Articulate the philosophy** (4-6 paragraphs - concise but complete):\n\nTo capture the ALGORITHMIC essence, express how this philosophy manifests through:\n- Computational processes and mathematical relationships?\n- Noise functions and randomness patterns?\n- Particle behaviors and field dynamics?\n- Temporal evolution and system states?\n- Parametric variation and emergent complexity?\n\n**CRITICAL GUIDELINES:**\n- **Avoid redundancy**: Each algorithmic aspect should be mentioned once. Avoid repeating concepts about noise theory, particle dynamics, or mathematical principles unless adding new depth.\n- **Emphasize craftsmanship REPEATEDLY**: The philosophy MUST stress multiple times that the final algorithm should appear as though it took countless hours to develop, was refined with care, and comes from someone at the absolute top of their field. This framing is essential - repeat phrases like \"meticulously crafted algorithm,\" \"the product of deep computational expertise,\" \"painstaking optimization,\" \"master-level implementation.\"\n- **Leave creative space**: Be specific about the algorithmic direction, but concise enough that the next Claude has room to make interpretive implementation choices at an extremely high level of craftsmanship.\n\nThe philosophy must guide the next version to express ideas ALGORITHMICALLY, not through static images. Beauty lives in the process, not the final frame.\n\n### PHILOSOPHY EXAMPLES\n\n**\"Organic Turbulence\"**\nPhilosophy: Chaos constrained by natural law, order emerging from disorder.\nAlgorithmic expression: Flow fields driven by layered Perlin noise. Thousands of particles following vector forces, their trails accumulating into organic density maps. Multiple noise octaves create turbulent regions and calm zones. Color emerges from velocity and density - fast particles burn bright, slow ones fade to shadow. The algorithm runs until equilibrium - a meticulously tuned balance where every parameter was refined through countless iterations by a master of computational aesthetics.\n\n**\"Quantum Harmonics\"**\nPhilosophy: Discrete entities exhibiting wave-like interference patterns.\nAlgorithmic expression: Particles initialized on a grid, each carrying a phase value that evolves through sine waves. When particles are near, their phases interfere - constructive interference creates bright nodes, destructive creates voids. Simple harmonic motion generates complex emergent mandalas. The result of painstaking frequency calibration where every ratio was carefully chosen to produce resonant beauty.\n\n**\"Recursive Whispers\"**\nPhilosophy: Self-similarity across scales, infinite depth in finite space.\nAlgorithmic expression: Branching structures that subdivide recursively. Each branch slightly randomized but constrained by golden ratios. L-systems or recursive subdivision generate tree-like forms that feel both mathematical and organic. Subtle noise perturbations break perfect symmetry. Line weights diminish with each recursion level. Every branching angle the product of deep mathematical exploration.\n\n**\"Field Dynamics\"**\nPhilosophy: Invisible forces made visible through their effects on matter.\nAlgorithmic expression: Vector fields constructed from mathematical functions or noise. Particles born at edges, flowing along field lines, dying when they reach equilibrium or boundaries. Multiple fields can attract, repel, or rotate particles. The visualization shows only the traces - ghost-like evidence of invisible forces. A computational dance meticulously choreographed through force balance.\n\n**\"Stochastic Crystallization\"**\nPhilosophy: Random processes crystallizing into ordered structures.\nAlgorithmic expression: Randomized circle packing or Voronoi tessellation. Start with random points, let them evolve through relaxation algorithms. Cells push apart until equilibrium. Color based on cell size, neighbor count, or distance from center. The organic tiling that emerges feels both random and inevitable. Every seed produces unique crystalline beauty - the mark of a master-level generative algorithm.\n\n*These are condensed examples. The actual algorithmic philosophy should be 4-6 substantial paragraphs.*\n\n### ESSENTIAL PRINCIPLES\n- **ALGORITHMIC PHILOSOPHY**: Creating a computational worldview to be expressed through code\n- **PROCESS OVER PRODUCT**: Always emphasize that beauty emerges from the algorithm's execution - each run is unique\n- **PARAMETRIC EXPRESSION**: Ideas communicate through mathematical relationships, forces, behaviors - not static composition\n- **ARTISTIC FREEDOM**: The next Claude interprets the philosophy algorithmically - provide creative implementation room\n- **PURE GENERATIVE ART**: This is about making LIVING ALGORITHMS, not static images with randomness\n- **EXPERT CRAFTSMANSHIP**: Repeatedly emphasize the final algorithm must feel meticulously crafted, refined through countless iterations, the product of deep expertise by someone at the absolute top of their field in computational aesthetics\n\n**The algorithmic philosophy should be 4-6 paragraphs long.** Fill it with poetic computational philosophy that brings together the intended vision. Avoid repeating the same points. Output this algorithmic philosophy as a .md file.\n\n---\n\n## DEDUCING THE CONCEPTUAL SEED\n\n**CRITICAL STEP**: Before implementing the algorithm, identify the subtle conceptual thread from the original request.\n\n**THE ESSENTIAL PRINCIPLE**:\nThe concept is a **subtle, niche reference embedded within the algorithm itself** - not always literal, always sophisticated. Someone familiar with the subject should feel it intuitively, while others simply experience a masterful generative composition. The algorithmic philosophy provides the computational language. The deduced concept provides the soul - the quiet conceptual DNA woven invisibly into parameters, behaviors, and emergence patterns.\n\nThis is **VERY IMPORTANT**: The reference must be so refined that it enhances the work's depth without announcing itself. Think like a jazz musician quoting another song through algorithmic harmony - only those who know will catch it, but everyone appreciates the generative beauty.\n\n---\n\n## P5.JS IMPLEMENTATION\n\nWith the philosophy AND conceptual framework established, express it through code. Pause to gather thoughts before proceeding. Use only the algorithmic philosophy created and the instructions below.\n\n### ⚠️ STEP 0: READ THE TEMPLATE FIRST ⚠️\n\n**CRITICAL: BEFORE writing any HTML:**\n\n1. **Read** `templates/viewer.html` using the Read tool\n2. **Study** the exact structure, styling, and Anthropic branding\n3. **Use that file as the LITERAL STARTING POINT** - not just inspiration\n4. **Keep all FIXED sections exactly as shown** (header, sidebar structure, Anthropic colors/fonts, seed controls, action buttons)\n5. **Replace only the VARIABLE sections** marked in the file's comments (algorithm, parameters, UI controls for parameters)\n\n**Avoid:**\n- ❌ Creating HTML from scratch\n- ❌ Inventing custom styling or color schemes\n- ❌ Using system fonts or dark themes\n- ❌ Changing the sidebar structure\n\n**Follow these practices:**\n- ✅ Copy the template's exact HTML structure\n- ✅ Keep Anthropic branding (Poppins/Lora fonts, light colors, gradient backdrop)\n- ✅ Maintain the sidebar layout (Seed → Parameters → Colors? → Actions)\n- ✅ Replace only the p5.js algorithm and parameter controls\n\nThe template is the foundation. Build on it, don't rebuild it.\n\n---\n\nTo create gallery-quality computational art that lives and breathes, use the algorithmic philosophy as the foundation.\n\n### TECHNICAL REQUIREMENTS\n\n**Seeded Randomness (Art Blocks Pattern)**:\n```javascript\n// ALWAYS use a seed for reproducibility\nlet seed = 12345; // or hash from user input\nrandomSeed(seed);\nnoiseSeed(seed);\n```\n\n**Parameter Structure - FOLLOW THE PHILOSOPHY**:\n\nTo establish parameters that emerge naturally from the algorithmic philosophy, consider: \"What qualities of this system can be adjusted?\"\n\n```javascript\nlet params = {\n  seed: 12345,  // Always include seed for reproducibility\n  // colors\n  // Add parameters that control YOUR algorithm:\n  // - Quantities (how many?)\n  // - Scales (how big? how fast?)\n  // - Probabilities (how likely?)\n  // - Ratios (what proportions?)\n  // - Angles (what direction?)\n  // - Thresholds (when does behavior change?)\n};\n```\n\n**To design effective parameters, focus on the properties the system needs to be tunable rather than thinking in terms of \"pattern types\".**\n\n**Core Algorithm - EXPRESS THE PHILOSOPHY**:\n\n**CRITICAL**: The algorithmic philosophy should dictate what to build.\n\nTo express the philosophy through code, avoid thinking \"which pattern should I use?\" and instead think \"how to express this philosophy through code?\"\n\nIf the philosophy is about **organic emergence**, consider using:\n- Elements that accumulate or grow over time\n- Random processes constrained by natural rules\n- Feedback loops and interactions\n\nIf the philosophy is about **mathematical beauty**, consider using:\n- Geometric relationships and ratios\n- Trigonometric functions and harmonics\n- Precise calculations creating unexpected patterns\n\nIf the philosophy is about **controlled chaos**, consider using:\n- Random variation within strict boundaries\n- Bifurcation and phase transitions\n- Order emerging from disorder\n\n**The algorithm flows from the philosophy, not from a menu of options.**\n\nTo guide the implementation, let the conceptual essence inform creative and original choices. Build something that expresses the vision for this particular request.\n\n**Canvas Setup**: Standard p5.js structure:\n```javascript\nfunction setup() {\n  createCanvas(1200, 1200);\n  // Initialize your system\n}\n\nfunction draw() {\n  // Your generative algorithm\n  // Can be static (noLoop) or animated\n}\n```\n\n### CRAFTSMANSHIP REQUIREMENTS\n\n**CRITICAL**: To achieve mastery, create algorithms that feel like they emerged through countless iterations by a master generative artist. Tune every parameter carefully. Ensure every pattern emerges with purpose. This is NOT random noise - this is CONTROLLED CHAOS refined through deep expertise.\n\n- **Balance**: Complexity without visual noise, order without rigidity\n- **Color Harmony**: Thoughtful palettes, not random RGB values\n- **Composition**: Even in randomness, maintain visual hierarchy and flow\n- **Performance**: Smooth execution, optimized for real-time if animated\n- **Reproducibility**: Same seed ALWAYS produces identical output\n\n### OUTPUT FORMAT\n\nOutput:\n1. **Algorithmic Philosophy** - As markdown or text explaining the generative aesthetic\n2. **Single HTML Artifact** - Self-contained interactive generative art built from `templates/viewer.html` (see STEP 0 and next section)\n\nThe HTML artifact contains everything: p5.js (from CDN), the algorithm, parameter controls, and UI - all in one file that works immediately in claude.ai artifacts or any browser. Start from the template file, not from scratch.\n\n---\n\n## INTERACTIVE ARTIFACT CREATION\n\n**REMINDER: `templates/viewer.html` should have already been read (see STEP 0). Use that file as the starting point.**\n\nTo allow exploration of the generative art, create a single, self-contained HTML artifact. Ensure this artifact works immediately in claude.ai or any browser - no setup required. Embed everything inline.\n\n### CRITICAL: WHAT'S FIXED VS VARIABLE\n\nThe `templates/viewer.html` file is the foundation. It contains the exact structure and styling needed.\n\n**FIXED (always include exactly as shown):**\n- Layout structure (header, sidebar, main canvas area)\n- Anthropic branding (UI colors, fonts, gradients)\n- Seed section in sidebar:\n  - Seed display\n  - Previous/Next buttons\n  - Random button\n  - Jump to seed input + Go button\n- Actions section in sidebar:\n  - Regenerate button\n  - Reset button\n\n**VARIABLE (customize for each artwork):**\n- The entire p5.js algorithm (setup/draw/classes)\n- The parameters object (define what the art needs)\n- The Parameters section in sidebar:\n  - Number of parameter controls\n  - Parameter names\n  - Min/max/step values for sliders\n  - Control types (sliders, inputs, etc.)\n- Colors section (optional):\n  - Some art needs color pickers\n  - Some art might use fixed colors\n  - Some art might be monochrome (no color controls needed)\n  - Decide based on the art's needs\n\n**Every artwork should have unique parameters and algorithm!** The fixed parts provide consistent UX - everything else expresses the unique vision.\n\n### REQUIRED FEATURES\n\n**1. Parameter Controls**\n- Sliders for numeric parameters (particle count, noise scale, speed, etc.)\n- Color pickers for palette colors\n- Real-time updates when parameters change\n- Reset button to restore defaults\n\n**2. Seed Navigation**\n- Display current seed number\n- \"Previous\" and \"Next\" buttons to cycle through seeds\n- \"Random\" button for random seed\n- Input field to jump to specific seed\n- Generate 100 variations when requested (seeds 1-100)\n\n**3. Single Artifact Structure**\n```html\n\u003c!DOCTYPE html>\n\u003chtml>\n\u003chead>\n  \u003c!-- p5.js from CDN - always available -->\n  \u003cscript src=\"https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.7.0/p5.min.js\">\u003c/script>\n  \u003cstyle>\n    /* All styling inline - clean, minimal */\n    /* Canvas on top, controls below */\n  \u003c/style>\n\u003c/head>\n\u003cbody>\n  \u003cdiv id=\"canvas-container\">\u003c/div>\n  \u003cdiv id=\"controls\">\n    \u003c!-- All parameter controls -->\n  \u003c/div>\n  \u003cscript>\n    // ALL p5.js code inline here\n    // Parameter objects, classes, functions\n    // setup() and draw()\n    // UI handlers\n    // Everything self-contained\n  \u003c/script>\n\u003c/body>\n\u003c/html>\n```\n\n**CRITICAL**: This is a single artifact. No external files, no imports (except p5.js CDN). Everything inline.\n\n**4. Implementation Details - BUILD THE SIDEBAR**\n\nThe sidebar structure:\n\n**1. Seed (FIXED)** - Always include exactly as shown:\n- Seed display\n- Prev/Next/Random/Jump buttons\n\n**2. Parameters (VARIABLE)** - Create controls for the art:\n```html\n\u003cdiv class=\"control-group\">\n    \u003clabel>Parameter Name\u003c/label>\n    \u003cinput type=\"range\" id=\"param\" min=\"...\" max=\"...\" step=\"...\" value=\"...\" oninput=\"updateParam('param', this.value)\">\n    \u003cspan class=\"value-display\" id=\"param-value\">...\u003c/span>\n\u003c/div>\n```\nAdd as many control-group divs as there are parameters.\n\n**3. Colors (OPTIONAL/VARIABLE)** - Include if the art needs adjustable colors:\n- Add color pickers if users should control palette\n- Skip this section if the art uses fixed colors\n- Skip if the art is monochrome\n\n**4. Actions (FIXED)** - Always include exactly as shown:\n- Regenerate button\n- Reset button\n- Download PNG button\n\n**Requirements**:\n- Seed controls must work (prev/next/random/jump/display)\n- All parameters must have UI controls\n- Regenerate, Reset, Download buttons must work\n- Keep Anthropic branding (UI styling, not art colors)\n\n### USING THE ARTIFACT\n\nThe HTML artifact works immediately:\n1. **In claude.ai**: Displayed as an interactive artifact - runs instantly\n2. **As a file**: Save and open in any browser - no server needed\n3. **Sharing**: Send the HTML file - it's completely self-contained\n\n---\n\n## VARIATIONS & EXPLORATION\n\nThe artifact includes seed navigation by default (prev/next/random buttons), allowing users to explore variations without creating multiple files. If the user wants specific variations highlighted:\n\n- Include seed presets (buttons for \"Variation 1: Seed 42\", \"Variation 2: Seed 127\", etc.)\n- Add a \"Gallery Mode\" that shows thumbnails of multiple seeds side-by-side\n- All within the same single artifact\n\nThis is like creating a series of prints from the same plate - the algorithm is consistent, but each seed reveals different facets of its potential. The interactive nature means users discover their own favorites by exploring the seed space.\n\n---\n\n## THE CREATIVE PROCESS\n\n**User request** → **Algorithmic philosophy** → **Implementation**\n\nEach request is unique. The process involves:\n\n1. **Interpret the user's intent** - What aesthetic is being sought?\n2. **Create an algorithmic philosophy** (4-6 paragraphs) describing the computational approach\n3. **Implement it in code** - Build the algorithm that expresses this philosophy\n4. **Design appropriate parameters** - What should be tunable?\n5. **Build matching UI controls** - Sliders/inputs for those parameters\n\n**The constants**:\n- Anthropic branding (colors, fonts, layout)\n- Seed navigation (always present)\n- Self-contained HTML artifact\n\n**Everything else is variable**:\n- The algorithm itself\n- The parameters\n- The UI controls\n- The visual outcome\n\nTo achieve the best results, trust creativity and let the philosophy guide the implementation.\n\n---\n\n## RESOURCES\n\nThis skill includes helpful templates and documentation:\n\n- **templates/viewer.html**: REQUIRED STARTING POINT for all HTML artifacts.\n  - This is the foundation - contains the exact structure and Anthropic branding\n  - **Keep unchanged**: Layout structure, sidebar organization, Anthropic colors/fonts, seed controls, action buttons\n  - **Replace**: The p5.js algorithm, parameter definitions, and UI controls in Parameters section\n  - The extensive comments in the file mark exactly what to keep vs replace\n\n- **templates/generator_template.js**: Reference for p5.js best practices and code structure principles.\n  - Shows how to organize parameters, use seeded randomness, structure classes\n  - NOT a pattern menu - use these principles to build unique algorithms\n  - Embed algorithms inline in the HTML artifact (don't create separate .js files)\n\n**Critical reminder**:\n- The **template is the STARTING POINT**, not inspiration\n- The **algorithm is where to create** something unique\n- Don't copy the flow field example - build what the philosophy demands\n- But DO keep the exact UI structure and Anthropic branding from the template\n"},{"slug":"best-minds","category":"research","name":"best-minds","description":"默认思维 skill：适用于任何问题/咨询，尤其是调研、思路梳理、路线规划与决策；不问“你怎么看”，而问“世界上谁最懂这个？TA 会怎么说？”（触发词：最强大脑、顶级专家、世界级、best minds、谁最懂这个）","license":"","md":"---\nname: best-minds\ndescription: 默认思维 skill：适用于任何问题/咨询，尤其是调研、思路梳理、路线规划与决策；不问“你怎么看”，而问“世界上谁最懂这个？TA 会怎么说？”（触发词：最强大脑、顶级专家、世界级、best minds、谁最懂这个）\n---\n\n\u003c!--\ninput: 用户问题\noutput: 领域专家视角的回答\npos: 默认 skill（可与其它技能叠加）\n\n架构守护者：一旦我被修改，请同步更新：\n1. 本文件的头部注释\n2. 所属文件夹的 README.md\n-->\n\n# Best Minds\n\n> \"Don't think of LLMs as entities but as simulators.\"\n> — Andrej Karpathy\n\n## 核心\n\n不要问 AI \"你怎么看\"。\n\n要问：**这个问题，世界上谁最懂？TA 会怎么说？**\n\n然后模拟那个人。\n\n## 原则\n\n1. **问题决定人数** — 一个人够就一个，需要碰撞才多个\n2. **找真正最懂的** — 不是找\"合适的\"，是找\"最强的\"\n3. **基于真实** — 模拟要基于 TA 公开的思想、著作、言论\n4. **引用原话** — 尽可能用 TA 说过的话\n\n## vs ai-coaches\n\n| ai-coaches | best-minds |\n|------------|------------|\n| 从 13 个预设智者选 | 从全世界找 |\n| 基于关键词匹配 | 基于问题本质 |\n"},{"slug":"best-minds-minimalist","category":"research","name":"best-minds-minimalist","description":"Combine “best-minds” research synthesis (谁最懂这个？TA 会怎么说？) with a black/white minimalist report layout (极简黑白/Modern Minimalist). Use for 调研、研究报告、方案对比、路线规划、决策梳理 when you want expert-simulated viewpoints + synthesis, presented in a clean monochrome format, and automatically generate a printable HTML report in the workspace.","license":"","md":"---\nname: best-minds-minimalist\ndescription: Combine “best-minds” research synthesis (谁最懂这个？TA 会怎么说？) with a black/white minimalist report layout (极简黑白/Modern Minimalist). Use for 调研、研究报告、方案对比、路线规划、决策梳理 when you want expert-simulated viewpoints + synthesis, presented in a clean monochrome format, and automatically generate a printable HTML report in the workspace.\n---\n\n# Best Minds Minimalist\n\n## Overview\n\n用“最佳专家视角模拟（best-minds）”产出调研结论，并以黑白极简排版交付。默认会在 workspace 自动落一份可打印的 HTML 报告文件（无需你在 prompt 里额外说明）。\n\n## Workflow Decision Tree\n\n1. 明确交付物\n   - 受众是谁？（自己/团队/老板/外部）\n   - 目的是什么？（学习/决策/说服/立项/避坑）\n   - 时间预算与深度？（15min/2h/1d）\n   - 输出偏好：`Markdown`（默认）或 `HTML`（可打印）\n2. 选择 “best minds”（1–5 位）\n   - 一个人能定调就 1 位；需要碰撞观点再加人\n   - 只选真正最懂的：领域奠基者/长期一线实践者/关键论文作者/标准制定者\n3. 逐位模拟与归纳\n   - 对每位专家输出：核心立场（thesis）→ 关键论据 → 反例/限制 → 适用边界\n   - 引用规则：只在**高度确定**时给“原话 + 来源链接”；否则标注为“paraphrase”\n4. 合成可执行结论\n   - 把一致点/分歧点写清楚，指出分歧的“关键变量（crux）”\n   - 给出 2–4 个可选方案：适用场景、收益、代价、主要风险、第一步\n5. 黑白极简呈现\n   - 无表情符号、少装饰、留白、细分隔线、少量加粗\n   - 默认输出 Markdown + 自动生成 HTML（见下方“Auto HTML”）\n\n## Style Spec (Zon Minimal Editorial · Light)\n\n- Tokens：`--black #0a0a0a`，`--white #fafafa`，`--gray-100 #f5f5f5`，`--gray-200 #e8e8e8`，`--gray-400 #999`，`--gray-600 #666`，`--gray-800 #333`\n- Typography：系统 UI 字体栈（含中文系统字体）；正文 `16px/1.8`；标题轻字重 + 细字距；标签使用大写 + 高 tracking\n- Layout：窄阅读宽度（`max-width: 860px`），sticky header + 细分割线，内容优先、留白克制\n\n**默认增强（你要求的）：**\n\n- 报告末尾必须有“Closing Summary”（结尾总结 + One next action）\n- 默认内置 SVG（流程图 / 时序图 / 轻动画 dash），**默认中文**；SVG 文案尽量复用报告里的同一组字段（如 `{{TITLE}}` / `{{ABSTRACT}}` / 关键结论短句），避免“SVG 还停留在模板文案”\n- 页面内所有图片/图表（`\u003cimg>` / `\u003csvg>` / `\u003ccanvas>`）必须支持点击打开**全屏浮窗**（拖拽移动、滚轮/双指缩放、双击重置、`ESC` 关闭；不依赖外部库）\n- 尽可能把关键信息做成数据可视化：优先用模板自带的 `timeline` block（里程碑）/ `.kpi-grid` / `.barlist`；复杂图解再用 `\u003cfigure class=\"figure\">\u003csvg>...\u003c/svg>\u003c/figure>`\n- 有操作步骤必须给 Step-by-step（面向新手、通俗易懂）\n- 遵循奥卡姆剃刀：主页面只放必要内容；复杂推导/长表格/补充材料放二级页面\n\n## UI Primitives（kit 内置组件 · 推荐优先用）\n\n这些组件由 `zon-report-kit` 的 `zon-report.css` / `zon-report.js` 提供：你只需要在 report 的 `blocks` 或 `html` 里使用对应结构即可。\n\n### 1) `timeline`（里程碑时间轴）\n\n- 用途：产品里程碑、阶段演进、路线图关键节点\n- 形式：自动在横向/纵向之间择优（可强制）\n\n数据示例：\n\n```js\n{ id: \"milestones\", nav: \"Milestones\", type: \"timeline\", data: {\n  title: \"Milestones\",\n  orientation: \"auto\", // auto | horizontal | vertical\n  items: [\n    { label: \"Launch\", time: \"2016-08-11\", note: \"Hacker News 发布（对外起量）\" },\n    { label: \"Acquired\", time: \"2017-04-11\", note: \"Stripe 收购（战略并入）\" }\n  ]\n}}\n```\n\n### 2) `.kpi-grid`（KPI 卡片网格）\n\n- 约定：KPI 内部字段请用 `.k`（label）与 `.v`（value），注释用 `.muted`\n\nHTML 片段示例：\n\n```html\n\u003cdiv class=\"kpi-grid\">\n  \u003cdiv class=\"kpi\">\n    \u003cdiv class=\"k\">Newsletter\u003c/div>\n    \u003cdiv class=\"v\">100K+\u003c/div>\n    \u003cdiv class=\"muted\">增长里程碑\u003c/div>\n  \u003c/div>\n\u003c/div>\n```\n\n### 3) `.barlist`（对比条形图）\n\n- 约定：`.barfill` 的宽度用 `style=\"--pct: 68%\"`\n\n\n\n## Content-Driven Layout（核心）\n\n目标：**保持同一视觉系统（Zon Minimal Editorial · Light）**，但让每份报告根据内容选择更合适的展现形式（cards / grid / table / figure / stepper），避免“永远同一套章节 + 同一套版式”。\n\n**硬规则：**\n\n- 先选一个 `LAYOUT`（写入 HTML 模板的 `data-layout`）：`memo / compare / roadmap / playbook / audit`（五选一；不要留空）\n- 主内容必须用 `{{BLOCKS_HTML}}` 组装（每个 block 用一个 `\u003csection>`），而不是机械填固定 TLDR_1/2/3 那种字段\n- 每个 `\u003csection>` 必须同时具备：\n  - `id=\"...\"`（用于锚点）\n  - `data-nav=\"...\"`（用于自动生成 TOC / 顶部导航）\n- 不要输出“空 section / 空表格 / 空图解”：没内容就不生成该 block\n\n**最低 UX 保底（每篇都要有）：**\n\n- 一个“结论/要点”block（可以是 bullets，也可以是 cards）\n- 一个“一个下一步动作（One next action）”block（最好用 `.callout` 或 `.card`）\n- Sources block（可用 list 或 table）\n- 至少两个图解：① 结构图（流程/时序/架构）② 数据图（对比条形图/矩阵/热力图/时间线/评分图），都用 `\u003cfigure class=\"figure\">...\u003c/figure>`\n\n**常见内容 → 推荐版式（示例，不是硬模板）：**\n\n- `compare`（A vs B / 方案对比）：双列卡片 + 对比表 + 风险/代价清单 + 最终推荐（callout）\n- `roadmap`（路线图 / 计划）：时间线（列表或表格）+ 里程碑卡片 + 依赖/风险 + 第一周行动（stepper）\n- `playbook`（执行指南）：stepper + checklist + “常见坑/反例”（details 折叠）\n- `audit`（评估/复盘/体检）：评分表 + 证据链（table）+ 缺口清单 + 修复顺序（roadmap mini）\n- `memo`（通用决策备忘）：开场摘要 + 关键洞见（cards 或 numbered list）+ 选项/权衡 + 下一步\n\n## Output Template (Markdown)\n\n默认按下列结构输出（必要时可删减）：\n\n```md\n# {Title}\n{One-line subtitle}\n{Date} · {Audience} · {Scope}\n\n---\n\n## TL;DR\n- ...\n\n## Key Insights\n1. ...\n\n## Expert Views\n### {Expert 1 — credential}\n- Thesis: ...\n- Arguments: ...\n- Limits: ...\n- Quote (if certain): “...” — {Source}\n\n### {Expert 2 — credential}\n...\n\n## Options\n| Option | Best for | Upside | Downside | Key risk | First step |\n|---|---|---|---|---|---|\n| A |  |  |  |  |  |\n\n## Evidence & Confidence\n| Claim | Evidence | Confidence | Source |\n|---|---|---|---|\n|  |  | Low/Med/High |  |\n\n## Next Steps\n- ...\n\n## Sources\n- ...\n```\n\n## Output Template (HTML)\n\n## Auto HTML (默认行为 · Zon Report)\n\n除非用户明确说“只要 Markdown / 不要生成文件”，否则每次调用本 skill 都自动生成一份「数据源 + 极薄 HTML」的报告：\n\n- **强全局统一**：样式/交互从 `zon-report-kit` 加载（改一次全生效）\n- **数据只存一次**：正文只写进数据文件；HTML 只做渲染壳（不再混杂长 CSS/内容）\n- **本地 `file://` 兼容优先**：默认用 **JS 数据源**（避免浏览器禁止 `fetch(file://...)` 读取 JSON）\n\n> Kit 基址默认：`https://zon-report-kit.zondev.top`（如用户提供 `ZON_REPORT_KIT_BASE`，优先用它）。\n\n**硬性要求（不要跳过）：**\n\n1. **先落盘，再回复。** 在组织回答内容前，先创建/更新 `docs/report.html`（最差也要先写入占位版，随后再覆盖为最终版），保证用户永远有一个“最新入口”。\n2. 确保 `docs/reports/` 存在（不存在则创建）。\n3. 每次都创建**全新文件**（不要覆盖旧文件），使用时间戳命名：\n   - 数据：`docs/reports/report-YYYYMMDD-HHMMSS.data.js`\n   - 壳：`docs/reports/report-YYYYMMDD-HHMMSS.html`\n   - 若同一秒内冲突：在末尾追加 `-2`、`-3`… 直到不冲突\n4. **数据只能写一次**：禁止把正文再复制进 HTML。HTML 里只保留 title/少量 meta；正文放在 `.data.js` 的 `window.zonReportData`。\n5. HTML 必须是“极薄壳”（只负责 mount + 引入 kit）：\n\n```html\n\u003cdiv data-zon-report data-var=\"zonReportData\">\u003c/div>\n\u003cscript src=\"report-YYYYMMDD-HHMMSS.data.js\">\u003c/script>\n\u003cscript src=\"https://zon-report-kit.zondev.top/zon-report.js\">\u003c/script>\n```\n\n6. 同时引入 kit 样式：`\u003clink rel=\"stylesheet\" href=\"https://zon-report-kit.zondev.top/zon-report.css\" />`\n7. 更新 `docs/report.html` → 重定向到最新壳：`reports/report-YYYYMMDD-HHMMSS.html`\n8. 回复末尾必须包含两个可点击路径：\n   - `docs/reports/report-YYYYMMDD-HHMMSS.html`\n   - `docs/reports/report-YYYYMMDD-HHMMSS.data.js`\n\n**数据结构（zon-report@v1）**\n\n`.data.js` 必须输出：\n\n```js\nwindow.zonReportData = {\n  version: \"zon-report@v1\",\n  meta: {\n    id: \"report-YYYYMMDD-HHMMSS\",\n    title: \"...\",\n    subtitle: \"...\",\n    abstract: \"...\",\n    label: \"Report\",\n    layout: \"memo|compare|roadmap|playbook|audit\",\n    theme: \"light\",\n    date: \"YYYY-MM-DD HH:MM\",\n    audience: \"Zon\",\n    scope: \"...\",\n    tags: [\"...\"],\n    generated_at: \"YYYY-MM-DD HH:MM\",\n    links: { }\n  },\n  blocks: [\n    { id: \"tldr\", nav: \"TL;DR\", type: \"html\", data: { html: \"\u003ch2>TL;DR\u003c/h2>...\" } },\n    { id: \"next\", nav: \"Next\", type: \"callout\", data: { variant: \"info\", title: \"One next action\", bullets: [\"...\"] } },\n    { id: \"sources\", nav: \"Sources\", type: \"html\", data: { html: \"\u003ch2>Sources\u003c/h2>\u003cul>...\u003c/ul>\" } }\n  ]\n};\n```\n\n- `blocks[].type=\"html\"`：`data.html` 里只写 **section 内部** HTML（如 `h2 + card + list`），不要再包一层 `\u003csection>`。\n- 必须保证每个 block 都有：`id`（锚点）+ `nav`（TOC 显示名）。\n- **最低保底**：至少包含 `TL;DR / Key Insights / Options / Next Steps / Sources / Closing Summary`（可拆成多个 block）。\n\n**降级策略（当工具写文件不可用/失败时）：**\n\n- 仍然要生成报告内容，并明确说明“本次无法写入文件”；同时输出：\n  - 一份 `.data.js`（`window.zonReportData=...`）\n  - 一份极薄 `.html` 壳（引用 `.data.js` + kit）\n## Safety & Integrity\n\n- 不要编造“原话”；不确定就用 paraphrase 并标注不确定性\n- 把 sources 放在末尾，优先给可验证链接；没网就说明“无法在线核验”\n- 不在未确认的情况下建议执行破坏性命令；所有文件写入先说明写到哪里、写什么\n\n\n## Link Retrieval Fallback（Playwright CLI）\n\n当用户提供链接（尤其 `mp.weixin.qq.com`）但你无法直接获取正文/内容时，不要空口总结：\n\n1. **优先用 Playwright CLI 抓取原文并落盘**（本仓库已有脚本）：  \n   - `python scripts/fetch_wechat_article.py --url \"...\" --out \"tmp/wechat/\u003cts>\"`\n2. **如果需要“展示正文”**，直接生成一份新的 HTML：  \n   - `python scripts/fetch_wechat_article.py --url \"...\" --out \"tmp/wechat/\u003cts>\" --render-html`\n3. **遇到“环境异常 / 去验证”**：改用可见窗口过一次验证并保存登录态，再复用 cookie：  \n   - `python scripts/fetch_wechat_article.py --url \"...\" --headed --storage-state \"tmp/wechat/storage.json\"`  \n   - 然后 `python scripts/fetch_wechat_article.py --url \"...\" --storage-state \"tmp/wechat/storage.json\"`\n\n使用抓取结果写报告时：\n\n- Sources 必须包含 `meta.json` 的 `final_url`（或 `requested_url`）与抓取时间\n- 引用只来自抓取到的 `article.txt` / `article.html`；找不到出处就标 `paraphrase` / `low confidence`\n\n## Example Triggers\n\n- “$best-minds 帮我调研 X，并用黑白极简风格输出”\n- “做个对比报告：A vs B，给 3 个方案和结论”\n- “帮我做路线规划，按专家观点拆分，然后合成决策建议”\n"},{"slug":"doc-coauthoring","category":"docs","name":"doc-coauthoring","description":"Guide users through a structured workflow for co-authoring documentation. Use when user wants to write documentation, proposals, technical specs, decision docs, or similar structured content. This workflow helps users efficiently transfer context, refine content through iteration, and verify the doc works for readers. Trigger when user mentions writing docs, creating proposals, drafting specs, or similar documentation tasks.","license":"","md":"---\nname: doc-coauthoring\ndescription: Guide users through a structured workflow for co-authoring documentation. Use when user wants to write documentation, proposals, technical specs, decision docs, or similar structured content. This workflow helps users efficiently transfer context, refine content through iteration, and verify the doc works for readers. Trigger when user mentions writing docs, creating proposals, drafting specs, or similar documentation tasks.\n---\n\n# Doc Co-Authoring Workflow\n\nThis skill provides a structured workflow for guiding users through collaborative document creation. Act as an active guide, walking users through three stages: Context Gathering, Refinement & Structure, and Reader Testing.\n\n## When to Offer This Workflow\n\n**Trigger conditions:**\n- User mentions writing documentation: \"write a doc\", \"draft a proposal\", \"create a spec\", \"write up\"\n- User mentions specific doc types: \"PRD\", \"design doc\", \"decision doc\", \"RFC\"\n- User seems to be starting a substantial writing task\n\n**Initial offer:**\nOffer the user a structured workflow for co-authoring the document. Explain the three stages:\n\n1. **Context Gathering**: User provides all relevant context while Claude asks clarifying questions\n2. **Refinement & Structure**: Iteratively build each section through brainstorming and editing\n3. **Reader Testing**: Test the doc with a fresh Claude (no context) to catch blind spots before others read it\n\nExplain that this approach helps ensure the doc works well when others read it (including when they paste it into Claude). Ask if they want to try this workflow or prefer to work freeform.\n\nIf user declines, work freeform. If user accepts, proceed to Stage 1.\n\n## Stage 1: Context Gathering\n\n**Goal:** Close the gap between what the user knows and what Claude knows, enabling smart guidance later.\n\n### Initial Questions\n\nStart by asking the user for meta-context about the document:\n\n1. What type of document is this? (e.g., technical spec, decision doc, proposal)\n2. Who's the primary audience?\n3. What's the desired impact when someone reads this?\n4. Is there a template or specific format to follow?\n5. Any other constraints or context to know?\n\nInform them they can answer in shorthand or dump information however works best for them.\n\n**If user provides a template or mentions a doc type:**\n- Ask if they have a template document to share\n- If they provide a link to a shared document, use the appropriate integration to fetch it\n- If they provide a file, read it\n\n**If user mentions editing an existing shared document:**\n- Use the appropriate integration to read the current state\n- Check for images without alt-text\n- If images exist without alt-text, explain that when others use Claude to understand the doc, Claude won't be able to see them. Ask if they want alt-text generated. If so, request they paste each image into chat for descriptive alt-text generation.\n\n### Info Dumping\n\nOnce initial questions are answered, encourage the user to dump all the context they have. Request information such as:\n- Background on the project/problem\n- Related team discussions or shared documents\n- Why alternative solutions aren't being used\n- Organizational context (team dynamics, past incidents, politics)\n- Timeline pressures or constraints\n- Technical architecture or dependencies\n- Stakeholder concerns\n\nAdvise them not to worry about organizing it - just get it all out. Offer multiple ways to provide context:\n- Info dump stream-of-consciousness\n- Point to team channels or threads to read\n- Link to shared documents\n\n**If integrations are available** (e.g., Slack, Teams, Google Drive, SharePoint, or other MCP servers), mention that these can be used to pull in context directly.\n\n**If no integrations are detected and in Claude.ai or Claude app:** Suggest they can enable connectors in their Claude settings to allow pulling context from messaging apps and document storage directly.\n\nInform them clarifying questions will be asked once they've done their initial dump.\n\n**During context gathering:**\n\n- If user mentions team channels or shared documents:\n  - If integrations available: Inform them the content will be read now, then use the appropriate integration\n  - If integrations not available: Explain lack of access. Suggest they enable connectors in Claude settings, or paste the relevant content directly.\n\n- If user mentions entities/projects that are unknown:\n  - Ask if connected tools should be searched to learn more\n  - Wait for user confirmation before searching\n\n- As user provides context, track what's being learned and what's still unclear\n\n**Asking clarifying questions:**\n\nWhen user signals they've done their initial dump (or after substantial context provided), ask clarifying questions to ensure understanding:\n\nGenerate 5-10 numbered questions based on gaps in the context.\n\nInform them they can use shorthand to answer (e.g., \"1: yes, 2: see #channel, 3: no because backwards compat\"), link to more docs, point to channels to read, or just keep info-dumping. Whatever's most efficient for them.\n\n**Exit condition:**\nSufficient context has been gathered when questions show understanding - when edge cases and trade-offs can be asked about without needing basics explained.\n\n**Transition:**\nAsk if there's any more context they want to provide at this stage, or if it's time to move on to drafting the document.\n\nIf user wants to add more, let them. When ready, proceed to Stage 2.\n\n## Stage 2: Refinement & Structure\n\n**Goal:** Build the document section by section through brainstorming, curation, and iterative refinement.\n\n**Instructions to user:**\nExplain that the document will be built section by section. For each section:\n1. Clarifying questions will be asked about what to include\n2. 5-20 options will be brainstormed\n3. User will indicate what to keep/remove/combine\n4. The section will be drafted\n5. It will be refined through surgical edits\n\nStart with whichever section has the most unknowns (usually the core decision/proposal), then work through the rest.\n\n**Section ordering:**\n\nIf the document structure is clear:\nAsk which section they'd like to start with.\n\nSuggest starting with whichever section has the most unknowns. For decision docs, that's usually the core proposal. For specs, it's typically the technical approach. Summary sections are best left for last.\n\nIf user doesn't know what sections they need:\nBased on the type of document and template, suggest 3-5 sections appropriate for the doc type.\n\nAsk if this structure works, or if they want to adjust it.\n\n**Once structure is agreed:**\n\nCreate the initial document structure with placeholder text for all sections.\n\n**If access to artifacts is available:**\nUse `create_file` to create an artifact. This gives both Claude and the user a scaffold to work from.\n\nInform them that the initial structure with placeholders for all sections will be created.\n\nCreate artifact with all section headers and brief placeholder text like \"[To be written]\" or \"[Content here]\".\n\nProvide the scaffold link and indicate it's time to fill in each section.\n\n**If no access to artifacts:**\nCreate a markdown file in the working directory. Name it appropriately (e.g., `decision-doc.md`, `technical-spec.md`).\n\nInform them that the initial structure with placeholders for all sections will be created.\n\nCreate file with all section headers and placeholder text.\n\nConfirm the filename has been created and indicate it's time to fill in each section.\n\n**For each section:**\n\n### Step 1: Clarifying Questions\n\nAnnounce work will begin on the [SECTION NAME] section. Ask 5-10 clarifying questions about what should be included:\n\nGenerate 5-10 specific questions based on context and section purpose.\n\nInform them they can answer in shorthand or just indicate what's important to cover.\n\n### Step 2: Brainstorming\n\nFor the [SECTION NAME] section, brainstorm [5-20] things that might be included, depending on the section's complexity. Look for:\n- Context shared that might have been forgotten\n- Angles or considerations not yet mentioned\n\nGenerate 5-20 numbered options based on section complexity. At the end, offer to brainstorm more if they want additional options.\n\n### Step 3: Curation\n\nAsk which points should be kept, removed, or combined. Request brief justifications to help learn priorities for the next sections.\n\nProvide examples:\n- \"Keep 1,4,7,9\"\n- \"Remove 3 (duplicates 1)\"\n- \"Remove 6 (audience already knows this)\"\n- \"Combine 11 and 12\"\n\n**If user gives freeform feedback** (e.g., \"looks good\" or \"I like most of it but...\") instead of numbered selections, extract their preferences and proceed. Parse what they want kept/removed/changed and apply it.\n\n### Step 4: Gap Check\n\nBased on what they've selected, ask if there's anything important missing for the [SECTION NAME] section.\n\n### Step 5: Drafting\n\nUse `str_replace` to replace the placeholder text for this section with the actual drafted content.\n\nAnnounce the [SECTION NAME] section will be drafted now based on what they've selected.\n\n**If using artifacts:**\nAfter drafting, provide a link to the artifact.\n\nAsk them to read through it and indicate what to change. Note that being specific helps learning for the next sections.\n\n**If using a file (no artifacts):**\nAfter drafting, confirm completion.\n\nInform them the [SECTION NAME] section has been drafted in [filename]. Ask them to read through it and indicate what to change. Note that being specific helps learning for the next sections.\n\n**Key instruction for user (include when drafting the first section):**\nProvide a note: Instead of editing the doc directly, ask them to indicate what to change. This helps learning of their style for future sections. For example: \"Remove the X bullet - already covered by Y\" or \"Make the third paragraph more concise\".\n\n### Step 6: Iterative Refinement\n\nAs user provides feedback:\n- Use `str_replace` to make edits (never reprint the whole doc)\n- **If using artifacts:** Provide link to artifact after each edit\n- **If using files:** Just confirm edits are complete\n- If user edits doc directly and asks to read it: mentally note the changes they made and keep them in mind for future sections (this shows their preferences)\n\n**Continue iterating** until user is satisfied with the section.\n\n### Quality Checking\n\nAfter 3 consecutive iterations with no substantial changes, ask if anything can be removed without losing important information.\n\nWhen section is done, confirm [SECTION NAME] is complete. Ask if ready to move to the next section.\n\n**Repeat for all sections.**\n\n### Near Completion\n\nAs approaching completion (80%+ of sections done), announce intention to re-read the entire document and check for:\n- Flow and consistency across sections\n- Redundancy or contradictions\n- Anything that feels like \"slop\" or generic filler\n- Whether every sentence carries weight\n\nRead entire document and provide feedback.\n\n**When all sections are drafted and refined:**\nAnnounce all sections are drafted. Indicate intention to review the complete document one more time.\n\nReview for overall coherence, flow, completeness.\n\nProvide any final suggestions.\n\nAsk if ready to move to Reader Testing, or if they want to refine anything else.\n\n## Stage 3: Reader Testing\n\n**Goal:** Test the document with a fresh Claude (no context bleed) to verify it works for readers.\n\n**Instructions to user:**\nExplain that testing will now occur to see if the document actually works for readers. This catches blind spots - things that make sense to the authors but might confuse others.\n\n### Testing Approach\n\n**If access to sub-agents is available (e.g., in Claude Code):**\n\nPerform the testing directly without user involvement.\n\n### Step 1: Predict Reader Questions\n\nAnnounce intention to predict what questions readers might ask when trying to discover this document.\n\nGenerate 5-10 questions that readers would realistically ask.\n\n### Step 2: Test with Sub-Agent\n\nAnnounce that these questions will be tested with a fresh Claude instance (no context from this conversation).\n\nFor each question, invoke a sub-agent with just the document content and the question.\n\nSummarize what Reader Claude got right/wrong for each question.\n\n### Step 3: Run Additional Checks\n\nAnnounce additional checks will be performed.\n\nInvoke sub-agent to check for ambiguity, false assumptions, contradictions.\n\nSummarize any issues found.\n\n### Step 4: Report and Fix\n\nIf issues found:\nReport that Reader Claude struggled with specific issues.\n\nList the specific issues.\n\nIndicate intention to fix these gaps.\n\nLoop back to refinement for problematic sections.\n\n---\n\n**If no access to sub-agents (e.g., claude.ai web interface):**\n\nThe user will need to do the testing manually.\n\n### Step 1: Predict Reader Questions\n\nAsk what questions people might ask when trying to discover this document. What would they type into Claude.ai?\n\nGenerate 5-10 questions that readers would realistically ask.\n\n### Step 2: Setup Testing\n\nProvide testing instructions:\n1. Open a fresh Claude conversation: https://claude.ai\n2. Paste or share the document content (if using a shared doc platform with connectors enabled, provide the link)\n3. Ask Reader Claude the generated questions\n\nFor each question, instruct Reader Claude to provide:\n- The answer\n- Whether anything was ambiguous or unclear\n- What knowledge/context the doc assumes is already known\n\nCheck if Reader Claude gives correct answers or misinterprets anything.\n\n### Step 3: Additional Checks\n\nAlso ask Reader Claude:\n- \"What in this doc might be ambiguous or unclear to readers?\"\n- \"What knowledge or context does this doc assume readers already have?\"\n- \"Are there any internal contradictions or inconsistencies?\"\n\n### Step 4: Iterate Based on Results\n\nAsk what Reader Claude got wrong or struggled with. Indicate intention to fix those gaps.\n\nLoop back to refinement for any problematic sections.\n\n---\n\n### Exit Condition (Both Approaches)\n\nWhen Reader Claude consistently answers questions correctly and doesn't surface new gaps or ambiguities, the doc is ready.\n\n## Final Review\n\nWhen Reader Testing passes:\nAnnounce the doc has passed Reader Claude testing. Before completion:\n\n1. Recommend they do a final read-through themselves - they own this document and are responsible for its quality\n2. Suggest double-checking any facts, links, or technical details\n3. Ask them to verify it achieves the impact they wanted\n\nAsk if they want one more review, or if the work is done.\n\n**If user wants final review, provide it. Otherwise:**\nAnnounce document completion. Provide a few final tips:\n- Consider linking this conversation in an appendix so readers can see how the doc was developed\n- Use appendices to provide depth without bloating the main doc\n- Update the doc as feedback is received from real readers\n\n## Tips for Effective Guidance\n\n**Tone:**\n- Be direct and procedural\n- Explain rationale briefly when it affects user behavior\n- Don't try to \"sell\" the approach - just execute it\n\n**Handling Deviations:**\n- If user wants to skip a stage: Ask if they want to skip this and write freeform\n- If user seems frustrated: Acknowledge this is taking longer than expected. Suggest ways to move faster\n- Always give user agency to adjust the process\n\n**Context Management:**\n- Throughout, if context is missing on something mentioned, proactively ask\n- Don't let gaps accumulate - address them as they come up\n\n**Artifact Management:**\n- Use `create_file` for drafting full sections\n- Use `str_replace` for all edits\n- Provide artifact link after every change\n- Never use artifacts for brainstorming lists - that's just conversation\n\n**Quality over Speed:**\n- Don't rush through stages\n- Each iteration should make meaningful improvements\n- The goal is a document that actually works for readers\n"},{"slug":"frontend-design","category":"design","name":"frontend-design","description":"Create distinctive, production-grade frontend interfaces with high design quality. Use this skill when the user asks to build web components, pages, artifacts, posters, or applications (examples include websites, landing pages, dashboards, React components, HTML/CSS layouts, or when styling/beautifying any web UI). Generates creative, polished code and UI design that avoids generic AI aesthetics.","license":"Complete terms in LICENSE.txt","md":"---\nname: frontend-design\ndescription: Create distinctive, production-grade frontend interfaces with high design quality. Use this skill when the user asks to build web components, pages, artifacts, posters, or applications (examples include websites, landing pages, dashboards, React components, HTML/CSS layouts, or when styling/beautifying any web UI). Generates creative, polished code and UI design that avoids generic AI aesthetics.\nlicense: Complete terms in LICENSE.txt\n---\n\nThis skill guides creation of distinctive, production-grade frontend interfaces that avoid generic \"AI slop\" aesthetics. Implement real working code with exceptional attention to aesthetic details and creative choices.\n\nThe user provides frontend requirements: a component, page, application, or interface to build. They may include context about the purpose, audience, or technical constraints.\n\n## Design Thinking\n\n### Zon Preference (Default)\n\nWhen the user says “用我最喜欢的设计风格 / 黑白简洁 / 极简黑白”, default to a **strict black & white minimal** system:\n- Palette: pure B/W + neutral grays only; avoid gradients, colorful accents, glassmorphism/blur.\n- Layout: whitespace-first, hard edges, 1px rules; minimal radius; no heavy shadows.\n- Type: clean sans for body + mono for UI labels; avoid decorative display faces.\n- Interaction: understated; hover via underline or color inversion; motion ≤150ms.\n\nIf unclear, ask 1 question: “纯黑白，还是允许一个点缀色？”\n\nBefore coding, understand the context and commit to a BOLD aesthetic direction:\n- **Purpose**: What problem does this interface solve? Who uses it?\n- **Tone**: Pick an extreme: brutally minimal, maximalist chaos, retro-futuristic, organic/natural, luxury/refined, playful/toy-like, editorial/magazine, brutalist/raw, art deco/geometric, soft/pastel, industrial/utilitarian, etc. There are so many flavors to choose from. Use these for inspiration but design one that is true to the aesthetic direction.\n- **Constraints**: Technical requirements (framework, performance, accessibility).\n- **Differentiation**: What makes this UNFORGETTABLE? What's the one thing someone will remember?\n\n**CRITICAL**: Choose a clear conceptual direction and execute it with precision. Bold maximalism and refined minimalism both work - the key is intentionality, not intensity.\n\nThen implement working code (HTML/CSS/JS, React, Vue, etc.) that is:\n- Production-grade and functional\n- Visually striking and memorable\n- Cohesive with a clear aesthetic point-of-view\n- Meticulously refined in every detail\n\n## Frontend Aesthetics Guidelines\n\nFocus on:\n- **Typography**: Choose fonts that are beautiful, unique, and interesting. Avoid generic fonts like Arial and Inter; opt instead for distinctive choices that elevate the frontend's aesthetics; unexpected, characterful font choices. Pair a distinctive display font with a refined body font.\n- **Color & Theme**: Commit to a cohesive aesthetic. Use CSS variables for consistency. Dominant colors with sharp accents outperform timid, evenly-distributed palettes.\n- **Motion**: Use animations for effects and micro-interactions. Prioritize CSS-only solutions for HTML. Use Motion library for React when available. Focus on high-impact moments: one well-orchestrated page load with staggered reveals (animation-delay) creates more delight than scattered micro-interactions. Use scroll-triggering and hover states that surprise.\n- **Spatial Composition**: Unexpected layouts. Asymmetry. Overlap. Diagonal flow. Grid-breaking elements. Generous negative space OR controlled density.\n- **Backgrounds & Visual Details**: Create atmosphere and depth rather than defaulting to solid colors. Add contextual effects and textures that match the overall aesthetic. Apply creative forms like gradient meshes, noise textures, geometric patterns, layered transparencies, dramatic shadows, decorative borders, custom cursors, and grain overlays.\n\nNEVER use generic AI-generated aesthetics like overused font families (Inter, Roboto, Arial, system fonts), cliched color schemes (particularly purple gradients on white backgrounds), predictable layouts and component patterns, and cookie-cutter design that lacks context-specific character.\n\nInterpret creatively and make unexpected choices that feel genuinely designed for the context. No design should be the same. Vary between light and dark themes, different fonts, different aesthetics. NEVER converge on common choices (Space Grotesk, for example) across generations.\n\n**IMPORTANT**: Match implementation complexity to the aesthetic vision. Maximalist designs need elaborate code with extensive animations and effects. Minimalist or refined designs need restraint, precision, and careful attention to spacing, typography, and subtle details. Elegance comes from executing the vision well.\n\nRemember: Claude is capable of extraordinary creative work. Don't hold back, show what can truly be created when thinking outside the box and committing fully to a distinctive vision.\n\n## Information Display Dashboards (Zon)\n\nWhen the user asks to extract information from a link/document and present it as an HTML page (information display / info dashboard):\n\n- Default to an information-dense dashboard rather than a sparse landing page.\n- Make it scannable “at a glance”: metadata, thesis, outline, key entities/tools, and links.\n- Visualize the message with SVG: include at least (1) a global map diagram and (2) a workflow/process diagram.\n- All images/diagrams/canvas must be zoomable: click → full-screen viewer → fit-to-viewport, pan (drag), zoom (wheel/pinch), ESC close.\n- Emphasize actionability: add a step-by-step playbook, checklists, and clear operational instructions (“how to use / how to apply”).\n- Emphasize personal value: include decision points, pitfalls, measurement/experiments, and a notes area for the user.\n- Provide copy/export actions (copy link/JSON/checklist; print to PDF) and persist checklist state locally when helpful.\n- Respect copyright: avoid reproducing full article text; paraphrase and link to the original.\n\n## Static Editorial Documents (Zon House Style)\n\nWhen the user asks for a static, content-first single-file HTML document (interview transcript, profile, essay, notes) and does not request a different aesthetic/UI framework, or references `8_Workflow/shareAuto/INFJ/采访/布琳布朗_INFJ对谈.html`:\n\n- Default to the **Zon Minimal Editorial** house style for continuity across documents (even though this skill otherwise encourages aesthetic variation).\n- All images/diagrams/canvas must be zoomable: click → full-screen viewer → fit-to-viewport, pan (drag), zoom (wheel/pinch), ESC close.\n- Available variants:\n  - **Light (default)**: `assets/zon-minimal-editorial.template.html` + `references/zon-minimal-editorial.md`\n  - **Warm Paper**: `assets/zon-minimal-editorial.warm-paper.template.html` + `references/zon-minimal-editorial.warm-paper.md`\n  - **Noir (night reading)**: `assets/zon-minimal-editorial.noir.template.html` + `references/zon-minimal-editorial.noir.md`\n  - **Typewriter (draft)**: `assets/zon-minimal-editorial.typewriter.template.html` + `references/zon-minimal-editorial.typewriter.md`\n  - **Luxury Serif (feature)**: `assets/zon-minimal-editorial.luxury-serif.template.html` + `references/zon-minimal-editorial.luxury-serif.md`\n  - **Brutalist (hard)**: `assets/zon-minimal-editorial.brutalist.template.html` + `references/zon-minimal-editorial.brutalist.md`\n- Variant selection:\n  - If the user mentions night/dark reading (e.g. “暗色/夜读/深色/护眼”), use **Noir**.\n  - If the user wants warmer paper tone (e.g. “暖/米白/纸感/不那么冷”), use **Warm Paper**.\n  - If the user wants a typed manuscript feel (e.g. “打字机/稿纸/等宽/工作日志/研究记录”), use **Typewriter**.\n  - If the user wants a magazine/book feature vibe (e.g. “书刊/衬线/特稿/高级/更像杂志”), use **Luxury Serif**.\n  - If the user wants sharper, raw layout (e.g. “粗野/硬核/Brutalist/像宣言/像海报”), use **Brutalist**.\n  - If the user says “保持和布琳布朗那份一样/同款风格”, use **Light**.\n  - Otherwise, ask one short question: “要 Light / Warm Paper / Noir / Typewriter / Luxury Serif / Brutalist 哪一套？”\n- Exception to the “avoid system fonts” guideline: for Chinese-heavy editorial documents, prefer the template’s system font stack for legibility and consistency.\n"},{"slug":"game-vn-immersive","category":"design","name":"game-vn-immersive","description":"Scaffold and iterate on an immersive single-file HTML visual novel / text game (文字游/橙光-like) with full-screen stage, character sprites, dialogue box, choices, save/load, and switchable asset packs. Use when user asks to “做一个文字游/视觉小说/橙光游戏/互动小说/剧情选择游戏” and wants a reusable HTML framework instead of using Ren’Py/Twine/Ink directly.","license":"","md":"---\nname: game-vn-immersive\ndescription: Scaffold and iterate on an immersive single-file HTML visual novel / text game (文字游/橙光-like) with full-screen stage, character sprites, dialogue box, choices, save/load, and switchable asset packs. Use when user asks to “做一个文字游/视觉小说/橙光游戏/互动小说/剧情选择游戏” and wants a reusable HTML framework instead of using Ren’Py/Twine/Ink directly.\n---\n\n# GAME · VN Immersive (Single-file HTML)\n\n## Best-Minds View (Is this “professional”?)\n\n- **Emily Short（Interactive Fiction / Choice Design）**：专业不等于“分支很多”，而是“选择有意义且可维护”。大规模剧情要用“折返/汇合（foldback）+ 状态变量”控制爆炸式分支。\n- **Jon Ingold（Ink / Inkle）**：专业写作流水线把“内容”从“引擎/UI”里拆出来（Ink/Yarn/Twine）。你现在的方式适合快速原型，但剧情一长会被 JS 函数式分支拖累协作与版本控制。\n- **Tom Rothamel（Ren’Py）**：真正上生产通常用成熟引擎（Ren’Py/Unity/Godot）做资产管理、脚本语言、发布与本地化；但如果你的目标是“可分享的 HTML 原型”，单文件 HTML 也是合理的工程选择。\n\n结论：**当前框架是“原型级专业”（prototype-grade）**。要更接近“生产级专业”，核心改进是：  \n1) 内容数据化（JSON/Ink），2) 分支靠条件/效果 DSL，而不是 JS 回调，3) 有校验工具（死链/不可达/缺字段）。\n\n## Quick Start\n\n1) 生成一个新游戏（复制模板 → 写到 `docs/games/\u003cslug>.html`）：\n\n```bash\nnode ~/.codex/skills/game-vn-immersive/scripts/new-game.mjs \\\n  --slug rainy-apartment \\\n  --title \"雨夜公寓\" \\\n  --title-en \"Rainy Apartment\"\n```\n\n打开：`docs/games/rainy-apartment.html`（直接 `file://` 即可）。\n\n2) 改剧情：在文件里找到 `\u003cscript id=\"GAME_DATA\" type=\"application/json\">`，只改 JSON 数据即可（不需要写 JS 函数）。\n\n3) 校验分支（死链/不可达）：\n\n```bash\nnode ~/.codex/skills/game-vn-immersive/scripts/validate-game.mjs docs/games/rainy-apartment.html\n```\n\n## Integrate Images / Art Packs\n\n- 默认模板自带 `svg/jp/comic` 三套 pack（`jp03/cm03`），可立刻看到“背景全屏 + 立绘 + 表情头像”。\n- 需要你自己产出新 pack 时，直接用已安装的流水线：`$img-vn-pack`（nano-banana 绿幕图集 → 本地 keyout → RGBA PNG）。\n\n## Authoring Rules (Keep Branching Maintainable)\n\n- 用 **scene graph + flags/stats**（而不是“每条分支都写一长串新场景”）。\n- 重要选择要 **汇合**（foldback），把差异放到变量里（例如 `flags.metLin`、`stats.clue`）。\n- 每个 choice 都写清楚：`requires`（条件） + `effects`（结果） + `lockedHint`（不给选时提示）。\n\n## Resources\n\n- Template: `assets/game-vn-immersive.template.html`\n- Scaffold script: `scripts/new-game.mjs`\n- Validator: `scripts/validate-game.mjs`\n"},{"slug":"image-upscale-best","category":"media","name":"image-upscale-best","description":"Local-first (free) image clarity pipeline to make blurry images clearer and higher-resolution: traditional enhancement, OpenCV DNN super-resolution (EDSR/FSRCNN), optional OCR text overlay for screenshots/small text, optional Cloudflare R2 upload, and an HTML compare page. Use when user asks to “变清晰/高清/提高分辨率/放大不糊/超分/锐化” a photo or screenshot.","license":"","md":"---\nname: image-upscale-best\ndescription: \"Local-first (free) image clarity pipeline to make blurry images clearer and higher-resolution: traditional enhancement, OpenCV DNN super-resolution (EDSR/FSRCNN), optional OCR text overlay for screenshots/small text, optional Cloudflare R2 upload, and an HTML compare page. Use when user asks to “变清晰/高清/提高分辨率/放大不糊/超分/锐化” a photo or screenshot.\"\n---\n\n# Image Upscale Best\n\n## Quick Decision\n\n- Screenshot / 信息图 / 小字：用 `--mode best-text`（超分放大 + OCR 重绘文字）\n- 真实照片：用 `--mode quality`（EDSR×4）或 `--mode fast`（FSRCNN×4）\n\n## Run\n\n```bash\npython3 ~/.codex/skills/image-upscale-best/scripts/upscale_best.py --in \"/path/to/image.png\" --mode best-text\n```\n\n常用模式：\n\n```bash\npython3 ~/.codex/skills/image-upscale-best/scripts/upscale_best.py --in \"./input.png\" --mode quality\npython3 ~/.codex/skills/image-upscale-best/scripts/upscale_best.py --in \"./input.png\" --mode fast\npython3 ~/.codex/skills/image-upscale-best/scripts/upscale_best.py --in \"./input.png\" --mode traditional\n```\n\n可选：自动上传 R2 + 生成 `compare.r2.html`：\n\n```bash\npython3 ~/.codex/skills/image-upscale-best/scripts/upscale_best.py \\\n  --in \"./input.png\" \\\n  --mode best-text \\\n  --upload-r2 \\\n  --r2-prefix \"image-upscale/mycase/20260123-xxxxxx\"\n```\n\n## Outputs\n\n默认输出到：`tmp/image-upscale-best/\u003ctimestamp>/`\n\n- `original.png`\n- `traditional_x8.png`\n- `ai_fsrcnn_x4.png`\n- `ai_edsr_x4.png`\n- `ai_pipeline_x8.png`\n- `ocr_overlay_x8.png` / `ocr_overlay_x8_text.svg`（若本机有 `tesseract`）\n- `compare.html`（本地对比页）\n- `compare.r2.html`（若上传 R2）\n\n## Requirements (Auto-detected)\n\n- OpenCV（Python `cv2` + `dnn_superres`）：用于 EDSR/FSRCNN 超分；缺失时会自动降级或报错。\n- `tesseract` CLI：用于 OCR；缺失时跳过 OCR overlay。\n- EDSR/FSRCNN 模型文件：优先从 `tmp/opencv_sr_models/`（当前目录或父目录）查找；也可设置 `OPENCV_SR_MODEL_DIR`。\n"},{"slug":"img-handdrawn-run-report","category":"media","name":"img-handdrawn-run-report","description":"Generate a clean, printable Zon Minimal Editorial · Light HTML run report page for image runs (hand-drawn / sketchnote / Nano Banana / nano-banana-fast / sora-image). Use when user asks for “清晰的 HTML 展示/报告页/复现记录/Prompt 展示/生成过程归档” and you have an output image + meta JSON.","license":"","md":"---\nname: img-handdrawn-run-report\ndescription: Generate a clean, printable Zon Minimal Editorial · Light HTML run report page for image runs (hand-drawn / sketchnote / Nano Banana / nano-banana-fast / sora-image). Use when user asks for “清晰的 HTML 展示/报告页/复现记录/Prompt 展示/生成过程归档” and you have an output image + meta JSON.\n---\n\n# IMG · Handdrawn Run Report\n\n## Quick Start\n\nCreate an HTML report from an existing meta JSON (prompt + params) and an output image:\n\n```bash\nnode ~/.codex/skills/img-handdrawn-run-report/scripts/generate-run-report.mjs \\\n  --meta tmp/style-run-sop/.../style-test-01.json \\\n  --image tmp/style-run-sop/.../style-test-01.png\n```\n\nOutput defaults to `docs/reports/report-YYYYMMDD-HHMMSS.html`.\n\n## Workflow (Do This)\n\n1) Ensure you have:\n   - Output image(s): `.png/.jpg/.webp`\n   - A meta JSON that includes at least: `prompt`, `model`, `aspectRatio`, `imageSize`, `createdAt` (best effort)\n\n2) Generate the report (embeds images by default; portable single-file HTML):\n\n```bash\nnode ~/.codex/skills/img-handdrawn-run-report/scripts/generate-run-report.mjs \\\n  --meta path/to/meta.json \\\n  --image path/to/output.png \\\n  --title \"中文标题\" \\\n  --title-en \"English Title\"\n```\n\n3) If you want the HTML to reference local files instead of embedding:\n\n```bash\nnode ~/.codex/skills/img-handdrawn-run-report/scripts/generate-run-report.mjs \\\n  --meta path/to/meta.json \\\n  --image path/to/output.png \\\n  --no-embed-images\n```\n\n## What To Include (Standard Sections)\n\n- Outcome summary (success/fallback count)\n- Output image preview(s) + local path(s) + result URL (if any)\n- Prompt (verbatim)\n- Parameters (API/model/aspect/size/timestamps/meta path)\n- Reproduce commands\n- Raw meta JSON (for audit/traceability)\n- Interaction: every output image must support click-to-open a full-screen viewer with fit-to-viewport, zoom (wheel/pinch), and pan (drag)\n\n## Resources\n\n- Script: `scripts/generate-run-report.mjs`\n- Template: `assets/zon-run-report.template.html`\n"},{"slug":"img-vn-pack","category":"media","name":"img-vn-pack","description":"Produce product-grade RGBA PNG assets for visual novels (立绘/表情/UI) from AI output, using Grsai Nano Banana “one-call green-screen sheet” + local chroma-key keyout (decontaminate + edge bleed) and wire them into an HTML VN demo. Use when making VN/文字游戏素材包、抠图出透明 PNG、绿幕 keyout、nano-banana 资产图集拆分与接入。","license":"","md":"---\nname: img-vn-pack\ndescription: Produce product-grade RGBA PNG assets for visual novels (立绘/表情/UI) from AI output, using Grsai Nano Banana “one-call green-screen sheet” + local chroma-key keyout (decontaminate + edge bleed) and wire them into an HTML VN demo. Use when making VN/文字游戏素材包、抠图出透明 PNG、绿幕 keyout、nano-banana 资产图集拆分与接入。\n---\n\n# IMG · VN Pack (Chroma Key)\n\n## Quick Start（最省 token：1 次出图）\n\n目标：用 1 张 1:1「资产拼图」一次生成 BG + 主角立绘 + 4 表情 + UI（全部在 #00ff00 绿幕上）→ 本地 keyout → 得到可进游戏的透明 PNG。\n\n1) 生成绿幕图集（联网；需要 `API_KEY`）\n\n日系二次元 / 彩漫示例：\n\n```bash\nnode tools/shot/nano-banana-vn-pack.mjs \\\n  --out-name jp04 \\\n  --only color \\\n  --model nano-banana-fast \\\n  --aspect 1:1 \\\n  --size 2K \\\n  --color-prompt-file docs/games/prompts/vn-pack-jp03-chroma-color.txt\n```\n\n```bash\nnode tools/shot/nano-banana-vn-pack.mjs \\\n  --out-name cm04 \\\n  --only color \\\n  --model nano-banana-fast \\\n  --aspect 1:1 \\\n  --size 2K \\\n  --color-prompt-file docs/games/prompts/vn-pack-comic03-chroma-color.txt\n```\n\n输出会写入：`tmp/vn-packs/\u003cout-name>-\u003ctimestamp>/\u003cout-name>-color.png`\n\n2) 拆分 + 抠图（离线；商品级参数默认值）\n\n```bash\npython scripts/vn_asset_pack_keyout_from_sheet.py \\\n  --sheet tmp/vn-packs/\u003c...>/jp04-color.png \\\n  --out docs/games/assets/generated/jp \\\n  --prefix jp04 \\\n  --bg 00ff00 \\\n  --decontaminate \\\n  --bleed 4 \\\n  --alpha-floor 10 \\\n  --edge-width 10 \\\n  --edge-dark 120\n```\n\n产物（例）：\n- `docs/games/assets/generated/jp/jp04-bg.png`\n- `docs/games/assets/generated/jp/jp04-char_a-alpha.png`\n- `docs/games/assets/generated/jp/jp04-char_b-alpha.png`\n- `docs/games/assets/generated/jp/jp04-expr-{1..4}-alpha.png`\n- `docs/games/assets/generated/jp/jp04-ui-alpha.png`\n- `docs/games/assets/generated/jp/jp04-manifest.json`\n\n3) 接入到 Demo（HTML）\n\n把 `docs/games/chengguang-immersive.html` 里的 `ASSET_PACKS` 指向新文件即可（参考 `jp03/cm03`）。\n\n## Prompt 规范（关键，不然会抠不干净）\n\n- 绿幕：明确要求 **纯色** `#00ff00`（不要渐变、不要纹理、不要阴影、不要地面接触阴影）\n- 留白：角色四周要留安全边（避免贴边导致 floodfill/裁切困难）\n- 分割线：尽量不要画黑框/相框；如果模型硬加了，`--edge-width/--edge-dark` 用来清掉\n- 表情：做成 2×2 格子（大脸/半身优先），方便做对话头像\n\n## 常见问题（直接用这几条修）\n\n- **日漫扣完有“黑色外框/图片框”**：加/调高 `--edge-width 10 --edge-dark 120`（必要时 `edge-dark 140`）\n- **发灰/绿溢色**：确保 `--decontaminate`；必要时把 `--feather` 提高到 `120`（保边缘）\n- **边缘糊/锯齿**：把 `--feather` 下调（如 `64`），或把 `--gamma` 提高一点（如 `1.35`）\n- **人物头被切掉**：图集被加了留白/边框时，保持默认自动版式识别；别用 `--no-auto-layout`\n\n## Repo 相关资料（需要时再读）\n\n- 流水线说明：`docs/games/vn-png-pipeline.md`\n- 绿幕 prompt 示例：`docs/games/prompts/vn-pack-jp03-chroma-color.txt`、`docs/games/prompts/vn-pack-comic03-chroma-color.txt`\n- 生成脚本：`tools/shot/nano-banana-vn-pack.mjs`\n- keyout 脚本：`scripts/vn_asset_pack_keyout_from_sheet.py`\n"},{"slug":"mcp-builder","category":"dev","name":"mcp-builder","description":"Guide for creating high-quality MCP (Model Context Protocol) servers that enable LLMs to interact with external services through well-designed tools. Use when building MCP servers to integrate external APIs or services, whether in Python (FastMCP) or Node/TypeScript (MCP SDK).","license":"Complete terms in LICENSE.txt","md":"---\nname: mcp-builder\ndescription: Guide for creating high-quality MCP (Model Context Protocol) servers that enable LLMs to interact with external services through well-designed tools. Use when building MCP servers to integrate external APIs or services, whether in Python (FastMCP) or Node/TypeScript (MCP SDK).\nlicense: Complete terms in LICENSE.txt\n---\n\n# MCP Server Development Guide\n\n## Overview\n\nCreate MCP (Model Context Protocol) servers that enable LLMs to interact with external services through well-designed tools. The quality of an MCP server is measured by how well it enables LLMs to accomplish real-world tasks.\n\n---\n\n# Process\n\n## 🚀 High-Level Workflow\n\nCreating a high-quality MCP server involves four main phases:\n\n### Phase 1: Deep Research and Planning\n\n#### 1.1 Understand Modern MCP Design\n\n**API Coverage vs. Workflow Tools:**\nBalance comprehensive API endpoint coverage with specialized workflow tools. Workflow tools can be more convenient for specific tasks, while comprehensive coverage gives agents flexibility to compose operations. Performance varies by client—some clients benefit from code execution that combines basic tools, while others work better with higher-level workflows. When uncertain, prioritize comprehensive API coverage.\n\n**Tool Naming and Discoverability:**\nClear, descriptive tool names help agents find the right tools quickly. Use consistent prefixes (e.g., `github_create_issue`, `github_list_repos`) and action-oriented naming.\n\n**Context Management:**\nAgents benefit from concise tool descriptions and the ability to filter/paginate results. Design tools that return focused, relevant data. Some clients support code execution which can help agents filter and process data efficiently.\n\n**Actionable Error Messages:**\nError messages should guide agents toward solutions with specific suggestions and next steps.\n\n#### 1.2 Study MCP Protocol Documentation\n\n**Navigate the MCP specification:**\n\nStart with the sitemap to find relevant pages: `https://modelcontextprotocol.io/sitemap.xml`\n\nThen fetch specific pages with `.md` suffix for markdown format (e.g., `https://modelcontextprotocol.io/specification/draft.md`).\n\nKey pages to review:\n- Specification overview and architecture\n- Transport mechanisms (streamable HTTP, stdio)\n- Tool, resource, and prompt definitions\n\n#### 1.3 Study Framework Documentation\n\n**Recommended stack:**\n- **Language**: TypeScript (high-quality SDK support and good compatibility in many execution environments e.g. MCPB. Plus AI models are good at generating TypeScript code, benefiting from its broad usage, static typing and good linting tools)\n- **Transport**: Streamable HTTP for remote servers, using stateless JSON (simpler to scale and maintain, as opposed to stateful sessions and streaming responses). stdio for local servers.\n\n**Load framework documentation:**\n\n- **MCP Best Practices**: [📋 View Best Practices](./reference/mcp_best_practices.md) - Core guidelines\n\n**For TypeScript (recommended):**\n- **TypeScript SDK**: Use WebFetch to load `https://raw.githubusercontent.com/modelcontextprotocol/typescript-sdk/main/README.md`\n- [⚡ TypeScript Guide](./reference/node_mcp_server.md) - TypeScript patterns and examples\n\n**For Python:**\n- **Python SDK**: Use WebFetch to load `https://raw.githubusercontent.com/modelcontextprotocol/python-sdk/main/README.md`\n- [🐍 Python Guide](./reference/python_mcp_server.md) - Python patterns and examples\n\n#### 1.4 Plan Your Implementation\n\n**Understand the API:**\nReview the service's API documentation to identify key endpoints, authentication requirements, and data models. Use web search and WebFetch as needed.\n\n**Tool Selection:**\nPrioritize comprehensive API coverage. List endpoints to implement, starting with the most common operations.\n\n---\n\n### Phase 2: Implementation\n\n#### 2.1 Set Up Project Structure\n\nSee language-specific guides for project setup:\n- [⚡ TypeScript Guide](./reference/node_mcp_server.md) - Project structure, package.json, tsconfig.json\n- [🐍 Python Guide](./reference/python_mcp_server.md) - Module organization, dependencies\n\n#### 2.2 Implement Core Infrastructure\n\nCreate shared utilities:\n- API client with authentication\n- Error handling helpers\n- Response formatting (JSON/Markdown)\n- Pagination support\n\n#### 2.3 Implement Tools\n\nFor each tool:\n\n**Input Schema:**\n- Use Zod (TypeScript) or Pydantic (Python)\n- Include constraints and clear descriptions\n- Add examples in field descriptions\n\n**Output Schema:**\n- Define `outputSchema` where possible for structured data\n- Use `structuredContent` in tool responses (TypeScript SDK feature)\n- Helps clients understand and process tool outputs\n\n**Tool Description:**\n- Concise summary of functionality\n- Parameter descriptions\n- Return type schema\n\n**Implementation:**\n- Async/await for I/O operations\n- Proper error handling with actionable messages\n- Support pagination where applicable\n- Return both text content and structured data when using modern SDKs\n\n**Annotations:**\n- `readOnlyHint`: true/false\n- `destructiveHint`: true/false\n- `idempotentHint`: true/false\n- `openWorldHint`: true/false\n\n---\n\n### Phase 3: Review and Test\n\n#### 3.1 Code Quality\n\nReview for:\n- No duplicated code (DRY principle)\n- Consistent error handling\n- Full type coverage\n- Clear tool descriptions\n\n#### 3.2 Build and Test\n\n**TypeScript:**\n- Run `npm run build` to verify compilation\n- Test with MCP Inspector: `npx @modelcontextprotocol/inspector`\n\n**Python:**\n- Verify syntax: `python -m py_compile your_server.py`\n- Test with MCP Inspector\n\nSee language-specific guides for detailed testing approaches and quality checklists.\n\n---\n\n### Phase 4: Create Evaluations\n\nAfter implementing your MCP server, create comprehensive evaluations to test its effectiveness.\n\n**Load [✅ Evaluation Guide](./reference/evaluation.md) for complete evaluation guidelines.**\n\n#### 4.1 Understand Evaluation Purpose\n\nUse evaluations to test whether LLMs can effectively use your MCP server to answer realistic, complex questions.\n\n#### 4.2 Create 10 Evaluation Questions\n\nTo create effective evaluations, follow the process outlined in the evaluation guide:\n\n1. **Tool Inspection**: List available tools and understand their capabilities\n2. **Content Exploration**: Use READ-ONLY operations to explore available data\n3. **Question Generation**: Create 10 complex, realistic questions\n4. **Answer Verification**: Solve each question yourself to verify answers\n\n#### 4.3 Evaluation Requirements\n\nEnsure each question is:\n- **Independent**: Not dependent on other questions\n- **Read-only**: Only non-destructive operations required\n- **Complex**: Requiring multiple tool calls and deep exploration\n- **Realistic**: Based on real use cases humans would care about\n- **Verifiable**: Single, clear answer that can be verified by string comparison\n- **Stable**: Answer won't change over time\n\n#### 4.4 Output Format\n\nCreate an XML file with this structure:\n\n```xml\n\u003cevaluation>\n  \u003cqa_pair>\n    \u003cquestion>Find discussions about AI model launches with animal codenames. One model needed a specific safety designation that uses the format ASL-X. What number X was being determined for the model named after a spotted wild cat?\u003c/question>\n    \u003canswer>3\u003c/answer>\n  \u003c/qa_pair>\n\u003c!-- More qa_pairs... -->\n\u003c/evaluation>\n```\n\n---\n\n# Reference Files\n\n## 📚 Documentation Library\n\nLoad these resources as needed during development:\n\n### Core MCP Documentation (Load First)\n- **MCP Protocol**: Start with sitemap at `https://modelcontextprotocol.io/sitemap.xml`, then fetch specific pages with `.md` suffix\n- [📋 MCP Best Practices](./reference/mcp_best_practices.md) - Universal MCP guidelines including:\n  - Server and tool naming conventions\n  - Response format guidelines (JSON vs Markdown)\n  - Pagination best practices\n  - Transport selection (streamable HTTP vs stdio)\n  - Security and error handling standards\n\n### SDK Documentation (Load During Phase 1/2)\n- **Python SDK**: Fetch from `https://raw.githubusercontent.com/modelcontextprotocol/python-sdk/main/README.md`\n- **TypeScript SDK**: Fetch from `https://raw.githubusercontent.com/modelcontextprotocol/typescript-sdk/main/README.md`\n\n### Language-Specific Implementation Guides (Load During Phase 2)\n- [🐍 Python Implementation Guide](./reference/python_mcp_server.md) - Complete Python/FastMCP guide with:\n  - Server initialization patterns\n  - Pydantic model examples\n  - Tool registration with `@mcp.tool`\n  - Complete working examples\n  - Quality checklist\n\n- [⚡ TypeScript Implementation Guide](./reference/node_mcp_server.md) - Complete TypeScript guide with:\n  - Project structure\n  - Zod schema patterns\n  - Tool registration with `server.registerTool`\n  - Complete working examples\n  - Quality checklist\n\n### Evaluation Guide (Load During Phase 4)\n- [✅ Evaluation Guide](./reference/evaluation.md) - Complete evaluation creation guide with:\n  - Question creation guidelines\n  - Answer verification strategies\n  - XML format specifications\n  - Example questions and answers\n  - Running an evaluation with the provided scripts\n"},{"slug":"pdf","category":"data","name":"pdf","description":"Comprehensive PDF manipulation toolkit for extracting text and tables, creating new PDFs, merging/splitting documents, and handling forms. When Claude needs to fill in a PDF form or programmatically process, generate, or analyze PDF documents at scale.","license":"Proprietary. LICENSE.txt has complete terms","md":"---\nname: pdf\ndescription: Comprehensive PDF manipulation toolkit for extracting text and tables, creating new PDFs, merging/splitting documents, and handling forms. When Claude needs to fill in a PDF form or programmatically process, generate, or analyze PDF documents at scale.\nlicense: Proprietary. LICENSE.txt has complete terms\n---\n\n# PDF Processing Guide\n\n## Overview\n\nThis guide covers essential PDF processing operations using Python libraries and command-line tools. For advanced features, JavaScript libraries, and detailed examples, see reference.md. If you need to fill out a PDF form, read forms.md and follow its instructions.\n\n## Quick Start\n\n```python\nfrom pypdf import PdfReader, PdfWriter\n\n# Read a PDF\nreader = PdfReader(\"document.pdf\")\nprint(f\"Pages: {len(reader.pages)}\")\n\n# Extract text\ntext = \"\"\nfor page in reader.pages:\n    text += page.extract_text()\n```\n\n## Python Libraries\n\n### pypdf - Basic Operations\n\n#### Merge PDFs\n```python\nfrom pypdf import PdfWriter, PdfReader\n\nwriter = PdfWriter()\nfor pdf_file in [\"doc1.pdf\", \"doc2.pdf\", \"doc3.pdf\"]:\n    reader = PdfReader(pdf_file)\n    for page in reader.pages:\n        writer.add_page(page)\n\nwith open(\"merged.pdf\", \"wb\") as output:\n    writer.write(output)\n```\n\n#### Split PDF\n```python\nreader = PdfReader(\"input.pdf\")\nfor i, page in enumerate(reader.pages):\n    writer = PdfWriter()\n    writer.add_page(page)\n    with open(f\"page_{i+1}.pdf\", \"wb\") as output:\n        writer.write(output)\n```\n\n#### Extract Metadata\n```python\nreader = PdfReader(\"document.pdf\")\nmeta = reader.metadata\nprint(f\"Title: {meta.title}\")\nprint(f\"Author: {meta.author}\")\nprint(f\"Subject: {meta.subject}\")\nprint(f\"Creator: {meta.creator}\")\n```\n\n#### Rotate Pages\n```python\nreader = PdfReader(\"input.pdf\")\nwriter = PdfWriter()\n\npage = reader.pages[0]\npage.rotate(90)  # Rotate 90 degrees clockwise\nwriter.add_page(page)\n\nwith open(\"rotated.pdf\", \"wb\") as output:\n    writer.write(output)\n```\n\n### pdfplumber - Text and Table Extraction\n\n#### Extract Text with Layout\n```python\nimport pdfplumber\n\nwith pdfplumber.open(\"document.pdf\") as pdf:\n    for page in pdf.pages:\n        text = page.extract_text()\n        print(text)\n```\n\n#### Extract Tables\n```python\nwith pdfplumber.open(\"document.pdf\") as pdf:\n    for i, page in enumerate(pdf.pages):\n        tables = page.extract_tables()\n        for j, table in enumerate(tables):\n            print(f\"Table {j+1} on page {i+1}:\")\n            for row in table:\n                print(row)\n```\n\n#### Advanced Table Extraction\n```python\nimport pandas as pd\n\nwith pdfplumber.open(\"document.pdf\") as pdf:\n    all_tables = []\n    for page in pdf.pages:\n        tables = page.extract_tables()\n        for table in tables:\n            if table:  # Check if table is not empty\n                df = pd.DataFrame(table[1:], columns=table[0])\n                all_tables.append(df)\n\n# Combine all tables\nif all_tables:\n    combined_df = pd.concat(all_tables, ignore_index=True)\n    combined_df.to_excel(\"extracted_tables.xlsx\", index=False)\n```\n\n### reportlab - Create PDFs\n\n#### Basic PDF Creation\n```python\nfrom reportlab.lib.pagesizes import letter\nfrom reportlab.pdfgen import canvas\n\nc = canvas.Canvas(\"hello.pdf\", pagesize=letter)\nwidth, height = letter\n\n# Add text\nc.drawString(100, height - 100, \"Hello World!\")\nc.drawString(100, height - 120, \"This is a PDF created with reportlab\")\n\n# Add a line\nc.line(100, height - 140, 400, height - 140)\n\n# Save\nc.save()\n```\n\n#### Create PDF with Multiple Pages\n```python\nfrom reportlab.lib.pagesizes import letter\nfrom reportlab.platypus import SimpleDocTemplate, Paragraph, Spacer, PageBreak\nfrom reportlab.lib.styles import getSampleStyleSheet\n\ndoc = SimpleDocTemplate(\"report.pdf\", pagesize=letter)\nstyles = getSampleStyleSheet()\nstory = []\n\n# Add content\ntitle = Paragraph(\"Report Title\", styles['Title'])\nstory.append(title)\nstory.append(Spacer(1, 12))\n\nbody = Paragraph(\"This is the body of the report. \" * 20, styles['Normal'])\nstory.append(body)\nstory.append(PageBreak())\n\n# Page 2\nstory.append(Paragraph(\"Page 2\", styles['Heading1']))\nstory.append(Paragraph(\"Content for page 2\", styles['Normal']))\n\n# Build PDF\ndoc.build(story)\n```\n\n## Command-Line Tools\n\n### pdftotext (poppler-utils)\n```bash\n# Extract text\npdftotext input.pdf output.txt\n\n# Extract text preserving layout\npdftotext -layout input.pdf output.txt\n\n# Extract specific pages\npdftotext -f 1 -l 5 input.pdf output.txt  # Pages 1-5\n```\n\n### qpdf\n```bash\n# Merge PDFs\nqpdf --empty --pages file1.pdf file2.pdf -- merged.pdf\n\n# Split pages\nqpdf input.pdf --pages . 1-5 -- pages1-5.pdf\nqpdf input.pdf --pages . 6-10 -- pages6-10.pdf\n\n# Rotate pages\nqpdf input.pdf output.pdf --rotate=+90:1  # Rotate page 1 by 90 degrees\n\n# Remove password\nqpdf --password=mypassword --decrypt encrypted.pdf decrypted.pdf\n```\n\n### pdftk (if available)\n```bash\n# Merge\npdftk file1.pdf file2.pdf cat output merged.pdf\n\n# Split\npdftk input.pdf burst\n\n# Rotate\npdftk input.pdf rotate 1east output rotated.pdf\n```\n\n## Common Tasks\n\n### Extract Text from Scanned PDFs\n```python\n# Requires: pip install pytesseract pdf2image\nimport pytesseract\nfrom pdf2image import convert_from_path\n\n# Convert PDF to images\nimages = convert_from_path('scanned.pdf')\n\n# OCR each page\ntext = \"\"\nfor i, image in enumerate(images):\n    text += f\"Page {i+1}:\\n\"\n    text += pytesseract.image_to_string(image)\n    text += \"\\n\\n\"\n\nprint(text)\n```\n\n### Add Watermark\n```python\nfrom pypdf import PdfReader, PdfWriter\n\n# Create watermark (or load existing)\nwatermark = PdfReader(\"watermark.pdf\").pages[0]\n\n# Apply to all pages\nreader = PdfReader(\"document.pdf\")\nwriter = PdfWriter()\n\nfor page in reader.pages:\n    page.merge_page(watermark)\n    writer.add_page(page)\n\nwith open(\"watermarked.pdf\", \"wb\") as output:\n    writer.write(output)\n```\n\n### Extract Images\n```bash\n# Using pdfimages (poppler-utils)\npdfimages -j input.pdf output_prefix\n\n# This extracts all images as output_prefix-000.jpg, output_prefix-001.jpg, etc.\n```\n\n### Password Protection\n```python\nfrom pypdf import PdfReader, PdfWriter\n\nreader = PdfReader(\"input.pdf\")\nwriter = PdfWriter()\n\nfor page in reader.pages:\n    writer.add_page(page)\n\n# Add password\nwriter.encrypt(\"userpassword\", \"ownerpassword\")\n\nwith open(\"encrypted.pdf\", \"wb\") as output:\n    writer.write(output)\n```\n\n## Quick Reference\n\n| Task | Best Tool | Command/Code |\n|------|-----------|--------------|\n| Merge PDFs | pypdf | `writer.add_page(page)` |\n| Split PDFs | pypdf | One page per file |\n| Extract text | pdfplumber | `page.extract_text()` |\n| Extract tables | pdfplumber | `page.extract_tables()` |\n| Create PDFs | reportlab | Canvas or Platypus |\n| Command line merge | qpdf | `qpdf --empty --pages ...` |\n| OCR scanned PDFs | pytesseract | Convert to image first |\n| Fill PDF forms | pdf-lib or pypdf (see forms.md) | See forms.md |\n\n## Next Steps\n\n- For advanced pypdfium2 usage, see reference.md\n- For JavaScript libraries (pdf-lib), see reference.md\n- If you need to fill out a PDF form, follow the instructions in forms.md\n- For troubleshooting guides, see reference.md\n"},{"slug":"repo-chatops-vercel-board","category":"deploy","name":"repo-chatops-vercel-board","description":"Scaffold a repo-agnostic ChatOps pipeline (Issue/Comment → AI run → commit/PR + HTML report) with optional Vercel deploy and optional aggregation into a central Best Minds Board.","license":"","md":"---\nname: repo-chatops-vercel-board\ndescription: Scaffold a repo-agnostic ChatOps pipeline (Issue/Comment → AI run → commit/PR + HTML report) with optional Vercel deploy and optional aggregation into a central Best Minds Board.\n---\n\n# Repo ChatOps + Vercel + Board\n\n## When to use\n\n当用户想在**任意仓库**实现「手机/网页聊天式入口（Issue/Comment）→ CI 执行（AI）→ 回写仓库/产出报告 → 一键可浏览链接（Vercel）」时使用。\n\n## What you scaffold（默认交付）\n\n- `.github/ISSUE_TEMPLATE/chatops.yml`：一个通用表单入口（Intent/Options/Text）。\n- `.github/workflows/chatops.yml`：统一触发器与权限（issues / issue_comment / workflow_dispatch）。\n- `scripts/chatops/entry.mjs`：事件解析 + 权限门禁 + 幂等（comment marker）+ 调用“repo handler”。\n- `scripts/chatops/handlers/README.md`：说明如何为不同仓库实现自己的 handler（不在本 skill 内实现具体业务）。\n- `docs/reports/`：产物目录（静态 HTML 报告）。\n- `docs/report.html`：报告索引页（给 Vercel 作为入口）。\n\n> 可选：如果用户明确需要“让 AI 改代码”，默认走 **PR 模式**（branch + PR），不要直接 push main。\n\n## Core architecture（固定模块边界）\n\n### 1) Chat入口层（GitHub）\n\n- Issue/Comment 只负责“输入”与“触发”。\n- 约定指令：评论以 `/ai` 开头（例如 `/ai research: ...` / `/ai operate: ...`）。\n\n### 2) 执行层（GitHub Actions Runner）\n\n- 只做三件事：\n  1) 拉仓库代码\n  2) 跑 `node scripts/chatops/entry.mjs`\n  3)（可选）部署 `docs/` 到 Vercel\n\n### 3) Repo handler（仓库自定义能力）\n\n`entry.mjs` 只负责标准化输入/输出；真正的“做什么”由 handler 决定。\n\nhandler 最小约定（建议）：\n\n- 输入：`{ intent, issue, comment, repo, workspace }`\n- 输出：`{ summary, artifacts: [{ kind, path, title? }], git: { mode: \"none\"|\"commit\"|\"pr\", branch?, title?, body? } }`\n\n## Security baseline（默认必须做）\n\n- 触发者限制：仅处理 `OWNER/MEMBER/COLLABORATOR`（或 repo owner）。\n- 幂等：对 comment 事件写入 `ingested_comment_id: \u003cid>` marker，重复 comment 不重复执行。\n- 权限最小化：\n  - “只产报告、不改代码”：`contents: write`（写 docs） + `issues: write`（回评）\n  - “开 PR 改代码”：还需要 `pull-requests: write`\n- Secrets 红线：日志中禁止输出 token；脚本应做简单 redaction。\n\n## AI config（与 myObsidian 兼容的约定）\n\n统一用环境变量，优先让 workflow 从 repo secrets 注入：\n\n- Provider 选择：`AI_PROVIDER=auto|anthropic|openai`\n- Anthropic：\n  - `ANTHROPIC_BASE_URL`（可空）\n  - `ANTHROPIC_AUTH_TOKEN`\n  - `ANTHROPIC_DEFAULT_HAIKU_MODEL / ..._SONNET_MODEL / ..._OPUS_MODEL`\n- OpenAI-compatible：\n  - `OPENAI_BASE_URL`\n  - `OPENAI_API_KEY`\n  - `OPENAI_MODEL_FAST`\n  - `OPENAI_MODEL_STRONG`\n  - `OPENAI_WIRE_API=auto|chat|responses`（网关兼容）\n  - `OPENAI_REASONING_EFFORT`（可选）\n\n## Vercel deploy（可选模块）\n\n### 目标\n\n把 `docs/`（或 `docs/public/`）作为静态站点部署，得到稳定可访问链接（可绑定子域名）。\n\n### Secrets（建议）\n\n- `VERCEL_TOKEN`\n- `VERCEL_SCOPE`（team/账号 scope；可空）\n- `VERCEL_PROJECT_NAME`\n- （可选）`VERCEL_DOMAIN`（如 `diary.zondev.top`；用于 actions 里自动绑定）\n\n### 策略\n\n- 默认部署 `docs/`，入口页是 `docs/report.html`\n- 若用户要“看板聚合”，建议每个 repo 输出到 `docs/best-minds-board/`，并由“中央看板仓库”统一部署（见下）。\n\n## Aggregation into a central board（可选模块）\n\n目标：多个 repo 的 report 都能出现在 `zondev.top` 的一个 board/tab 下。\n\n推荐做法：\n\n1) 每个 repo 都把内容写到自己 repo 内的 `docs/best-minds-board/`（只需要 commit 到仓库）。\n2) 新建一个“中央看板仓库”（或复用现有），Actions 定时跑：\n   - checkout 多个 source repos 到 `_sources/\u003crepo>/`\n   - 读取每个 repo 的 `_sources/\u003crepo>/.best-minds-board.json`\n   - 运行聚合脚本把 `topics/**` 复制进中央 `docs/best-minds-board/`\n   - 部署中央看板到 Vercel（绑定 `zondev.top` / `board.zondev.top`）\n\n本仓库已有聚合脚本参考：`tools/zondev-board/update-board.mjs`（适合中央仓库使用）。\n\n## Templates (copy-as-is, then customize)\n\n这些模板用于“落地骨架”，真正的业务逻辑由 handler 实现：\n\n- `codex_skill_patch/repo-chatops-vercel-board/assets/workflows/chatops.yml`\n- `codex_skill_patch/repo-chatops-vercel-board/assets/issue-templates/chatops.yml`\n- `codex_skill_patch/repo-chatops-vercel-board/assets/scripts/entry.mjs`\n\n## Workflow（执行顺序）\n\n1) 询问用户：目标 repo？只产报告还是允许改代码？改代码走 PR 还是直推？\n2) Scaffold 上述文件（先用模板）。\n3) 按 repo 诉求，新增/改写 `scripts/chatops/handlers/*`。\n4) 指导用户配置 repo secrets（AI + Vercel）。\n5) 用一个最小 Issue 验证闭环（产出 `docs/report.html` + Vercel 链接）。\n"},{"slug":"skill-creator","category":"dev","name":"skill-creator","description":"Guide for creating effective skills. This skill should be used when users want to create a new skill (or update an existing skill) that extends Claude's capabilities with specialized knowledge, workflows, or tool integrations.","license":"Complete terms in LICENSE.txt","md":"---\nname: skill-creator\ndescription: Guide for creating effective skills. This skill should be used when users want to create a new skill (or update an existing skill) that extends Claude's capabilities with specialized knowledge, workflows, or tool integrations.\nlicense: Complete terms in LICENSE.txt\n---\n\n# Skill Creator\n\nThis skill provides guidance for creating effective skills.\n\n## About Skills\n\nSkills are modular, self-contained packages that extend Claude's capabilities by providing\nspecialized knowledge, workflows, and tools. Think of them as \"onboarding guides\" for specific\ndomains or tasks—they transform Claude from a general-purpose agent into a specialized agent\nequipped with procedural knowledge that no model can fully possess.\n\n### What Skills Provide\n\n1. Specialized workflows - Multi-step procedures for specific domains\n2. Tool integrations - Instructions for working with specific file formats or APIs\n3. Domain expertise - Company-specific knowledge, schemas, business logic\n4. Bundled resources - Scripts, references, and assets for complex and repetitive tasks\n\n## Core Principles\n\n### Concise is Key\n\nThe context window is a public good. Skills share the context window with everything else Claude needs: system prompt, conversation history, other Skills' metadata, and the actual user request.\n\n**Default assumption: Claude is already very smart.** Only add context Claude doesn't already have. Challenge each piece of information: \"Does Claude really need this explanation?\" and \"Does this paragraph justify its token cost?\"\n\nPrefer concise examples over verbose explanations.\n\n### Set Appropriate Degrees of Freedom\n\nMatch the level of specificity to the task's fragility and variability:\n\n**High freedom (text-based instructions)**: Use when multiple approaches are valid, decisions depend on context, or heuristics guide the approach.\n\n**Medium freedom (pseudocode or scripts with parameters)**: Use when a preferred pattern exists, some variation is acceptable, or configuration affects behavior.\n\n**Low freedom (specific scripts, few parameters)**: Use when operations are fragile and error-prone, consistency is critical, or a specific sequence must be followed.\n\nThink of Claude as exploring a path: a narrow bridge with cliffs needs specific guardrails (low freedom), while an open field allows many routes (high freedom).\n\n### Anatomy of a Skill\n\nEvery skill consists of a required SKILL.md file and optional bundled resources:\n\n```\nskill-name/\n├── SKILL.md (required)\n│   ├── YAML frontmatter metadata (required)\n│   │   ├── name: (required)\n│   │   └── description: (required)\n│   └── Markdown instructions (required)\n└── Bundled Resources (optional)\n    ├── scripts/          - Executable code (Python/Bash/etc.)\n    ├── references/       - Documentation intended to be loaded into context as needed\n    └── assets/           - Files used in output (templates, icons, fonts, etc.)\n```\n\n#### SKILL.md (required)\n\nEvery SKILL.md consists of:\n\n- **Frontmatter** (YAML): Contains `name` and `description` fields. These are the only fields that Claude reads to determine when the skill gets used, thus it is very important to be clear and comprehensive in describing what the skill is, and when it should be used.\n- **Body** (Markdown): Instructions and guidance for using the skill. Only loaded AFTER the skill triggers (if at all).\n\n#### Bundled Resources (optional)\n\n##### Scripts (`scripts/`)\n\nExecutable code (Python/Bash/etc.) for tasks that require deterministic reliability or are repeatedly rewritten.\n\n- **When to include**: When the same code is being rewritten repeatedly or deterministic reliability is needed\n- **Example**: `scripts/rotate_pdf.py` for PDF rotation tasks\n- **Benefits**: Token efficient, deterministic, may be executed without loading into context\n- **Note**: Scripts may still need to be read by Claude for patching or environment-specific adjustments\n\n##### References (`references/`)\n\nDocumentation and reference material intended to be loaded as needed into context to inform Claude's process and thinking.\n\n- **When to include**: For documentation that Claude should reference while working\n- **Examples**: `references/finance.md` for financial schemas, `references/mnda.md` for company NDA template, `references/policies.md` for company policies, `references/api_docs.md` for API specifications\n- **Use cases**: Database schemas, API documentation, domain knowledge, company policies, detailed workflow guides\n- **Benefits**: Keeps SKILL.md lean, loaded only when Claude determines it's needed\n- **Best practice**: If files are large (>10k words), include grep search patterns in SKILL.md\n- **Avoid duplication**: Information should live in either SKILL.md or references files, not both. Prefer references files for detailed information unless it's truly core to the skill—this keeps SKILL.md lean while making information discoverable without hogging the context window. Keep only essential procedural instructions and workflow guidance in SKILL.md; move detailed reference material, schemas, and examples to references files.\n\n##### Assets (`assets/`)\n\nFiles not intended to be loaded into context, but rather used within the output Claude produces.\n\n- **When to include**: When the skill needs files that will be used in the final output\n- **Examples**: `assets/logo.png` for brand assets, `assets/slides.pptx` for PowerPoint templates, `assets/frontend-template/` for HTML/React boilerplate, `assets/font.ttf` for typography\n- **Use cases**: Templates, images, icons, boilerplate code, fonts, sample documents that get copied or modified\n- **Benefits**: Separates output resources from documentation, enables Claude to use files without loading them into context\n\n#### What to Not Include in a Skill\n\nA skill should only contain essential files that directly support its functionality. Do NOT create extraneous documentation or auxiliary files, including:\n\n- README.md\n- INSTALLATION_GUIDE.md\n- QUICK_REFERENCE.md\n- CHANGELOG.md\n- etc.\n\nThe skill should only contain the information needed for an AI agent to do the job at hand. It should not contain auxilary context about the process that went into creating it, setup and testing procedures, user-facing documentation, etc. Creating additional documentation files just adds clutter and confusion.\n\n### Progressive Disclosure Design Principle\n\nSkills use a three-level loading system to manage context efficiently:\n\n1. **Metadata (name + description)** - Always in context (~100 words)\n2. **SKILL.md body** - When skill triggers (\u003c5k words)\n3. **Bundled resources** - As needed by Claude (Unlimited because scripts can be executed without reading into context window)\n\n#### Progressive Disclosure Patterns\n\nKeep SKILL.md body to the essentials and under 500 lines to minimize context bloat. Split content into separate files when approaching this limit. When splitting out content into other files, it is very important to reference them from SKILL.md and describe clearly when to read them, to ensure the reader of the skill knows they exist and when to use them.\n\n**Key principle:** When a skill supports multiple variations, frameworks, or options, keep only the core workflow and selection guidance in SKILL.md. Move variant-specific details (patterns, examples, configuration) into separate reference files.\n\n**Pattern 1: High-level guide with references**\n\n```markdown\n# PDF Processing\n\n## Quick start\n\nExtract text with pdfplumber:\n[code example]\n\n## Advanced features\n\n- **Form filling**: See [FORMS.md](FORMS.md) for complete guide\n- **API reference**: See [REFERENCE.md](REFERENCE.md) for all methods\n- **Examples**: See [EXAMPLES.md](EXAMPLES.md) for common patterns\n```\n\nClaude loads FORMS.md, REFERENCE.md, or EXAMPLES.md only when needed.\n\n**Pattern 2: Domain-specific organization**\n\nFor Skills with multiple domains, organize content by domain to avoid loading irrelevant context:\n\n```\nbigquery-skill/\n├── SKILL.md (overview and navigation)\n└── reference/\n    ├── finance.md (revenue, billing metrics)\n    ├── sales.md (opportunities, pipeline)\n    ├── product.md (API usage, features)\n    └── marketing.md (campaigns, attribution)\n```\n\nWhen a user asks about sales metrics, Claude only reads sales.md.\n\nSimilarly, for skills supporting multiple frameworks or variants, organize by variant:\n\n```\ncloud-deploy/\n├── SKILL.md (workflow + provider selection)\n└── references/\n    ├── aws.md (AWS deployment patterns)\n    ├── gcp.md (GCP deployment patterns)\n    └── azure.md (Azure deployment patterns)\n```\n\nWhen the user chooses AWS, Claude only reads aws.md.\n\n**Pattern 3: Conditional details**\n\nShow basic content, link to advanced content:\n\n```markdown\n# DOCX Processing\n\n## Creating documents\n\nUse docx-js for new documents. See [DOCX-JS.md](DOCX-JS.md).\n\n## Editing documents\n\nFor simple edits, modify the XML directly.\n\n**For tracked changes**: See [REDLINING.md](REDLINING.md)\n**For OOXML details**: See [OOXML.md](OOXML.md)\n```\n\nClaude reads REDLINING.md or OOXML.md only when the user needs those features.\n\n**Important guidelines:**\n\n- **Avoid deeply nested references** - Keep references one level deep from SKILL.md. All reference files should link directly from SKILL.md.\n- **Structure longer reference files** - For files longer than 100 lines, include a table of contents at the top so Claude can see the full scope when previewing.\n\n## Skill Creation Process\n\nSkill creation involves these steps:\n\n1. Understand the skill with concrete examples\n2. Plan reusable skill contents (scripts, references, assets)\n3. Initialize the skill (run init_skill.py)\n4. Edit the skill (implement resources and write SKILL.md)\n5. Package the skill (run package_skill.py)\n6. Iterate based on real usage\n\nFollow these steps in order, skipping only if there is a clear reason why they are not applicable.\n\n### Step 1: Understanding the Skill with Concrete Examples\n\nSkip this step only when the skill's usage patterns are already clearly understood. It remains valuable even when working with an existing skill.\n\nTo create an effective skill, clearly understand concrete examples of how the skill will be used. This understanding can come from either direct user examples or generated examples that are validated with user feedback.\n\nFor example, when building an image-editor skill, relevant questions include:\n\n- \"What functionality should the image-editor skill support? Editing, rotating, anything else?\"\n- \"Can you give some examples of how this skill would be used?\"\n- \"I can imagine users asking for things like 'Remove the red-eye from this image' or 'Rotate this image'. Are there other ways you imagine this skill being used?\"\n- \"What would a user say that should trigger this skill?\"\n\nTo avoid overwhelming users, avoid asking too many questions in a single message. Start with the most important questions and follow up as needed for better effectiveness.\n\nConclude this step when there is a clear sense of the functionality the skill should support.\n\n### Step 2: Planning the Reusable Skill Contents\n\nTo turn concrete examples into an effective skill, analyze each example by:\n\n1. Considering how to execute on the example from scratch\n2. Identifying what scripts, references, and assets would be helpful when executing these workflows repeatedly\n\nExample: When building a `pdf-editor` skill to handle queries like \"Help me rotate this PDF,\" the analysis shows:\n\n1. Rotating a PDF requires re-writing the same code each time\n2. A `scripts/rotate_pdf.py` script would be helpful to store in the skill\n\nExample: When designing a `frontend-webapp-builder` skill for queries like \"Build me a todo app\" or \"Build me a dashboard to track my steps,\" the analysis shows:\n\n1. Writing a frontend webapp requires the same boilerplate HTML/React each time\n2. An `assets/hello-world/` template containing the boilerplate HTML/React project files would be helpful to store in the skill\n\nExample: When building a `big-query` skill to handle queries like \"How many users have logged in today?\" the analysis shows:\n\n1. Querying BigQuery requires re-discovering the table schemas and relationships each time\n2. A `references/schema.md` file documenting the table schemas would be helpful to store in the skill\n\nTo establish the skill's contents, analyze each concrete example to create a list of the reusable resources to include: scripts, references, and assets.\n\n### Step 3: Initializing the Skill\n\nAt this point, it is time to actually create the skill.\n\nSkip this step only if the skill being developed already exists, and iteration or packaging is needed. In this case, continue to the next step.\n\nWhen creating a new skill from scratch, always run the `init_skill.py` script. The script conveniently generates a new template skill directory that automatically includes everything a skill requires, making the skill creation process much more efficient and reliable.\n\nUsage:\n\n```bash\nscripts/init_skill.py \u003cskill-name> --path \u003coutput-directory>\n```\n\nThe script:\n\n- Creates the skill directory at the specified path\n- Generates a SKILL.md template with proper frontmatter and TODO placeholders\n- Creates example resource directories: `scripts/`, `references/`, and `assets/`\n- Adds example files in each directory that can be customized or deleted\n\nAfter initialization, customize or remove the generated SKILL.md and example files as needed.\n\n### Step 4: Edit the Skill\n\nWhen editing the (newly-generated or existing) skill, remember that the skill is being created for another instance of Claude to use. Include information that would be beneficial and non-obvious to Claude. Consider what procedural knowledge, domain-specific details, or reusable assets would help another Claude instance execute these tasks more effectively.\n\n#### Learn Proven Design Patterns\n\nConsult these helpful guides based on your skill's needs:\n\n- **Multi-step processes**: See references/workflows.md for sequential workflows and conditional logic\n- **Specific output formats or quality standards**: See references/output-patterns.md for template and example patterns\n\nThese files contain established best practices for effective skill design.\n\n#### Start with Reusable Skill Contents\n\nTo begin implementation, start with the reusable resources identified above: `scripts/`, `references/`, and `assets/` files. Note that this step may require user input. For example, when implementing a `brand-guidelines` skill, the user may need to provide brand assets or templates to store in `assets/`, or documentation to store in `references/`.\n\nAdded scripts must be tested by actually running them to ensure there are no bugs and that the output matches what is expected. If there are many similar scripts, only a representative sample needs to be tested to ensure confidence that they all work while balancing time to completion.\n\nAny example files and directories not needed for the skill should be deleted. The initialization script creates example files in `scripts/`, `references/`, and `assets/` to demonstrate structure, but most skills won't need all of them.\n\n#### Update SKILL.md\n\n**Writing Guidelines:** Always use imperative/infinitive form.\n\n##### Frontmatter\n\nWrite the YAML frontmatter with `name` and `description`:\n\n- `name`: The skill name\n- `description`: This is the primary triggering mechanism for your skill, and helps Claude understand when to use the skill.\n  - Include both what the Skill does and specific triggers/contexts for when to use it.\n  - Include all \"when to use\" information here - Not in the body. The body is only loaded after triggering, so \"When to Use This Skill\" sections in the body are not helpful to Claude.\n  - Example description for a `docx` skill: \"Comprehensive document creation, editing, and analysis with support for tracked changes, comments, formatting preservation, and text extraction. Use when Claude needs to work with professional documents (.docx files) for: (1) Creating new documents, (2) Modifying or editing content, (3) Working with tracked changes, (4) Adding comments, or any other document tasks\"\n\nDo not include any other fields in YAML frontmatter.\n\n##### Body\n\nWrite instructions for using the skill and its bundled resources.\n\n### Step 5: Packaging a Skill\n\nOnce development of the skill is complete, it must be packaged into a distributable .skill file that gets shared with the user. The packaging process automatically validates the skill first to ensure it meets all requirements:\n\n```bash\nscripts/package_skill.py \u003cpath/to/skill-folder>\n```\n\nOptional output directory specification:\n\n```bash\nscripts/package_skill.py \u003cpath/to/skill-folder> ./dist\n```\n\nThe packaging script will:\n\n1. **Validate** the skill automatically, checking:\n\n   - YAML frontmatter format and required fields\n   - Skill naming conventions and directory structure\n   - Description completeness and quality\n   - File organization and resource references\n\n2. **Package** the skill if validation passes, creating a .skill file named after the skill (e.g., `my-skill.skill`) that includes all files and maintains the proper directory structure for distribution. The .skill file is a zip file with a .skill extension.\n\nIf validation fails, the script will report the errors and exit without creating a package. Fix any validation errors and run the packaging command again.\n\n### Step 6: Iterate\n\nAfter testing the skill, users may request improvements. Often this happens right after using the skill, with fresh context of how the skill performed.\n\n**Iteration workflow:**\n\n1. Use the skill on real tasks\n2. Notice struggles or inefficiencies\n3. Identify how SKILL.md or bundled resources should be updated\n4. Implement changes and test again\n"},{"slug":"style-run-sop","category":"media","name":"img-style-run-sop","description":"通用跑画风/画风确认/风格锁定（Style Lock）工作流与提示词框架；用于角色 IP 设定图（比例、三视图 turnaround、表情表、动作表、服装设定）以及任何需要“先跑最少图片确认画风，再逐步扩展”的出图任务；当用户提到“跑画风”“画风锁定”“画风确认”“IP设定图”“角色设定”“三视图”“turnaround”“表情设定”“动作设定”“服装设定”或需要省 token/省钱的出图流程时使用。","license":"","md":"---\nname: img-style-run-sop\ndescription: 通用跑画风/画风确认/风格锁定（Style Lock）工作流与提示词框架；用于角色 IP 设定图（比例、三视图 turnaround、表情表、动作表、服装设定）以及任何需要“先跑最少图片确认画风，再逐步扩展”的出图任务；当用户提到“跑画风”“画风锁定”“画风确认”“IP设定图”“角色设定”“三视图”“turnaround”“表情设定”“动作设定”“服装设定”或需要省 token/省钱的出图流程时使用。\n---\n\n# 跑画风（Style Lock）SOP\n\n优先目标：用最少图片把画风锁定到“可复现”，再扩展设定图；全过程保持“控制变量”。\n\n## 快速开始\n\n- 先读取 `references/nano-banana-IP-SOP.md` 的「1. 通用跑画风流程」拿到通用流程与验收清单。\n- 如果当前 workspace 里存在 `TOOLS/cartoon/generate-ip.js`（OLDLIFEASSONG 适配），再读取同文件的「2. …落地方式」按环境变量/脚本直接跑。\n\n## 交互要点（缺信息就问）\n\n- 角色一句话：年龄/体型/气质/关键特征（发型、眼睛、服装关键词）\n- 目标画风关键词：3–7 个（媒介/线条/上色/阴影复杂度/背景复杂度）\n- 画面约束：比例、镜头距离（全身/半身）、背景复杂度\n- 是否有参考图（可选 1 张即可）；是否允许图生图\n\n## 输出要求（交付物）\n\n- `style-test-01`：作为后续全部出图的“画风基准图”\n- `STYLE_ANCHOR`：后续每张 prompt 都复用的画风锚点短语\n- 扩展图（按需）：`proportion` / `turnaround` / `expressions` / `poses` / `outfits`\n"},{"slug":"theme-factory","category":"design","name":"theme-factory","description":"Toolkit for styling artifacts with a theme. These artifacts can be slides, docs, reportings, HTML landing pages, etc. There are 10 pre-set themes with colors/fonts that you can apply to any artifact that has been creating, or can generate a new theme on-the-fly.","license":"Complete terms in LICENSE.txt","md":"---\nname: theme-factory\ndescription: Toolkit for styling artifacts with a theme. These artifacts can be slides, docs, reportings, HTML landing pages, etc. There are 10 pre-set themes with colors/fonts that you can apply to any artifact that has been creating, or can generate a new theme on-the-fly.\nlicense: Complete terms in LICENSE.txt\n---\n\n\n# Theme Factory Skill\n\nThis skill provides a curated collection of professional font and color themes themes, each with carefully selected color palettes and font pairings. Once a theme is chosen, it can be applied to any artifact.\n\n## Purpose\n\nTo apply consistent, professional styling to presentation slide decks, use this skill. Each theme includes:\n- A cohesive color palette with hex codes\n- Complementary font pairings for headers and body text\n- A distinct visual identity suitable for different contexts and audiences\n\n## Usage Instructions\n\nTo apply styling to a slide deck or other artifact:\n\n1. **Show the theme showcase**: Display the `theme-showcase.pdf` file to allow users to see all available themes visually. Do not make any modifications to it; simply show the file for viewing.\n2. **Ask for their choice**: Ask which theme to apply to the deck\n3. **Wait for selection**: Get explicit confirmation about the chosen theme\n4. **Apply the theme**: Once a theme has been chosen, apply the selected theme's colors and fonts to the deck/artifact\n\n## Themes Available\n\nThe following 10 themes are available, each showcased in `theme-showcase.pdf`:\n\n1. **Ocean Depths** - Professional and calming maritime theme\n2. **Sunset Boulevard** - Warm and vibrant sunset colors\n3. **Forest Canopy** - Natural and grounded earth tones\n4. **Modern Minimalist** - Clean and contemporary grayscale\n5. **Golden Hour** - Rich and warm autumnal palette\n6. **Arctic Frost** - Cool and crisp winter-inspired theme\n7. **Desert Rose** - Soft and sophisticated dusty tones\n8. **Tech Innovation** - Bold and modern tech aesthetic\n9. **Botanical Garden** - Fresh and organic garden colors\n10. **Midnight Galaxy** - Dramatic and cosmic deep tones\n\n## Theme Details\n\nEach theme is defined in the `themes/` directory with complete specifications including:\n- Cohesive color palette with hex codes\n- Complementary font pairings for headers and body text\n- Distinct visual identity suitable for different contexts and audiences\n\n## Application Process\n\nAfter a preferred theme is selected:\n1. Read the corresponding theme file from the `themes/` directory\n2. Apply the specified colors and fonts consistently throughout the deck\n3. Ensure proper contrast and readability\n4. Maintain the theme's visual identity across all slides\n\n## Create your Own Theme\nTo handle cases where none of the existing themes work for an artifact, create a custom theme. Based on provided inputs, generate a new theme similar to the ones above. Give the theme a similar name describing what the font/color combinations represent. Use any basic description provided to choose appropriate colors/fonts. After generating the theme, show it for review and verification. Following that, apply the theme as described above.\n"},{"slug":"vercel-deploy","category":"deploy","name":"vercel-deploy","description":"Deploy a new or existing project to Vercel via CLI, enable Vercel Web Analytics, and (optionally) connect a custom domain/subdomain like skills.zondev.top.","license":"","md":"---\nname: vercel-deploy\ndescription: Deploy a new or existing project to Vercel via CLI, enable Vercel Web Analytics, and (optionally) connect a custom domain/subdomain like skills.zondev.top.\n---\n\n# Vercel Deploy\n\n把「一个文件夹」变成一个可访问的线上站点（Vercel），并把流程固化成可复用的动作：创建 → 部署 → 分配域名 → 验证。\n\n## 0) 先问 4 个问题（必须）\n\n1. **要部署的本地路径**：是已有项目，还是要新建一个？\n2. **项目类型**：静态 HTML（无构建）还是框架（Next.js/React 等）？\n3. **目标**：预览（preview）还是生产（prod）？\n4. **域名**：是否要绑定自定义域名（例如 `skills.zondev.top`）？\n\n## 1) 最短路径（静态站点，推荐）\n\n适合：个人页面、目录页、单页/多页静态站。\n\n### A) 生成一个全新静态站点（可选）\n\n使用本 skill 自带脚手架（不依赖外部模板）：\n\n```bash\nnode ~/.codex/skills/vercel-deploy/scripts/new-static-site.mjs --out ./my-site --title \"My Site\" --subtitle \"Minimal · Black/White\"\n```\n\n它会生成：\n- `index.html`（含 Web Analytics snippet）\n- `vercel.json`（`trailingSlash: true`）\n- `.gitignore`（忽略 `.vercel`）\n\n### B) 部署（Vercel CLI）\n\n在项目目录内执行：\n\n```bash\nvercel\n```\n\n生产发布：\n\n```bash\nvercel --prod\n```\n\n## 2) 现有项目（框架/Monorepo）部署要点\n\n### A) Root Directory\n\nVercel 部署“吃的是一个目录”。在 monorepo 里要确认 root directory：\n- 用 CLI：在那个目录里执行 `vercel`\n- 或用 `vercel --cwd path/to/project`\n\n### B) Analytics（两种常见方式）\n\n**静态站点**：在 HTML `\u003chead>` 添加（多页站点：每个 `*.html` 都要有）：\n\n```html\n\u003cscript defer src=\"/_vercel/insights/script.js\">\u003c/script>\n```\n\n**Next.js**：安装并在 `app/layout.tsx` 引入：\n\n```bash\nnpm i @vercel/analytics\n```\n\n```tsx\nimport { Analytics } from \"@vercel/analytics/react\";\n// ... in layout\n\u003cAnalytics />\n```\n\n## 3) 绑定自定义域名（例如 skills.zondev.top）\n\n最稳路径：先把域名加到项目，再按 Vercel 给的提示配 DNS。\n\n```bash\nvercel domains add skills.zondev.top \u003cproject-name>\n```\n\n常见 DNS（子域名）配置方式：\n- **CNAME**：`skills` → `cname.vercel-dns.com`\n\n注意：\n- DNS 需要在你的域名服务商/Cloudflare 里配置；Vercel 无法替你改第三方 DNS（除非你把 NS 改成 Vercel DNS）。\n- DNS 生效有延迟（几分钟到数小时）。\n\n## 4) 验证与交付\n\n你应该输出给用户（或自己记录）：\n- Vercel Project 名称\n- Production URL（`*.vercel.app`）\n- 自定义域名是否已验证（如绑定）\n\n## 5) 常见坑（快速排查）\n\n- 打不开 `*.vercel.app`：某些网络环境会阻断/重置该域名访问；可用 `vercel inspect \u003curl>` 确认部署状态。\n- 子页面 404：检查是否需要 `trailingSlash`，以及目录结构是否是 `.../x/index.html` 形式。\n- Analytics 没数据：确认 Vercel 项目里 Web Analytics 已开启，并等待数据回传（有延迟）。\n"},{"slug":"web-artifacts-builder","category":"design","name":"web-artifacts-builder","description":"Suite of tools for creating elaborate, multi-component claude.ai HTML artifacts using modern frontend web technologies (React, Tailwind CSS, shadcn/ui). Use for complex artifacts requiring state management, routing, or shadcn/ui components - not for simple single-file HTML/JSX artifacts.","license":"Complete terms in LICENSE.txt","md":"---\nname: web-artifacts-builder\ndescription: Suite of tools for creating elaborate, multi-component claude.ai HTML artifacts using modern frontend web technologies (React, Tailwind CSS, shadcn/ui). Use for complex artifacts requiring state management, routing, or shadcn/ui components - not for simple single-file HTML/JSX artifacts.\nlicense: Complete terms in LICENSE.txt\n---\n\n# Web Artifacts Builder\n\nTo build powerful frontend claude.ai artifacts, follow these steps:\n1. Initialize the frontend repo using `scripts/init-artifact.sh`\n2. Develop your artifact by editing the generated code\n3. Bundle all code into a single HTML file using `scripts/bundle-artifact.sh`\n4. Display artifact to user\n5. (Optional) Test the artifact\n\n**Stack**: React 18 + TypeScript + Vite + Parcel (bundling) + Tailwind CSS + shadcn/ui\n\n## Design & Style Guidelines\n\nVERY IMPORTANT: To avoid what is often referred to as \"AI slop\", avoid using excessive centered layouts, purple gradients, uniform rounded corners, and Inter font.\n\n## Quick Start\n\n### Step 1: Initialize Project\n\nRun the initialization script to create a new React project:\n```bash\nbash scripts/init-artifact.sh \u003cproject-name>\ncd \u003cproject-name>\n```\n\nThis creates a fully configured project with:\n- ✅ React + TypeScript (via Vite)\n- ✅ Tailwind CSS 3.4.1 with shadcn/ui theming system\n- ✅ Path aliases (`@/`) configured\n- ✅ 40+ shadcn/ui components pre-installed\n- ✅ All Radix UI dependencies included\n- ✅ Parcel configured for bundling (via .parcelrc)\n- ✅ Node 18+ compatibility (auto-detects and pins Vite version)\n\n### Step 2: Develop Your Artifact\n\nTo build the artifact, edit the generated files. See **Common Development Tasks** below for guidance.\n\n### Step 3: Bundle to Single HTML File\n\nTo bundle the React app into a single HTML artifact:\n```bash\nbash scripts/bundle-artifact.sh\n```\n\nThis creates `bundle.html` - a self-contained artifact with all JavaScript, CSS, and dependencies inlined. This file can be directly shared in Claude conversations as an artifact.\n\n**Requirements**: Your project must have an `index.html` in the root directory.\n\n**What the script does**:\n- Installs bundling dependencies (parcel, @parcel/config-default, parcel-resolver-tspaths, html-inline)\n- Creates `.parcelrc` config with path alias support\n- Builds with Parcel (no source maps)\n- Inlines all assets into single HTML using html-inline\n\n### Step 4: Share Artifact with User\n\nFinally, share the bundled HTML file in conversation with the user so they can view it as an artifact.\n\n### Step 5: Testing/Visualizing the Artifact (Optional)\n\nNote: This is a completely optional step. Only perform if necessary or requested.\n\nTo test/visualize the artifact, use available tools (including other Skills or built-in tools like Playwright or Puppeteer). In general, avoid testing the artifact upfront as it adds latency between the request and when the finished artifact can be seen. Test later, after presenting the artifact, if requested or if issues arise.\n\n## Reference\n\n- **shadcn/ui components**: https://ui.shadcn.com/docs/components\n"},{"slug":"webapp-testing","category":"design","name":"webapp-testing","description":"Toolkit for interacting with and testing local web applications using Playwright. Supports verifying frontend functionality, debugging UI behavior, capturing browser screenshots, and viewing browser logs.","license":"Complete terms in LICENSE.txt","md":"---\nname: webapp-testing\ndescription: Toolkit for interacting with and testing local web applications using Playwright. Supports verifying frontend functionality, debugging UI behavior, capturing browser screenshots, and viewing browser logs.\nlicense: Complete terms in LICENSE.txt\n---\n\n# Web Application Testing\n\nTo test local web applications, write native Python Playwright scripts.\n\n**Helper Scripts Available**:\n- `scripts/with_server.py` - Manages server lifecycle (supports multiple servers)\n\n**Always run scripts with `--help` first** to see usage. DO NOT read the source until you try running the script first and find that a customized solution is abslutely necessary. These scripts can be very large and thus pollute your context window. They exist to be called directly as black-box scripts rather than ingested into your context window.\n\n## Decision Tree: Choosing Your Approach\n\n```\nUser task → Is it static HTML?\n    ├─ Yes → Read HTML file directly to identify selectors\n    │         ├─ Success → Write Playwright script using selectors\n    │         └─ Fails/Incomplete → Treat as dynamic (below)\n    │\n    └─ No (dynamic webapp) → Is the server already running?\n        ├─ No → Run: python scripts/with_server.py --help\n        │        Then use the helper + write simplified Playwright script\n        │\n        └─ Yes → Reconnaissance-then-action:\n            1. Navigate and wait for networkidle\n            2. Take screenshot or inspect DOM\n            3. Identify selectors from rendered state\n            4. Execute actions with discovered selectors\n```\n\n## Example: Using with_server.py\n\nTo start a server, run `--help` first, then use the helper:\n\n**Single server:**\n```bash\npython scripts/with_server.py --server \"npm run dev\" --port 5173 -- python your_automation.py\n```\n\n**Multiple servers (e.g., backend + frontend):**\n```bash\npython scripts/with_server.py \\\n  --server \"cd backend && python server.py\" --port 3000 \\\n  --server \"cd frontend && npm run dev\" --port 5173 \\\n  -- python your_automation.py\n```\n\nTo create an automation script, include only Playwright logic (servers are managed automatically):\n```python\nfrom playwright.sync_api import sync_playwright\n\nwith sync_playwright() as p:\n    browser = p.chromium.launch(headless=True) # Always launch chromium in headless mode\n    page = browser.new_page()\n    page.goto('http://localhost:5173') # Server already running and ready\n    page.wait_for_load_state('networkidle') # CRITICAL: Wait for JS to execute\n    # ... your automation logic\n    browser.close()\n```\n\n## Reconnaissance-Then-Action Pattern\n\n1. **Inspect rendered DOM**:\n   ```python\n   page.screenshot(path='/tmp/inspect.png', full_page=True)\n   content = page.content()\n   page.locator('button').all()\n   ```\n\n2. **Identify selectors** from inspection results\n\n3. **Execute actions** using discovered selectors\n\n## Common Pitfall\n\n❌ **Don't** inspect the DOM before waiting for `networkidle` on dynamic apps\n✅ **Do** wait for `page.wait_for_load_state('networkidle')` before inspection\n\n## Best Practices\n\n- **Use bundled scripts as black boxes** - To accomplish a task, consider whether one of the scripts available in `scripts/` can help. These scripts handle common, complex workflows reliably without cluttering the context window. Use `--help` to see usage, then invoke directly. \n- Use `sync_playwright()` for synchronous scripts\n- Always close the browser when done\n- Use descriptive selectors: `text=`, `role=`, CSS selectors, or IDs\n- Add appropriate waits: `page.wait_for_selector()` or `page.wait_for_timeout()`\n\n## Reference Files\n\n- **examples/** - Examples showing common patterns:\n  - `element_discovery.py` - Discovering buttons, links, and inputs on a page\n  - `static_html_automation.py` - Using file:// URLs for local HTML\n  - `console_logging.py` - Capturing console logs during automation\n"},{"slug":"wechat-article-creation","category":"media","name":"wechat-article-creation","description":"为微信公众号文章提供全流程创作辅助：需求 brief、信息搜索与知识库整理、选题讨论与大纲、初稿撰写、三遍审校去 AI 味、结构与完读率优化、配图清单、长文转 X。适用于写新文章、讨论选题、审校优化已有草稿、把长文改写成 X 线程/长推。","license":"","md":"---\nname: wechat-article-creation\ndescription: 为微信公众号文章提供全流程创作辅助：需求 brief、信息搜索与知识库整理、选题讨论与大纲、初稿撰写、三遍审校去 AI 味、结构与完读率优化、配图清单、长文转 X。适用于写新文章、讨论选题、审校优化已有草稿、把长文改写成 X 线程/长推。\n---\n\n# 公众号文章创作（Workflow Skill）\n\n## 核心原则（先读）\n\n- **强制顺序**：遇到新产品/新概念/新技术，必须先做「信息搜索/资料收集」，再做「选题讨论」，最后才写正文；严禁跳过搜索直接开写。\n- **不直接开写**：默认先给 3–4 个选题方向 + 大纲，让用户选一个再进入初稿。\n- **公众号格式限制**：不要用 Markdown 链接格式 `[文字](URL)`，直接写 URL；少用分割线、少用加粗、避免过度结构化。\n- **风格目标**：口语化开场 + 自问自答 + 心路历程 + 具体细节（时间/地点/人物/数字）+ 视野对比；避免官腔与“AI味”。\n- **透明化决策**：对标题/选题/结构等关键决策，给出 1–3 句“为什么这么选”的理由，方便用户纠偏（不要输出长篇推理）。\n- **核心原则不可妥协**：不编造数据与案例；不确定就先查证或向用户要材料；重要决策（选题/立场/引用/敏感表达）必须让用户确认。\n\n## 快速开始（你需要先问清楚）\n\n向用户收集并确认这些信息（不全就先补齐）：\n\n- 目标受众是谁（越具体越好）\n- 这篇要解决读者哪个问题/带走什么结论（1 句话）\n- 字数范围（如：1200/2000/3000）\n- 是否带产品/工具/概念（如有，必须做资料收集/搜索）\n- 用户可提供的真实素材（建议至少 3 条）：时间/地点/人物/对话/截图/数据/踩坑经历\n\n## 任务路由（先判断再执行）\n\n同一个“写作需求”，可能是新写、改稿、审校、转 X 或快速咨询。先做任务路由，能显著减少返工与误判：\n\n- 先按 `references/task-routing.md` 判断任务类型（A/B/C/D/E）。\n- 需要真实测试/数据/截图的题：先建协作文档并等待用户补齐材料，再开写正文。\n\n## 文件与目录约定（默认）\n\n在用户当前仓库/项目中按需创建并使用：\n\n- `_briefs/`：需求 brief\n- `_knowledge_base/`：资料收集与搜索笔记\n- `_协作文档/`：测试/配图/协作清单（需要时）\n- `草稿/`：文章草稿\n- `文章归档/YYYY/MM/`：成稿归档\n- `images/`：配图（如果需要落地文件）\n\n命名规范与模板见 `references/templates.md`。\n\n## 工作流（按顺序执行）\n\n### Step 1：保存需求 Brief（必做）\n\n- 把用户需求整理成 brief，保存到 `_briefs/[项目名]-需求brief.md`。\n- brief 必含：受众、核心信息、字数、特殊要求、可用素材清单。\n\n### Step 2：信息搜索/资料收集（⭐必须优先执行）\n\n- 对新产品/新概念/新技术：收集 **官方文档/产品介绍/技术特性/用户评价/竞品对比**。\n- 把结果保存到 `_knowledge_base/[主题]-[时间].md`，并保留来源 URL（直接写 URL，不用 Markdown 链接）。\n- **离线/无法联网时的替代**：向用户索要链接、截图、原文片段、或让用户先搜再把材料粘贴给你；你负责结构化整理与提炼结论。\n- 搜索整理完成后，用 5–10 行向用户确认你理解的要点，再进入选题讨论。\n\n### Step 3：选题讨论（必做）\n\n- 提供 3–4 个选题方向（格式见 `references/templates.md`），每个包含：标题、核心角度、工作量评估（⭐/⭐⭐/⭐⭐⭐）、大纲（3–7 个一级标题）、优劣势。\n- 让用户选一个，或基于反馈再迭代一轮选题。\n\n### Step 4：学习风格（写前必做）\n\n- 阅读 `references/style-guide.md`（10 条必须做到 + 10 条必须避免）。\n- 从 `assets/` 随机挑 2–3 篇样本快速过一遍，抓住口吻、节奏、转折方式（不要照抄句子）。\n\n### Step 5：创作初稿\n\n- 用散文式段落推进（少标题/少列表），但逻辑必须清楚。\n- 必须有：背景铺垫 → 冲突/问题 → 思考过程（自问自答）→ 对比/证据 → 你的选择 → 给读者的启发。\n- 有个人素材库时，优先用真实经历/观点/案例做支撑（方法见 `references/personal-materials.md`）；素材不足先向用户索要，避免硬编。\n- 提到关键概念/产品/数据处标注 `[图片]` 占位。\n- 草稿保存到 `草稿/[标题]-草稿.md`。\n\n### Step 6：三遍审校（交付前必做）\n\n- 用 `references/review-checklist.md` 的细版清单做三遍审校（内容事实 → 风格去 AI 味 → 节奏与排版）。\n\n### Step 7：爆款结构优化（可选但推荐）\n\n- 从 5 种结构里挑一个套用并微调：问题-原因-方案-升华 / 故事-冲突-转折-洞察 / 颠覆认知-新视角-重建 / 对比-反差-原因-启示 / 数据冲击-深挖-案例-升华。\n- 做完读率自检：开头前 100 字能抓住人；中段每 300 字有新洞察或转折；结尾有升华与行动引导。\n\n### Step 8：配图清单（推荐）\n\n- 建议 5–8 张（最少 3 张），为重要概念/界面/数据准备图；在文中标注 `[图片]`。\n- 另附一份配图清单（位置/内容/要求/状态），模板见 `references/templates.md`。\n\n### Step 9：长文转 X（可选）\n\n- 把公众号长文改成 200–500 字标准版，或 1000 字+长推版（模板见 `references/templates.md`）。\n\n## 需要时再读的资源\n\n- 风格规范：`references/style-guide.md`\n- 模板：`references/templates.md`\n- 任务路由：`references/task-routing.md`\n- 个人素材库：`references/personal-materials.md`\n- 审校清单：`references/review-checklist.md`\n- 样本：`assets/*.md`\n"},{"slug":"wechat-svg","category":"design","name":"img-wechat-svg","description":"微信公众号交互式SVG制作指南。用于创建可在微信公众号文章中使用的交互式SVG动画，包括点击交互、多步骤流程、动画效果等。适用场景：营销活动页面、互动游戏、抽奖转盘、信息展示卡片、教程引导等需要在微信内实现交互效果的SVG。","license":"","md":"---\nname: img-wechat-svg\ndescription: 微信公众号交互式SVG制作指南。用于创建可在微信公众号文章中使用的交互式SVG动画，包括点击交互、多步骤流程、动画效果等。适用场景：营销活动页面、互动游戏、抽奖转盘、信息展示卡片、教程引导等需要在微信内实现交互效果的SVG。\n---\n\n# 微信公众号 SVG 制作指南\n\n本 skill 总结了在微信公众号环境中制作交互式 SVG 的实战经验，包括平台限制、可用技术和最佳实践。\n\n## 核心限制\n\n微信公众号对 SVG 有严格限制：\n\n### ❌ 完全不支持\n\n- JavaScript（任何 JS 代码）\n- CSS 动画（`@keyframes`、`transition`）\n- `foreignObject` 标签\n- 外部 CSS 文件\n- `localStorage` / `sessionStorage`\n- `id.click` 引用触发动画（如 `begin=\"zone1.click\"`）\n- `pointer-events:none` 穿透点击\n\n### ⚠️ 部分支持 / 不稳定\n\n- 时间延迟动画（`begin=\"2s\"` 在移动端不可靠）\n- 动画链（`begin=\"id.end+0.5s\"` 不稳定）\n- 复杂的滚动动画\n- 超长 SVG 高度（有渲染截断限制）\n- `clipPath` 裁剪图片（圆角会失效）\n\n### ✅ 完全支持\n\n- 点击触发动画（`begin=\"click\"` 或 `begin=\"mousedown\"`）\n- SMIL 基础动画（`animate`、`animateTransform`）\n- `opacity` 透明度变化\n- `transform` 位移/旋转\n- `fill=\"freeze\"` 保持最终状态\n- `restart=\"never\"` 防止重复触发\n- `pattern` 填充（实现图片圆角）\n- 微信图床图片（`image` 标签）\n- 基础 SVG 元素（`text`、`rect`、`circle`、`path` 等）\n\n## 交互实现方案\n\n### 推荐方案：多层覆盖 + 点击移除\n\n**必须使用 `mousedown`/`click` 直接在 `\u003cg>` 上触发**，不能用 id 引用：\n\n```xml\n\u003csvg viewBox=\"0 0 750 1000\">\n  \u003c!-- 最底层：最终完成状态（始终存在） -->\n  \u003cg id=\"final-content\">\n    \u003ctext>完成！恭喜获得奖励\u003c/text>\n  \u003c/g>\n\n  \u003c!-- 第2层：中间状态 -->\n  \u003cg>\n    \u003canimate attributeName=\"opacity\" values=\"1;0\" dur=\"0.01s\"\n             fill=\"freeze\" begin=\"mousedown\" restart=\"never\"/>\n    \u003canimateTransform attributeName=\"transform\" type=\"translate\"\n                      values=\"0 0;2000 0\" dur=\"0.01s\" fill=\"freeze\"\n                      begin=\"click+0.02s\" restart=\"never\"/>\n    \u003crect width=\"750\" height=\"1000\" fill=\"#161b22\"/>\n    \u003ctext>点击继续...\u003c/text>\n  \u003c/g>\n\n  \u003c!-- 最上层：初始状态 -->\n  \u003cg>\n    \u003canimate attributeName=\"opacity\" values=\"1;0\" dur=\"0.01s\"\n             fill=\"freeze\" begin=\"mousedown\" restart=\"never\"/>\n    \u003canimateTransform attributeName=\"transform\" type=\"translate\"\n                      values=\"0 0;2000 0\" dur=\"0.01s\" fill=\"freeze\"\n                      begin=\"click+0.02s\" restart=\"never\"/>\n    \u003crect width=\"750\" height=\"1000\" fill=\"#161b22\"/>\n    \u003ctext>点击开始\u003c/text>\n  \u003c/g>\n\u003c/svg>\n```\n\n关键技术点：\n\n- 用 `begin=\"mousedown\"` 而非 `begin=\"id.click\"`（后者微信不支持）\n- 先用 `opacity` 隐藏，再用 `transform` 移出视野（双保险）\n- `restart=\"never\"` 防止用户误触重复触发\n- `fill=\"freeze\"` 保持动画结束状态\n- 覆盖层必须有背景色填充，否则点击会穿透\n- 不要使用 `pointer-events:none`，微信支持不稳定\n\n错误示例（微信不支持）：\n\n```xml\n\u003c!-- ❌ 错误：使用 id.click 引用 -->\n\u003crect id=\"zone1\" fill=\"transparent\"/>\n\u003cg>\n  \u003canimate begin=\"zone1.click\" .../>\n\u003c/g>\n\n\u003c!-- ❌ 错误：依赖 pointer-events:none -->\n\u003cg style=\"pointer-events:none;\">内容\u003c/g>\n\u003crect fill=\"transparent\"/>  \u003c!-- 期望点击穿透到这里 -->\n```\n\n### 光标闪烁效果\n\n```xml\n\u003crect x=\"65\" y=\"438\" width=\"4\" height=\"44\" fill=\"#c9d1d9\">\n  \u003canimate attributeName=\"opacity\" values=\"1;0;1\" dur=\"1s\" repeatCount=\"indefinite\"/>\n\u003c/rect>\n```\n\n### 进度条动画（单次播放）\n\n```xml\n\u003c!-- 背景槽 -->\n\u003crect x=\"40\" y=\"585\" width=\"610\" height=\"24\" rx=\"6\" fill=\"#21262d\"/>\n\u003c!-- 进度条 - 单次播放到100% -->\n\u003crect x=\"44\" y=\"589\" width=\"0\" height=\"16\" rx=\"4\" fill=\"#FF8B2C\">\n  \u003canimate attributeName=\"width\" from=\"0\" to=\"602\" dur=\"1.5s\"\n           fill=\"freeze\" begin=\"0s\" restart=\"never\"/>\n\u003c/rect>\n```\n\n## 图片处理\n\n### 使用微信图床\n\n必须使用微信图床 URL，格式例如：\n\n```xml\n\u003cimage x=\"40\" y=\"1400\" width=\"670\" height=\"893\"\n       href=\"https://mmbiz.qpic.cn/mmbiz_png/xxx/0?wx_fmt=png&amp;from=appmsg\"\n       preserveAspectRatio=\"xMidYMid slice\"/>\n```\n\n注意：URL 中的 `&` 必须转义为 `&amp;`。\n\n### 圆角图片（重要）\n\n必须使用 `pattern` 方式，`clipPath` 在微信中图片会溢出圆角：\n\n```xml\n\u003c!-- ✅ 正确：使用 pattern 填充圆角 rect -->\n\u003cdefs>\n  \u003cpattern id=\"imgPattern\" patternUnits=\"userSpaceOnUse\" x=\"45\" y=\"1390\" width=\"660\" height=\"880\">\n    \u003cimage href=\"https://mmbiz.qpic.cn/mmbiz_png/xxx/0?wx_fmt=png&amp;from=appmsg\"\n           width=\"660\" height=\"880\" preserveAspectRatio=\"xMidYMid slice\"/>\n  \u003c/pattern>\n\u003c/defs>\n\n\u003crect x=\"45\" y=\"1390\" width=\"660\" height=\"880\" rx=\"18\" fill=\"url(#imgPattern)\"/>\n\u003crect x=\"45\" y=\"1390\" width=\"660\" height=\"880\" rx=\"18\" fill=\"none\" stroke=\"#30363d\" stroke-width=\"2\"/>\n```\n\n```xml\n\u003c!-- ❌ 错误：clipPath 在微信中图片会溢出圆角 -->\n\u003cclipPath id=\"imgClip\">\n  \u003crect x=\"40\" y=\"1400\" width=\"670\" height=\"893\" rx=\"18\"/>\n\u003c/clipPath>\n\u003cimage clip-path=\"url(#imgClip)\" ... />\n```\n\n## 尺寸与布局\n\n推荐 viewBox：\n\n- `750 x 1000` → 3:4 比例，适合单屏展示\n- `750 x 1500` → 1:2 比例，适合需要滚动的长内容\n- `750 x 2400` → 扩展高度，注意底部可能被截断\n\n字体大小建议：\n\n- 主标题 / 重要提示：36–48px\n- 正文内容：22–26px\n- 辅助信息：18–20px\n- 提示文字（如“往上滑”）：36–42px（需要醒目）\n\n移动端阅读，字号宁大勿小。\n\n### 长页面提示文字位置\n\n提示用户操作的文字应放在首屏之外，避免干扰主内容：\n\n```xml\n\u003c!-- y 坐标设为 1400+，确保在首屏下方 -->\n\u003ctext y=\"1400\" font-size=\"48\">↑\u003c/text>\n\u003ctext y=\"1450\" font-size=\"42\">往上滑，在终端里继续\u003c/text>\n\u003ctext y=\"1520\" font-size=\"36\">滑到这里了？没关系，返回上面就好\u003c/text>\n```\n\n### 背景与内容分层\n\n创建视觉层次感，用边框区分背景和内容区：\n\n```xml\n\u003c!-- 深色背景 -->\n\u003crect width=\"750\" height=\"2400\" rx=\"24\" fill=\"#0d1117\"/>\n\u003crect x=\"15\" y=\"15\" width=\"720\" height=\"2370\" rx=\"20\" fill=\"#161b22\" stroke=\"#30363d\" stroke-width=\"2\"/>\n```\n\n## 生成预览页面\n\n生成 SVG 后，建议嵌入预览模板进行测试和交付。\n\n使用脚本生成预览页面：\n\n```bash\npython scripts/generate_preview_page.py my-svg.svg -o preview.html\n```\n\n参数说明：\n\n- `my-svg.svg`：要嵌入的 SVG 文件路径\n- `-o preview.html`：输出的 HTML 文件路径（可选，默认 `./wechat-svg-preview.html`）\n\n## 输出规范\n\n生成的预览页面基于 `assets/preview-template.html` 模板，脚本会自动替换模板中的 SVG 占位符。\n\n用户使用流程：\n\n1. 下载生成的 HTML 文件到本地\n2. 用浏览器打开，预览 SVG 效果\n3. 点击「复制 SVG」按钮（以富文本格式复制）\n4. 直接粘贴到微信公众号编辑器，渲染为图形\n\n技术说明：\n\n- 模板使用 Clipboard API（并带回退）以 `text/html` 格式复制\n- 无需维护两份代码，复制逻辑从 DOM 读取\n- 支持交互式 SVG 的完整测试\n\n## 操作步骤\n\n### 标准流程\n\n#### 方式一：使用模板快速预览\n\n1. 准备 SVG 文件\n   - 使用本 Skill 中的指南创建 SVG 文件，或使用 `assets/interactive-template.svg` 作为模板\n2. 生成预览网页\n   - 调用 `scripts/generate_preview_page.py` 生成预览网页：\n   ```bash\n   python scripts/generate_preview_page.py \u003csvg文件路径>\n   ```\n   可选参数 `-o` 指定输出路径：\n   ```bash\n   python scripts/generate_preview_page.py \u003csvg文件路径> -o \u003c输出html路径>\n   ```\n3. 预览和复制\n   - 在浏览器中打开生成的 HTML 文件\n   - 查看 SVG 预览效果\n   - 点击「复制 SVG 代码」按钮\n   - 3 秒后会显示「已复制！可以粘贴到微信公众号编辑器」的提示\n   - 在微信公众号编辑器中粘贴使用\n\n#### 方式二：使用智能体指导创建\n\n1. 描述需求：告诉智能体你想要创建的 SVG 效果和功能\n2. 智能体创建：智能体将根据本 Skill 中的指南创建 SVG 代码，并自动生成预览网页\n3. 预览和复制：按照网页提示操作\n\n## 资源索引\n\n- 必要脚本：`scripts/generate_preview_page.py`（生成带复制功能的预览网页）\n- 模板资产：`assets/interactive-template.svg`（可直接使用的交互式 SVG 模板）\n\n## 注意事项\n\n- 仅在需要时读取参考，保持上下文简洁。\n- 当操作脆弱或需强一致性时，优先调用脚本执行并进行结果校验。\n- 重要：复制的是 SVG 源代码（作为富文本 HTML），不是网页中的 DOM 节点；可以直接粘贴到微信公众号编辑器使用。\n"},{"slug":"xlsx","category":"data","name":"xlsx","description":"Comprehensive spreadsheet creation, editing, and analysis with support for formulas, formatting, data analysis, and visualization. When Claude needs to work with spreadsheets (.xlsx, .xlsm, .csv, .tsv, etc) for: (1) Creating new spreadsheets with formulas and formatting, (2) Reading or analyzing data, (3) Modify existing spreadsheets while preserving formulas, (4) Data analysis and visualization in spreadsheets, or (5) Recalculating formulas","license":"Proprietary. LICENSE.txt has complete terms","md":"---\nname: xlsx\ndescription: \"Comprehensive spreadsheet creation, editing, and analysis with support for formulas, formatting, data analysis, and visualization. When Claude needs to work with spreadsheets (.xlsx, .xlsm, .csv, .tsv, etc) for: (1) Creating new spreadsheets with formulas and formatting, (2) Reading or analyzing data, (3) Modify existing spreadsheets while preserving formulas, (4) Data analysis and visualization in spreadsheets, or (5) Recalculating formulas\"\nlicense: Proprietary. LICENSE.txt has complete terms\n---\n\n# Requirements for Outputs\n\n## All Excel files\n\n### Zero Formula Errors\n- Every Excel model MUST be delivered with ZERO formula errors (#REF!, #DIV/0!, #VALUE!, #N/A, #NAME?)\n\n### Preserve Existing Templates (when updating templates)\n- Study and EXACTLY match existing format, style, and conventions when modifying files\n- Never impose standardized formatting on files with established patterns\n- Existing template conventions ALWAYS override these guidelines\n\n## Financial models\n\n### Color Coding Standards\nUnless otherwise stated by the user or existing template\n\n#### Industry-Standard Color Conventions\n- **Blue text (RGB: 0,0,255)**: Hardcoded inputs, and numbers users will change for scenarios\n- **Black text (RGB: 0,0,0)**: ALL formulas and calculations\n- **Green text (RGB: 0,128,0)**: Links pulling from other worksheets within same workbook\n- **Red text (RGB: 255,0,0)**: External links to other files\n- **Yellow background (RGB: 255,255,0)**: Key assumptions needing attention or cells that need to be updated\n\n### Number Formatting Standards\n\n#### Required Format Rules\n- **Years**: Format as text strings (e.g., \"2024\" not \"2,024\")\n- **Currency**: Use $#,##0 format; ALWAYS specify units in headers (\"Revenue ($mm)\")\n- **Zeros**: Use number formatting to make all zeros \"-\", including percentages (e.g., \"$#,##0;($#,##0);-\")\n- **Percentages**: Default to 0.0% format (one decimal)\n- **Multiples**: Format as 0.0x for valuation multiples (EV/EBITDA, P/E)\n- **Negative numbers**: Use parentheses (123) not minus -123\n\n### Formula Construction Rules\n\n#### Assumptions Placement\n- Place ALL assumptions (growth rates, margins, multiples, etc.) in separate assumption cells\n- Use cell references instead of hardcoded values in formulas\n- Example: Use =B5*(1+$B$6) instead of =B5*1.05\n\n#### Formula Error Prevention\n- Verify all cell references are correct\n- Check for off-by-one errors in ranges\n- Ensure consistent formulas across all projection periods\n- Test with edge cases (zero values, negative numbers)\n- Verify no unintended circular references\n\n#### Documentation Requirements for Hardcodes\n- Comment or in cells beside (if end of table). Format: \"Source: [System/Document], [Date], [Specific Reference], [URL if applicable]\"\n- Examples:\n  - \"Source: Company 10-K, FY2024, Page 45, Revenue Note, [SEC EDGAR URL]\"\n  - \"Source: Company 10-Q, Q2 2025, Exhibit 99.1, [SEC EDGAR URL]\"\n  - \"Source: Bloomberg Terminal, 8/15/2025, AAPL US Equity\"\n  - \"Source: FactSet, 8/20/2025, Consensus Estimates Screen\"\n\n# XLSX creation, editing, and analysis\n\n## Overview\n\nA user may ask you to create, edit, or analyze the contents of an .xlsx file. You have different tools and workflows available for different tasks.\n\n## Important Requirements\n\n**LibreOffice Required for Formula Recalculation**: You can assume LibreOffice is installed for recalculating formula values using the `recalc.py` script. The script automatically configures LibreOffice on first run\n\n## Reading and analyzing data\n\n### Data analysis with pandas\nFor data analysis, visualization, and basic operations, use **pandas** which provides powerful data manipulation capabilities:\n\n```python\nimport pandas as pd\n\n# Read Excel\ndf = pd.read_excel('file.xlsx')  # Default: first sheet\nall_sheets = pd.read_excel('file.xlsx', sheet_name=None)  # All sheets as dict\n\n# Analyze\ndf.head()      # Preview data\ndf.info()      # Column info\ndf.describe()  # Statistics\n\n# Write Excel\ndf.to_excel('output.xlsx', index=False)\n```\n\n## Excel File Workflows\n\n## CRITICAL: Use Formulas, Not Hardcoded Values\n\n**Always use Excel formulas instead of calculating values in Python and hardcoding them.** This ensures the spreadsheet remains dynamic and updateable.\n\n### ❌ WRONG - Hardcoding Calculated Values\n```python\n# Bad: Calculating in Python and hardcoding result\ntotal = df['Sales'].sum()\nsheet['B10'] = total  # Hardcodes 5000\n\n# Bad: Computing growth rate in Python\ngrowth = (df.iloc[-1]['Revenue'] - df.iloc[0]['Revenue']) / df.iloc[0]['Revenue']\nsheet['C5'] = growth  # Hardcodes 0.15\n\n# Bad: Python calculation for average\navg = sum(values) / len(values)\nsheet['D20'] = avg  # Hardcodes 42.5\n```\n\n### ✅ CORRECT - Using Excel Formulas\n```python\n# Good: Let Excel calculate the sum\nsheet['B10'] = '=SUM(B2:B9)'\n\n# Good: Growth rate as Excel formula\nsheet['C5'] = '=(C4-C2)/C2'\n\n# Good: Average using Excel function\nsheet['D20'] = '=AVERAGE(D2:D19)'\n```\n\nThis applies to ALL calculations - totals, percentages, ratios, differences, etc. The spreadsheet should be able to recalculate when source data changes.\n\n## Common Workflow\n1. **Choose tool**: pandas for data, openpyxl for formulas/formatting\n2. **Create/Load**: Create new workbook or load existing file\n3. **Modify**: Add/edit data, formulas, and formatting\n4. **Save**: Write to file\n5. **Recalculate formulas (MANDATORY IF USING FORMULAS)**: Use the recalc.py script\n   ```bash\n   python recalc.py output.xlsx\n   ```\n6. **Verify and fix any errors**: \n   - The script returns JSON with error details\n   - If `status` is `errors_found`, check `error_summary` for specific error types and locations\n   - Fix the identified errors and recalculate again\n   - Common errors to fix:\n     - `#REF!`: Invalid cell references\n     - `#DIV/0!`: Division by zero\n     - `#VALUE!`: Wrong data type in formula\n     - `#NAME?`: Unrecognized formula name\n\n### Creating new Excel files\n\n```python\n# Using openpyxl for formulas and formatting\nfrom openpyxl import Workbook\nfrom openpyxl.styles import Font, PatternFill, Alignment\n\nwb = Workbook()\nsheet = wb.active\n\n# Add data\nsheet['A1'] = 'Hello'\nsheet['B1'] = 'World'\nsheet.append(['Row', 'of', 'data'])\n\n# Add formula\nsheet['B2'] = '=SUM(A1:A10)'\n\n# Formatting\nsheet['A1'].font = Font(bold=True, color='FF0000')\nsheet['A1'].fill = PatternFill('solid', start_color='FFFF00')\nsheet['A1'].alignment = Alignment(horizontal='center')\n\n# Column width\nsheet.column_dimensions['A'].width = 20\n\nwb.save('output.xlsx')\n```\n\n### Editing existing Excel files\n\n```python\n# Using openpyxl to preserve formulas and formatting\nfrom openpyxl import load_workbook\n\n# Load existing file\nwb = load_workbook('existing.xlsx')\nsheet = wb.active  # or wb['SheetName'] for specific sheet\n\n# Working with multiple sheets\nfor sheet_name in wb.sheetnames:\n    sheet = wb[sheet_name]\n    print(f\"Sheet: {sheet_name}\")\n\n# Modify cells\nsheet['A1'] = 'New Value'\nsheet.insert_rows(2)  # Insert row at position 2\nsheet.delete_cols(3)  # Delete column 3\n\n# Add new sheet\nnew_sheet = wb.create_sheet('NewSheet')\nnew_sheet['A1'] = 'Data'\n\nwb.save('modified.xlsx')\n```\n\n## Recalculating formulas\n\nExcel files created or modified by openpyxl contain formulas as strings but not calculated values. Use the provided `recalc.py` script to recalculate formulas:\n\n```bash\npython recalc.py \u003cexcel_file> [timeout_seconds]\n```\n\nExample:\n```bash\npython recalc.py output.xlsx 30\n```\n\nThe script:\n- Automatically sets up LibreOffice macro on first run\n- Recalculates all formulas in all sheets\n- Scans ALL cells for Excel errors (#REF!, #DIV/0!, etc.)\n- Returns JSON with detailed error locations and counts\n- Works on both Linux and macOS\n\n## Formula Verification Checklist\n\nQuick checks to ensure formulas work correctly:\n\n### Essential Verification\n- [ ] **Test 2-3 sample references**: Verify they pull correct values before building full model\n- [ ] **Column mapping**: Confirm Excel columns match (e.g., column 64 = BL, not BK)\n- [ ] **Row offset**: Remember Excel rows are 1-indexed (DataFrame row 5 = Excel row 6)\n\n### Common Pitfalls\n- [ ] **NaN handling**: Check for null values with `pd.notna()`\n- [ ] **Far-right columns**: FY data often in columns 50+ \n- [ ] **Multiple matches**: Search all occurrences, not just first\n- [ ] **Division by zero**: Check denominators before using `/` in formulas (#DIV/0!)\n- [ ] **Wrong references**: Verify all cell references point to intended cells (#REF!)\n- [ ] **Cross-sheet references**: Use correct format (Sheet1!A1) for linking sheets\n\n### Formula Testing Strategy\n- [ ] **Start small**: Test formulas on 2-3 cells before applying broadly\n- [ ] **Verify dependencies**: Check all cells referenced in formulas exist\n- [ ] **Test edge cases**: Include zero, negative, and very large values\n\n### Interpreting recalc.py Output\nThe script returns JSON with error details:\n```json\n{\n  \"status\": \"success\",           // or \"errors_found\"\n  \"total_errors\": 0,              // Total error count\n  \"total_formulas\": 42,           // Number of formulas in file\n  \"error_summary\": {              // Only present if errors found\n    \"#REF!\": {\n      \"count\": 2,\n      \"locations\": [\"Sheet1!B5\", \"Sheet1!C10\"]\n    }\n  }\n}\n```\n\n## Best Practices\n\n### Library Selection\n- **pandas**: Best for data analysis, bulk operations, and simple data export\n- **openpyxl**: Best for complex formatting, formulas, and Excel-specific features\n\n### Working with openpyxl\n- Cell indices are 1-based (row=1, column=1 refers to cell A1)\n- Use `data_only=True` to read calculated values: `load_workbook('file.xlsx', data_only=True)`\n- **Warning**: If opened with `data_only=True` and saved, formulas are replaced with values and permanently lost\n- For large files: Use `read_only=True` for reading or `write_only=True` for writing\n- Formulas are preserved but not evaluated - use recalc.py to update values\n\n### Working with pandas\n- Specify data types to avoid inference issues: `pd.read_excel('file.xlsx', dtype={'id': str})`\n- For large files, read specific columns: `pd.read_excel('file.xlsx', usecols=['A', 'C', 'E'])`\n- Handle dates properly: `pd.read_excel('file.xlsx', parse_dates=['date_column'])`\n\n## Code Style Guidelines\n**IMPORTANT**: When generating Python code for Excel operations:\n- Write minimal, concise Python code without unnecessary comments\n- Avoid verbose variable names and redundant operations\n- Avoid unnecessary print statements\n\n**For Excel files themselves**:\n- Add comments to cells with complex formulas or important assumptions\n- Document data sources for hardcoded values\n- Include notes for key calculations and model sections\n"}]}</script>
+    <script>
+      const $ = (id) => document.getElementById(id);
+      const data = (() => {
+        const el = $("skillsData");
+        if (!el) return { skills: [], categories: [], generatedAt: "" };
+        try { return JSON.parse(el.textContent || "{}"); } catch { return { skills: [], categories: [], generatedAt: "" }; }
+      })();
+
+      const CATEGORY_LABEL = Object.fromEntries((data.categories || []).map((c) => [c.id, c.label]));
+      const ALL = (data.skills || []).slice();
+
+      const state = {
+        q: "",
+        cat: "all",
+        active: "",
+        raw: false,
+      };
+
+      const els = {
+        q: $("q"),
+        list: $("list"),
+        countText: $("countText"),
+        kicker: $("kicker"),
+        title: $("title"),
+        desc: $("desc"),
+        doc: $("doc"),
+        toc: $("toc"),
+        tocList: $("tocList"),
+        activeSub: $("activeSub"),
+        copyAll: $("copyAll"),
+        copyLink: $("copyLink"),
+        toggleRaw: $("toggleRaw"),
+        topBtn: $("topBtn"),
+        printBtn: $("printBtn"),
+        pillRow: $("pillRow"),
+        toast: $("toast"),
+        menuBtn: $("menuBtn"),
+        sidebar: $("sidebar"),
+        scrim: $("scrim"),
+      };
+
+      const escapeHtml = (s) => String(s ?? "")
+        .replaceAll("&", "&amp;")
+        .replaceAll("<", "&lt;")
+        .replaceAll(">", "&gt;")
+        .replaceAll("\"", "&quot;")
+        .replaceAll("'", "&#39;");
+
+      const stripFrontMatter = (md) => {
+        const text = String(md ?? "");
+        const m = text.match(/^---\s*\r?\n([\s\S]*?)\r?\n---\s*\r?\n?/);
+        if (!m) return { body: text, fm: {} };
+        const fmRaw = String(m[1] ?? "");
+        const fm = {};
+        for (const line of fmRaw.split(/\r?\n/)) {
+          const kv = line.trim().match(/^([A-Za-z0-9_-]+)\s*:\s*(.*)\s*$/);
+          if (!kv) continue;
+          const k = kv[1];
+          let v = String(kv[2] ?? "").trim();
+          if ((v.startsWith("\"") && v.endsWith("\"")) || (v.startsWith("'") && v.endsWith("'"))) v = v.slice(1, -1);
+          fm[k] = v;
+        }
+        return { body: text.slice(m[0].length), fm };
+      };
+
+      const slugify = (s) => {
+        const t = String(s ?? "").trim().toLowerCase();
+        const cleaned = t
+          .normalize("NFKD")
+          .replace(/[\u0300-\u036f]/g, "")
+          .replace(/[^\p{Letter}\p{Number}\u4e00-\u9fff]+/gu, "-")
+          .replace(/^-+|-+$/g, "");
+        return (cleaned || "section").slice(0, 64);
+      };
+
+      const inlineFormat = (s) => {
+        const text = escapeHtml(s);
+        return text
+          .replace(/\*\*([^*]+)\*\*/g, "<strong>$1</strong>")
+          .replace(/\*([^*]+)\*/g, "<em>$1</em>")
+          .replace(/`([^`]+)`/g, "<code>$1</code>")
+          .replace(/\[([^\]]+)\]\(([^)]+)\)/g, '<a href="$2" target="_blank" rel="noreferrer">$1</a>');
+      };
+
+      function renderMarkdown(md) {
+        const src = String(md ?? "").replace(/\r\n/g, "\n").replace(/\r/g, "\n");
+        const lines = src.split("\n");
+        const out = [];
+        const toc = [];
+
+        let i = 0;
+        let inCode = false;
+        let codeLang = "";
+        let codeBuf = [];
+        let paraBuf = [];
+        let listMode = ""; // "ul" | "ol" | ""
+        let listItems = [];
+        let quoteBuf = [];
+
+        const flushPara = () => {
+          if (!paraBuf.length) return;
+          out.push("<p>" + inlineFormat(paraBuf.join(" ").trim()) + "</p>");
+          paraBuf = [];
+        };
+        const flushList = () => {
+          if (!listItems.length || !listMode) return;
+          const tag = listMode === "ol" ? "ol" : "ul";
+          out.push("<" + tag + ">" + listItems.map((x) => "<li>" + inlineFormat(x) + "</li>").join("") + "</" + tag + ">");
+          listItems = [];
+          listMode = "";
+        };
+        const flushQuote = () => {
+          if (!quoteBuf.length) return;
+          const html = quoteBuf.map((l) => inlineFormat(l)).join("<br/>");
+          out.push("<blockquote>" + html + "</blockquote>");
+          quoteBuf = [];
+        };
+        const flushCode = () => {
+          if (!inCode) return;
+          const lang = (codeLang || "").trim();
+          const codeText = codeBuf.join("\n");
+          out.push(
+            '<div class="codeblock">' +
+              '<div class="codebar">' +
+                '<div class="codelang">' + escapeHtml(lang || "code") + "</div>" +
+                '<button class="btn small" type="button" data-copy-code>Copy</button>' +
+              "</div>" +
+              "<pre><code>" + escapeHtml(codeText) + "</code></pre>" +
+            "</div>",
+          );
+          inCode = false;
+          codeLang = "";
+          codeBuf = [];
+        };
+
+        const isTableSep = (line) => {
+          const t = String(line || "").trim();
+          if (!t.includes("|")) return false;
+          const cells = t.split("|").map((c) => c.trim()).filter(Boolean);
+          if (!cells.length) return false;
+          return cells.every((c) => /^:?-{3,}:?$/.test(c));
+        };
+        const splitRow = (line) => {
+          const t = String(line || "").trim().replace(/^\|/, "").replace(/\|$/, "");
+          return t.split("|").map((c) => c.trim());
+        };
+
+        while (i < lines.length) {
+          const line = lines[i];
+          const trimmed = line.trim();
+
+          // code fence
+          const fence = line.match(/^```\s*([^\s]*)\s*$/);
+          if (fence) {
+            flushPara(); flushList(); flushQuote();
+            if (inCode) {
+              flushCode();
+            } else {
+              inCode = true;
+              codeLang = fence[1] || "";
+              codeBuf = [];
+            }
+            i++;
+            continue;
+          }
+          if (inCode) {
+            codeBuf.push(line);
+            i++;
+            continue;
+          }
+
+          // blank line
+          if (!trimmed) {
+            flushPara(); flushList(); flushQuote();
+            i++;
+            continue;
+          }
+
+          // blockquote
+          if (trimmed.startsWith(">")) {
+            flushPara(); flushList();
+            quoteBuf.push(trimmed.replace(/^>\s?/, ""));
+            i++;
+            continue;
+          }
+          if (quoteBuf.length) flushQuote();
+
+          // hr
+          if (/^(-{3,}|\*{3,}|_{3,})$/.test(trimmed)) {
+            flushPara(); flushList(); flushQuote();
+            out.push("<hr />");
+            i++;
+            continue;
+          }
+
+          // headings
+          const h = line.match(/^(#{1,6})\s+(.+)$/);
+          if (h) {
+            flushPara(); flushList(); flushQuote();
+            const level = h[1].length;
+            const text = h[2].trim().replace(/\s+#+\s*$/, "");
+            const idBase = slugify(text);
+            const id = idBase + "-" + (toc.length + 1);
+            toc.push({ level, text, id });
+            out.push("<h" + level + ' id="' + escapeHtml(id) + '">' + inlineFormat(text) + "</h" + level + ">");
+            i++;
+            continue;
+          }
+
+          // tables (simple pipe table)
+          const next = i + 1 < lines.length ? lines[i + 1] : "";
+          if (trimmed.includes("|") && isTableSep(next || "")) {
+            flushPara(); flushList(); flushQuote();
+            const header = splitRow(line);
+            const sep = splitRow(next);
+            const aligns = sep.map((c) => {
+              const t = c.trim();
+              const left = t.startsWith(":");
+              const right = t.endsWith(":");
+              if (left && right) return "center";
+              if (right) return "right";
+              return "left";
+            });
+            const rows = [];
+            i += 2;
+            while (i < lines.length) {
+              const r = lines[i];
+              if (!String(r || "").trim() || !String(r || "").includes("|")) break;
+              rows.push(splitRow(r));
+              i++;
+            }
+            const ths = header
+              .map((c, idx) => '<th style="text-align:' + aligns[idx] + '">' + inlineFormat(c) + "</th>")
+              .join("");
+            const trs = rows
+              .map((row) => "<tr>" + row.map((c, idx) => '<td style="text-align:' + (aligns[idx] || "left") + '">' + inlineFormat(c) + "</td>").join("") + "</tr>")
+              .join("");
+            out.push("<table><thead><tr>" + ths + "</tr></thead><tbody>" + trs + "</tbody></table>");
+            continue;
+          }
+
+          // lists
+          const ul = line.match(/^\s*[-*]\s+([\s\S]+)$/);
+          const ol = line.match(/^\s*\d+\.\s+([\s\S]+)$/);
+          if (ul || ol) {
+            flushPara(); flushQuote();
+            const mode = ul ? "ul" : "ol";
+            if (listMode && listMode !== mode) flushList();
+            listMode = mode;
+            listItems.push((ul ? ul[1] : ol[1]).trim());
+            i++;
+            continue;
+          }
+          if (listItems.length) flushList();
+
+          // paragraph (merge wrapped lines)
+          paraBuf.push(trimmed);
+          i++;
+        }
+
+        flushPara(); flushList(); flushQuote(); flushCode();
+        return { html: out.join("\n"), toc };
+      }
+
+      function toast(msg) {
+        if (!els.toast) return;
+        els.toast.textContent = msg || "Done.";
+        els.toast.classList.add("show");
+        window.clearTimeout(toast._t);
+        toast._t = window.setTimeout(() => els.toast.classList.remove("show"), 1200);
+      }
+
+      async function copyText(text) {
+        const t = String(text ?? "");
+        try {
+          await navigator.clipboard.writeText(t);
+          toast("Copied.");
+          return true;
+        } catch {
+          // Fallback
+          const ta = document.createElement("textarea");
+          ta.value = t;
+          ta.setAttribute("readonly", "");
+          ta.style.position = "fixed";
+          ta.style.left = "-9999px";
+          ta.style.top = "0";
+          document.body.appendChild(ta);
+          ta.select();
+          try {
+            document.execCommand("copy");
+            toast("Copied.");
+            return true;
+          } catch {
+            toast("Copy failed.");
+            return false;
+          } finally {
+            document.body.removeChild(ta);
+          }
+        }
+      }
+
+      function getSlugFromHash() {
+        const h = decodeURIComponent(String(location.hash || ""));
+        const m = h.match(/^#\/(.+)$/);
+        if (!m) return "";
+        return String(m[1] || "").split("?")[0].trim();
+      }
+
+      function setHash(slug) {
+        const s = String(slug || "").trim();
+        if (!s) {
+          location.hash = "#/";
+          return;
+        }
+        location.hash = "#/" + encodeURIComponent(s);
+      }
+
+      function buildPills() {
+        const cats = (data.categories || []).filter((c) => c && c.id && c.id !== "misc");
+        const counts = {};
+        for (const sk of ALL) counts[sk.category] = (counts[sk.category] || 0) + 1;
+
+        const items = [{ id: "all", label: "All", count: ALL.length }]
+          .concat(cats.map((c) => ({ id: c.id, label: c.label, count: counts[c.id] || 0 })));
+
+        els.pillRow.innerHTML = items
+          .filter((x) => x.count > 0)
+          .map((x) => {
+            const pressed = x.id === state.cat ? "true" : "false";
+            return '<button class="pill" type="button" data-cat="' + escapeHtml(x.id) + '" aria-pressed="' + pressed + '">' +
+              escapeHtml(x.label) + " · " + escapeHtml(String(x.count)) + "</button>";
+          })
+          .join("");
+      }
+
+      function applyFilters() {
+        const q = String(state.q || "").trim().toLowerCase();
+        const cat = String(state.cat || "all");
+        let list = ALL;
+        if (cat !== "all") list = list.filter((s) => String(s.category || "misc") === cat);
+        if (!q) return list.slice().sort((a, b) => String(a.slug).localeCompare(String(b.slug)));
+
+        const scored = [];
+        for (const s of list) {
+          const name = String(s.name || s.slug || "").toLowerCase();
+          const desc = String(s.description || "").toLowerCase();
+          const { body } = stripFrontMatter(s.md || "");
+          const hay = (name + "\n" + desc + "\n" + String(body || "")).toLowerCase();
+          const idx = hay.indexOf(q);
+          if (idx < 0) continue;
+          let score = 0;
+          if (String(s.slug || "").toLowerCase().includes(q)) score += 80;
+          if (name.includes(q)) score += 60;
+          if (desc.includes(q)) score += 25;
+          score += Math.max(0, 20 - Math.floor(idx / 200));
+          scored.push({ s, score });
+        }
+        scored.sort((a, b) => b.score - a.score || String(a.s.slug).localeCompare(String(b.s.slug)));
+        return scored.map((x) => x.s);
+      }
+
+      function highlight(text, q) {
+        const t = String(text || "");
+        const needle = String(q || "").trim();
+        if (!needle) return escapeHtml(t);
+        const idx = t.toLowerCase().indexOf(needle.toLowerCase());
+        if (idx < 0) return escapeHtml(t);
+        const head = escapeHtml(t.slice(0, idx));
+        const mid = escapeHtml(t.slice(idx, idx + needle.length));
+        const tail = escapeHtml(t.slice(idx + needle.length));
+        return head + "<mark style=\"background:rgba(10,10,10,.08); padding:0 2px\">" + mid + "</mark>" + tail;
+      }
+
+      function renderList() {
+        const filtered = applyFilters();
+        els.countText.textContent = String(filtered.length) + " / " + String(ALL.length);
+        const q = String(state.q || "");
+        els.list.innerHTML = filtered.map((s) => {
+          const current = String(s.slug || "") === String(state.active || "");
+          const catLabel = CATEGORY_LABEL[String(s.category || "misc")] || "Misc";
+          return '<li class="skill-item">' +
+            '<button class="skill-btn" type="button" data-slug="' + escapeHtml(s.slug) + '" aria-current="' + (current ? "true" : "false") + '">' +
+              '<div class="skill-name"><span>' + highlight(s.slug, q) + '</span><span class="skill-tag">' + escapeHtml(catLabel) + '</span></div>' +
+              '<div class="skill-meta"><div class="skill-desc">' + highlight(s.description || "", q) + '</div></div>' +
+            "</button></li>";
+        }).join("");
+      }
+
+      function renderHome() {
+        els.kicker.textContent = "Overview";
+        els.title.textContent = "Codex Skills · Docs";
+        els.activeSub.textContent = "Docs";
+        els.desc.textContent = "一个符合 Zon Minimal Editorial · Light 的单页文档站：支持全局搜索、目录、代码块一键复制、移动端菜单、可打印。";
+        els.copyAll.textContent = "Copy";
+        els.toggleRaw.textContent = "Raw";
+
+        const body = [
+          "## Quick Start",
+          "",
+          "- GitHub Actions 安装：`uses: EOMZON/codex-skills-mvp@v0`（默认安装到 `~/.codex/skills`）",
+          "- ChatOps 仓库：用 `CHATOPS_SKILLS` 选择注入哪些 skills，例如 `best-minds best-minds-minimalist vercel-deploy`",
+          "",
+          "## Vercel CLI Deploy (docs/)",
+          "",
+          "如果你把本仓库的 `docs/` 当静态站部署：",
+          "",
+          "```bash",
+          "cd docs",
+          "npx vercel@latest link --yes --project <YOUR_PROJECT> --token=$VERCEL_TOKEN",
+          "npx vercel@latest deploy --prod --yes --token=$VERCEL_TOKEN",
+          "```",
+          "",
+          "> 提示：更完整的部署策略请直接打开 `vercel-deploy` skill。",
+          "",
+          "## Skills",
+          "",
+          "从左侧选择一个 skill 开始阅读；按 `/` 聚焦搜索。",
+        ].join("\n");
+
+        const { html, toc } = renderMarkdown(body);
+        els.doc.innerHTML = html;
+        renderToc(toc);
+      }
+
+      function renderSkill(slug) {
+        const s = ALL.find((x) => String(x.slug || "") === String(slug || ""));
+        if (!s) {
+          renderHome();
+          return;
+        }
+
+        const { body, fm } = stripFrontMatter(s.md || "");
+        const catLabel = CATEGORY_LABEL[String(s.category || "misc")] || "Misc";
+        const title = String(fm.name || s.name || s.slug || "Skill");
+        const desc = String(fm.description || s.description || "");
+
+        els.kicker.textContent = catLabel;
+        els.title.textContent = title;
+        els.activeSub.textContent = String(s.slug || "");
+        els.desc.textContent = desc || "—";
+        els.copyAll.textContent = "Copy Markdown";
+        els.toggleRaw.textContent = state.raw ? "Pretty" : "Raw";
+
+        if (state.raw) {
+          els.doc.innerHTML = '<pre class="raw">' + escapeHtml(String(s.md || "")) + "</pre>";
+          renderToc([]);
+          return;
+        }
+
+        const rendered = renderMarkdown(body);
+        els.doc.innerHTML = rendered.html;
+        renderToc(rendered.toc);
+      }
+
+      function renderToc(toc) {
+        const items = (toc || []).filter((h) => h && h.id && h.text).filter((h) => h.level >= 2 && h.level <= 4);
+        if (!items.length) {
+          els.tocList.innerHTML = '<li><a href="#content" aria-current="true">Top</a></li>';
+          return;
+        }
+        els.tocList.innerHTML = items.map((h) => {
+          const pad = (h.level - 2) * 10;
+          return '<li><a href="#' + escapeHtml(h.id) + '" style="padding-left:' + (8 + pad) + 'px">' + escapeHtml(h.text) + "</a></li>";
+        }).join("");
+
+        // Scroll spy
+        const headings = items.map((h) => document.getElementById(h.id)).filter(Boolean);
+        if (renderToc._io) renderToc._io.disconnect();
+        renderToc._io = new IntersectionObserver((entries) => {
+          const visible = entries
+            .filter((e) => e.isIntersecting)
+            .sort((a, b) => (a.boundingClientRect.top || 0) - (b.boundingClientRect.top || 0))[0];
+          if (!visible) return;
+          const id = visible.target.id;
+          for (const a of els.tocList.querySelectorAll("a")) {
+            a.setAttribute("aria-current", String(a.getAttribute("href") === "#" + id));
+          }
+        }, { root: null, threshold: [0.2, 0.6] });
+        for (const h of headings) renderToc._io.observe(h);
+      }
+
+      function closeNav() {
+        document.body.classList.remove("nav-open");
+        els.menuBtn.setAttribute("aria-expanded", "false");
+        if (els.scrim) els.scrim.hidden = true;
+      }
+
+      function openNav() {
+        document.body.classList.add("nav-open");
+        els.menuBtn.setAttribute("aria-expanded", "true");
+        if (els.scrim) els.scrim.hidden = false;
+        try { els.q && els.q.focus(); } catch {}
+      }
+
+      function toggleNav() {
+        if (document.body.classList.contains("nav-open")) closeNav();
+        else openNav();
+      }
+
+      function rerender() {
+        buildPills();
+        renderList();
+        if (!state.active) renderHome();
+        else renderSkill(state.active);
+      }
+
+      // Events
+      els.q.addEventListener("input", () => {
+        state.q = els.q.value || "";
+        renderList();
+      });
+
+      els.pillRow.addEventListener("click", (e) => {
+        const btn = e.target.closest("[data-cat]");
+        if (!btn) return;
+        state.cat = btn.getAttribute("data-cat") || "all";
+        buildPills();
+        renderList();
+      });
+
+      els.list.addEventListener("click", (e) => {
+        const btn = e.target.closest("[data-slug]");
+        if (!btn) return;
+        const slug = btn.getAttribute("data-slug") || "";
+        setHash(slug);
+        if (window.matchMedia("(max-width: 860px)").matches) closeNav();
+      });
+
+      els.doc.addEventListener("click", (e) => {
+        const btn = e.target.closest("[data-copy-code]");
+        if (!btn) return;
+        const block = btn.closest(".codeblock");
+        const pre = block ? block.querySelector("pre") : null;
+        const text = pre ? pre.innerText : "";
+        copyText(text);
+      });
+
+      els.copyAll.addEventListener("click", () => {
+        if (!state.active) {
+          const text = els.doc ? els.doc.innerText : "";
+          copyText(text);
+          return;
+        }
+        const s = ALL.find((x) => String(x.slug || "") === String(state.active || ""));
+        copyText(s ? String(s.md || "") : "");
+      });
+      els.copyLink.addEventListener("click", () => copyText(String(location.href || "")));
+      els.toggleRaw.addEventListener("click", () => {
+        state.raw = !state.raw;
+        try { localStorage.setItem("codex_skills_raw", state.raw ? "1" : "0"); } catch {}
+        rerender();
+      });
+      els.topBtn.addEventListener("click", () => window.scrollTo({ top: 0, behavior: "smooth" }));
+      els.printBtn.addEventListener("click", () => window.print());
+
+      els.menuBtn.addEventListener("click", toggleNav);
+      els.scrim.addEventListener("click", closeNav);
+
+      window.addEventListener("hashchange", () => {
+        state.active = getSlugFromHash();
+        renderList();
+        if (!state.active) renderHome();
+        else renderSkill(state.active);
+      });
+
+      window.addEventListener("keydown", (e) => {
+        if (e.key === "/" && !e.metaKey && !e.ctrlKey && document.activeElement !== els.q) {
+          e.preventDefault();
+          els.q.focus();
+          return;
+        }
+        if (e.key === "Escape") {
+          closeNav();
+          return;
+        }
+        if (e.key === "k" && (e.metaKey || e.ctrlKey)) {
+          e.preventDefault();
+          els.q.focus();
+          return;
+        }
+      });
+
+      // Init
+      try { state.raw = localStorage.getItem("codex_skills_raw") === "1"; } catch {}
+      state.active = getSlugFromHash();
+      els.menuBtn.style.display = window.matchMedia("(max-width: 860px)").matches ? "" : "none";
+      buildPills();
+      renderList();
+      if (!state.active) renderHome();
+      else renderSkill(state.active);
+    </script>
+  </body>
+</html>

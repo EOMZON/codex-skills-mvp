@@ -40,6 +40,17 @@
 
 > 没同步的（例如 `chatops-main-push/github-ops/vercel-ship/...`）通常包含本机绝对路径或强绑定你个人环境的说明；如确实要同步，建议先做“公开版脱敏”再放进来。
 
+## Docs 网站（Zon Minimal Editorial · Light）
+
+本仓库自带一个单页 docs 站点（支持搜索 / 目录 / 代码块复制 / 移动端菜单 / 可打印）：
+
+- 生成：`node scripts/build-docs-site.mjs`（输出到 `docs/index.html`）
+- 本地打开：直接打开 `docs/index.html`
+- Vercel CLI 部署（以 `docs/` 作为静态站）：
+  - `cd docs`
+  - `npx vercel@latest link --yes --project <YOUR_PROJECT> --token=$VERCEL_TOKEN`
+  - `npx vercel@latest deploy --prod --yes --token=$VERCEL_TOKEN`
+
 ## 本机同步（不改变你的本地使用）
 
 把你本机的某些 skills 复制进本仓库的 `skills/`：
