@@ -111,10 +111,10 @@ function main() {
 
   if (!fs.existsSync(docsDir)) die(`Missing docs dir: ${docsDir}`);
 
-  // 2) Link (if not already linked)
+  // 2) Link (prod only; preview deploy does not need linking)
   const vercelDir = path.join(docsDir, ".vercel");
   const linked = fs.existsSync(path.join(vercelDir, "project.json"));
-  if (!linked) {
+  if (mode === "prod" && !linked) {
     fs.mkdirSync(vercelDir, { recursive: true });
     const link = run(
       "npx",
